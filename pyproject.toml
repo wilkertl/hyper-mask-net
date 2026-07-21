@@ -20,5 +20,15 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest"]
 
+[tool.setuptools]
+py-modules = [
+    "evaluate_scifact",
+    "inference",
+    "models",
+    "prepare_embeddings",
+    "prepare_scifact",
+    "train",
+]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
