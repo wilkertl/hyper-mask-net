@@ -1,10 +1,18 @@
 __pycache__/
 *.py[cod]
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
 .venv/
+*.egg-info/
+build/
+dist/
+
+# Large artifacts are never versioned; only manifests and configs are.
+artifacts/
+data/
+runs/
 *.pt
 *.safetensors
 *.npy
-checkpoints/
-data/
-runs/
+*.parquet

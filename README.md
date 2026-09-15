@@ -1,169 +1,69 @@
-# Hyper-Mask-Net
+# HyperDIME-Qwen
 
-Hyper-Mask-Net learns a query-dependent subset of dense-embedding dimensions
-without changing document vectors or rebuilding a FAISS index. A frozen
-`Qwen/Qwen3-Embedding-0.6B` encoder produces contextual query tokens; a
-cross-attention Hyperhead generates per-query, low-rank weights for a transient
-Mask-Net that predicts dimension importance.
+Environment-conditioned hypernetwork for query-aware dimension selection on a frozen
+**Qwen3-Embedding-0.6B** (D = 1024).
 
-This is an extension of *Learning to Select: Query-Aware Adaptive Dimension
-Selection for Dense Retrieval* (arXiv:2602.03306). The repository also includes
-the paper-faithful single linear predictor as a baseline.
+A *Space Descriptor* summarizes how a retrieval environment — its corpus, query distribution, and
+instruction — uses each of Qwen's 1024 coordinates. A *Space Encoder* and a *Hyper Head* turn that
+description into a low-rank modification of a Learning-to-Select dimension selector, once per
+environment. At query time the selector scores the dimensions, a selection policy keeps the top-k,
+and exact retrieval runs over the unchanged document embeddings.
 
-## Design
+> **Status:** Milestone 1 (Reproduction), Phase A — not started. The repository was restarted on
+> 2026-09-15 ([ADR-0001](docs/decisions/ADR-0001-restart-as-hyperdime.md)). Only the tested math
+> utilities carried over from the previous prototype exist so far.
 
-1. Freeze Qwen and encode queries with last-token pooling plus L2 normalization.
-2. Build the oracle target `softmax(e_q * (p - n) / target_temperature)` from a
-   positive and a mined hard negative.
-3. Train the Hyperhead with `KL(oracle || predicted_importance)`.
-4. At search time, retain only a query's top-k dimensions, zero the rest, and
-   perform unchanged inner-product FAISS retrieval over frozen document vectors.
+## Research questions
 
-The Mask-Net has topology `D → D/4 → D` with GELU. Its two per-query matrices
-are generated as rank-32 products, avoiding an impractically large dense
-hypernetwork output.
+The hypernetwork is built only if each earlier link holds:
 
-> [!IMPORTANT]
-> Query, positive, negative, and indexed document vectors must use the same
-> Qwen checkpoint, last-token pooling, query instruction convention, and L2
-> normalization. The masked query is deliberately not re-normalized.
+1. **H1 — Selector shift:** the optimal selector for the same Qwen model changes across environments.
+2. **H2 — Geometry explains the shift:** statistics of the embedding space predict part of that change.
+3. **H3 — Hypernetwork adaptation:** a Hyper Head maps environment statistics to selector parameters
+   that generalize better than a fixed global selector.
 
-## Install
+Each hypothesis has a Go/No-Go gate; see [docs/architecture.md](docs/architecture.md#gates).
+
+## Documentation
+
+| Document | Purpose |
+|---|---|
+| [Implementation plan](docs/plan/Qwen3_HyperDIME_Implementation_Plan.en.md) | Full plan (English translation; Portuguese original and `.docx` alongside) |
+| [Architecture](docs/architecture.md) | Components, module map, invariants, gates |
+| [Protocols](docs/protocols.md) | Environments, splits, adaptation protocols P0–P2, leakage and reporting rules |
+| [Workflow](docs/workflow.md) | Branches, issues, labels, milestones, pull requests, wiki |
+| [Backlog](docs/backlog/issues.md) | Initial GitHub issues, published by `scripts/github/create_issues.py` |
+| [Experiment registry](docs/experiment_registry.md) | Experiments E0–E6 and links to their reports |
+| [Decisions](docs/decisions/) | Architecture decision records and gate decisions |
+| [AGENTS.md](AGENTS.md) | Mandatory rules for coding agents |
+| [Wiki](https://github.com/wilkertl/hyper-mask-net/wiki) | Navigable overview, generated from `docs/wiki/` |
+
+## Layout
+
+```text
+src/hyperdime/
+├── contracts/    M0      schemas, run manifests, validation
+├── data/         M1      loaders, splits, hard-negative pools
+├── embeddings/   M2      frozen Qwen encoding and caches
+├── oracle/       M3      importance targets
+├── baselines/    M3      Learning-to-Select, MRL prefix, random, global, oracle
+├── evaluation/   M4/M12  metrics, selector-shift analysis, statistics
+├── space/        M5/M6   space descriptor and encoder
+├── hypernet/     M7/M8   low-rank selector and Hyper Head
+├── training/     M3/M9   selector and episodic meta-training
+├── selection/    M11     selection policies
+├── retrieval/    M12     exact scoring (FAISS for deployment analysis only)
+└── cli/                  entry points
+configs/  experiments/  tests/  scripts/  docs/
+```
+
+## Development
+
+Install PyTorch for your platform first (CUDA or CPU build), then:
 
 ```bash
-cd /home/wilker/hyper-mask-net
 python -m pip install -e ".[dev]"
+ruff check . && ruff format --check . && mypy && pytest
 ```
 
-`faiss-cpu` powers the portable exact-search demo. PyTorch automatically uses
-CUDA and bfloat16 during training when available. A compatible local FAISS GPU
-build can be substituted for CPU FAISS.
-
-## Data preparation
-
-Provide JSONL training and validation files whose rows contain one query, one
-relevant document, and one already-mined hard negative:
-
-```json
-{"query":"what is contrastive learning?","positive":"...","negative":"..."}
-```
-
-Create frozen tensors separately for each split:
-
-```bash
-python prepare_embeddings.py \
-  --input-jsonl train.jsonl \
-  --output-data train.pt \
-  --output-config qwen_config.json \
-  --query-instruction "Given a web search query, retrieve relevant passages."
-
-python prepare_embeddings.py \
-  --input-jsonl validation.jsonl \
-  --output-data validation.pt \
-  --output-config qwen_config.json \
-  --query-instruction "Given a web search query, retrieve relevant passages."
-```
-
-The `.pt` output stores `token_embeddings`, `attention_mask`,
-`query_embeddings`, `positive_embeddings`, and `negative_embeddings`.
-Contextual query tokens are precomputed so training optimizes only the
-Hyperhead. `prepare_embeddings.py` uses `trust_remote_code=True` for Qwen.
-
-## BEIR SciFact experiment
-
-The repository includes a reproducible in-domain SciFact setup. It downloads
-BEIR SciFact, uses its provided `train` qrels only, reserves 15% of those
-training queries for validation, and keeps the BEIR `test` qrels untouched for
-the final evaluation. For every training query, it selects one judged relevant
-abstract and mines a Qwen hard negative from the fixed SciFact corpus.
-
-Run the complete Hyperhead and linear-baseline experiment on a CUDA machine:
-
-```bash
-bash scripts/run_scifact_4090.sh
-```
-
-The script writes all derived data to `data/scifact/` and results to
-`runs/scifact/`. It evaluates the following retrieval conditions over the same
-fixed document index:
-
-- `unmasked`: frozen Qwen query embeddings;
-- `random_k=*`: a random dimension subset at the same sparsity;
-- `learned_k=*`: the selected dimensions from the trained predictor.
-
-`runs/scifact/{hyper,linear}/test_metrics.json` reports `nDCG`, recall, and
-MRR at the selected cutoff. Change `--k-values` in
-`scripts/run_scifact_4090.sh` to sweep a different set of retained-dimension
-ratios.
-
-### Remote RTX 4090 setup
-
-Clone the repository directly on the SSH host so all model and dataset files
-remain on its local disk:
-
-```bash
-ssh user@remote-host
-git clone <repository-url> hyper-mask-net
-cd hyper-mask-net
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -e ".[dev]"
-nvidia-smi
-python -c "import torch; print(torch.__version__, torch.cuda.get_device_name(), torch.cuda.is_available())"
-```
-
-`torch.cuda.is_available()` must print `True` before starting the experiment.
-For a long SSH session, run it under `tmux`:
-
-```bash
-tmux new -s scifact
-source .venv/bin/activate
-bash scripts/run_scifact_4090.sh 2>&1 | tee runs/scifact/run.log
-```
-
-Detach with `Ctrl-b d`, then later reconnect with `tmux attach -t scifact`.
-Set `PROJECT_DIR`, `DATA_DIR`, `RUN_DIR`, or `PYTHON` before invoking the
-script when the default paths or interpreter are unsuitable.
-
-## Train
-
-```bash
-python train.py \
-  --train-data train.pt \
-  --validation-data validation.pt \
-  --model-config qwen_config.json \
-  --output-dir checkpoints/hyper \
-  --architecture hyper
-```
-
-The best validation-KL checkpoint is saved as `model.safetensors` plus
-`config.json`. To train the paper baseline instead, pass
-`--architecture linear`.
-
-## Retrieve
-
-With a float32 `[num_documents, hidden_dim]` NumPy matrix made with the same
-embedding convention:
-
-```bash
-python inference.py \
-  --checkpoint-dir checkpoints/hyper \
-  --query "what is contrastive learning?" \
-  --query-instruction "Given a web search query, retrieve relevant passages." \
-  --document-embeddings documents.npy \
-  --k 0.30 \
-  --top-n 10
-```
-
-`--k` accepts either a ratio in `(0, 1]` or an integer dimension count. Omit
-`--document-embeddings` to run a deterministic dummy FAISS demonstration.
-
-## Verification
-
-```bash
-pytest
-```
-
-The tests validate dynamic Mask-Net tensor behavior, top-k masking, and that
-the KL loss backpropagates into the Hyperhead but not the frozen encoder.
+Datasets, embeddings, and checkpoints are never committed; they live under `artifacts/`.
