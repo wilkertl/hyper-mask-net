@@ -12,8 +12,8 @@ jobs:
   checks:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: pip
@@ -22,9 +22,9 @@ jobs:
       - name: Install project
         run: python -m pip install -e ".[dev]"
       - name: Lint
-        run: ruff check .
+        run: ruff check --output-format=github .
       - name: Format
-        run: ruff format --check .
+        run: ruff format --check --diff .
       - name: Type check
         run: mypy
       - name: Test

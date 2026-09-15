@@ -12,7 +12,7 @@ dependencies = ["torch>=2.4"]
 
 [project.optional-dependencies]
 embed = ["transformers>=4.51"]
-dev = ["pytest>=8", "ruff>=0.6", "mypy>=1.11"]
+dev = ["pytest==9.1.1", "ruff==0.16.7", "mypy==2.3.1"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -29,6 +29,9 @@ src = ["src", "tests"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "SIM"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["hyperdime"]
 
 [tool.mypy]
 python_version = "3.11"
