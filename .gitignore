@@ -5,13 +5,13 @@ __pycache__/
 .ruff_cache/
 .venv/
 *.egg-info/
-build/
-dist/
+/build/
+/dist/
 
 # Large artifacts are never versioned; only manifests and configs are.
-artifacts/
-data/
-runs/
+/artifacts/
+/data/
+/runs/
 *.pt
 *.safetensors
 *.npy
