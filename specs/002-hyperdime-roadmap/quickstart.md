@@ -24,7 +24,7 @@ export V4_EMBEDDING_BASE_URL=http://127.0.0.1:8000/v1   # e.g. the local end of 
 curl -s $V4_EMBEDDING_BASE_URL/models                    # must list Qwen/Qwen3-Embedding-0.6B
 
 pip install -e ".[embed,dev]"                  # transformers is needed only for the tokenizer
-pytest                                         # 52 tests, CPU only, no network, fake vLLM
+pytest                                         # 61 tests, CPU only, no network, fake vLLM
 python -m hyperdime.spike all                  # prepare → train → train-global → analyze → report
 ```
 

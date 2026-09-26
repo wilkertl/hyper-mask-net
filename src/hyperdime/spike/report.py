@@ -6,12 +6,12 @@ from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
 
-from hyperdime.spike.manifest import read_json
+from hyperdime.spike.manifest import read_json, require_complete
 
 
 def write_report(root: Path, output: Path) -> Path:
+    manifest = require_complete(root / "analysis")
     analysis = read_json(root / "analysis" / "analysis.json")
-    manifest = read_json(root / "analysis" / "manifest.json")
     output.mkdir(parents=True, exist_ok=True)
     path = output / "README.md"
     path.write_text(render(analysis, manifest), encoding="utf-8")

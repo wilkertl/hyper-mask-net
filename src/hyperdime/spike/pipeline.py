@@ -28,7 +28,7 @@ from hyperdime.oracle.targets import aggregate_targets
 from hyperdime.retrieval.scoring import rank_documents
 from hyperdime.selection.topk import apply_mask, resolve_k, top_k_mask
 from hyperdime.spike.environments import ENVIRONMENTS, SPLIT_SEED, make_splits, sample_corpus
-from hyperdime.spike.manifest import read_json, write_json, write_manifest
+from hyperdime.spike.manifest import read_json, require_complete, write_json, write_manifest
 from hyperdime.training.selector_trainer import TrainConfig, train_selector
 
 DIM = 1024
@@ -86,6 +86,7 @@ def load_env(root: Path, env: str) -> EnvData:
 def prepare(env: str, root: Path, encoder: Encoder, corpus_cap: int) -> None:
     """Download, split, embed corpus and queries, and mine negatives for training queries."""
     spec = ENVIRONMENTS[env]
+    write_manifest(root / env, "prepare", {"env": env}, status="running")
     dataset = read_beir(download_beir(env, root / "beir"))
     splits = make_splits(spec, dataset)
     write_json(root / env / "splits.json", asdict(splits))
@@ -154,6 +155,7 @@ def _cache_manifest(directory: Path, settings: Mapping[str, Any], rows: int) -> 
 
 def train(env: str, root: Path, seeds: Sequence[int]) -> None:
     """Pick the temperature on validation with seed 0, then train one selector per seed."""
+    require_complete(root / env)
     data = load_env(root, env)
     split = data.splits
     labels = split["train_labels"]
@@ -170,31 +172,29 @@ def train(env: str, root: Path, seeds: Sequence[int]) -> None:
         validation_scores[str(temperature)] = _mean(scores, "ndcg@10")
     temperature = max(TEMPERATURES, key=lambda t: validation_scores[str(t)])
     directory = root / env / "selectors"
+    config = {
+        "env": env,
+        "seeds": list(seeds),
+        "temperature": temperature,
+        "train_config": asdict(TrainConfig()),
+    }
+    write_manifest(directory, "train", config, status="running")
     for seed in seeds:
         model, history = _fit(data, split, temperature, seed)
-        directory.mkdir(parents=True, exist_ok=True)
         torch.save(model.state_dict(), directory / f"seed-{seed}.pt")
         write_json(directory / f"history-seed-{seed}.json", history)
     write_json(
         directory / "temperature.json",
         {"temperature": temperature, "validation_ndcg@10": validation_scores},
     )
-    write_manifest(
-        directory,
-        "train",
-        {
-            "env": env,
-            "seeds": list(seeds),
-            "temperature": temperature,
-            "train_config": asdict(TrainConfig()),
-        },
-    )
+    write_manifest(directory, "train", config)
 
 
 def train_global(envs: Sequence[str], root: Path, seeds: Sequence[int]) -> None:
     """One selector on the union of every environment's training labels (risk R6 control)."""
     parts: dict[str, list[Tensor]] = {"tq": [], "tt": [], "vq": [], "vt": []}
     for env in envs:
+        require_complete(root / env / "selectors")
         data = load_env(root, env)
         split = data.splits
         temperature = read_json(root / env / "selectors" / "temperature.json")["temperature"]
@@ -204,7 +204,8 @@ def train_global(envs: Sequence[str], root: Path, seeds: Sequence[int]) -> None:
                 _targets(data, split[name], split["train_labels"], data.negatives, temperature)
             )
     directory = root / "global"
-    directory.mkdir(parents=True, exist_ok=True)
+    config = {"envs": list(envs), "seeds": list(seeds), "train_config": asdict(TrainConfig())}
+    write_manifest(directory, "train-global", config, status="running")
     for seed in seeds:
         model, history = train_selector(
             torch.cat(parts["tq"]),
@@ -215,15 +216,20 @@ def train_global(envs: Sequence[str], root: Path, seeds: Sequence[int]) -> None:
         )
         torch.save(model.state_dict(), directory / f"seed-{seed}.pt")
         write_json(directory / f"history-seed-{seed}.json", history)
-    write_manifest(
-        directory,
-        "train-global",
-        {"envs": list(envs), "seeds": list(seeds), "train_config": asdict(TrainConfig())},
-    )
+    write_manifest(directory, "train-global", config)
 
 
 def analyze(envs: Sequence[str], root: Path, seeds: Sequence[int]) -> dict[str, Any]:
-    """Transfer matrix, baselines, mask behavior, and the H1 verdict."""
+    """Transfer matrix, baselines, mask behavior, and the H1 verdict.
+
+    Refuses to run on any input whose producing step did not complete.
+    """
+    for directory in (*(root / env for env in envs), *(root / env / "selectors" for env in envs)):
+        require_complete(directory)
+    require_complete(root / "global")
+    write_manifest(
+        root / "analysis", "analyze", {"envs": list(envs), "seeds": list(seeds)}, status="running"
+    )
     selectors = {
         env: [_load_selector(root / env / "selectors" / f"seed-{s}.pt") for s in seeds]
         for env in envs

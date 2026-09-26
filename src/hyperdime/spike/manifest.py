@@ -27,12 +27,21 @@ def read_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def write_manifest(directory: Path, command: str, config: Mapping[str, Any]) -> None:
-    """Record code version, config, and library versions next to a spike output."""
+def write_manifest(
+    directory: Path, command: str, config: Mapping[str, Any], status: str = "complete"
+) -> None:
+    """Record code version, config, and library versions next to a spike output.
+
+    Steps write a ``"running"`` manifest before their first output and a ``"complete"`` one at
+    the end, so an interrupted run never leaves outputs without a manifest.
+    """
+    if status not in ("running", "complete"):
+        raise ValueError(f"status must be 'running' or 'complete', got {status!r}.")
     write_json(
         directory / "manifest.json",
         {
             "command": command,
+            "status": status,
             "config": dict(config),
             "git_commit": _git("rev-parse", "HEAD"),
             "git_dirty": _git("status", "--porcelain", "--untracked-files=no") != "",
@@ -40,6 +49,19 @@ def write_manifest(directory: Path, command: str, config: Mapping[str, Any]) -> 
             "created_at": datetime.now(UTC).isoformat(timespec="seconds"),
         },
     )
+
+
+def require_complete(directory: Path) -> dict[str, Any]:
+    """Return the manifest of a finished step, or raise if it is missing or was interrupted."""
+    path = directory / "manifest.json"
+    if not path.exists():
+        raise ValueError(f"{directory} has no manifest; run the step that produces it.")
+    manifest: dict[str, Any] = read_json(path)
+    if manifest.get("status") != "complete":
+        raise ValueError(
+            f"{directory} was not completed (status {manifest.get('status')!r}); rerun its step."
+        )
+    return manifest
 
 
 def _git(*args: str) -> str:

@@ -3,6 +3,7 @@
 from pathlib import Path
 
 import numpy as np
+import pytest
 import torch
 from torch.nn import functional as F
 
@@ -98,3 +99,27 @@ def test_training_never_reads_evaluation_labels(tmp_path: Path) -> None:
         assert read_json(
             tmp_path / "original" / env / "selectors" / "temperature.json"
         ) == read_json(tmp_path / "corrupted" / env / "selectors" / "temperature.json")
+
+
+def test_steps_refuse_inputs_from_interrupted_runs(tmp_path: Path) -> None:
+    """Constitution III: an unfinished step leaves a "running" manifest; its outputs are refused."""
+    envs, seeds = ["alpha", "beta"], [0]
+    for index, env in enumerate(envs):
+        _write_env(tmp_path, env, seed=index)
+    for env in envs:
+        pipeline.train(env, tmp_path, seeds)
+    pipeline.train_global(envs, tmp_path, seeds)
+    for env in envs:
+        assert read_json(tmp_path / env / "selectors" / "manifest.json")["status"] == "complete"
+
+    write_manifest(tmp_path / "beta" / "selectors", "train", {"env": "beta"}, status="running")
+    with pytest.raises(ValueError, match="was not completed"):
+        pipeline.analyze(envs, tmp_path, seeds)
+    with pytest.raises(ValueError, match="was not completed"):
+        pipeline.train_global(envs, tmp_path, seeds)
+    write_manifest(tmp_path / "alpha", "prepare", {"env": "alpha"}, status="running")
+    with pytest.raises(ValueError, match="was not completed"):
+        pipeline.train("alpha", tmp_path, seeds)
+    # analyze was refused before writing anything, so there is no analysis to report on.
+    with pytest.raises(ValueError, match="has no manifest"):
+        write_report(tmp_path, tmp_path / "report")
