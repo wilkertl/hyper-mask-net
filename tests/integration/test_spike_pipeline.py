@@ -12,6 +12,13 @@ from hyperdime.spike.manifest import read_json, write_json, write_manifest
 from hyperdime.spike.report import write_report
 
 
+@pytest.fixture(autouse=True)
+def _small_selection_grid(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The full temperature x epoch grid is exercised with two values each to keep CPU time low."""
+    monkeypatch.setattr(pipeline, "TEMPERATURES", (0.05, 0.1))
+    monkeypatch.setattr(pipeline, "EPOCH_BUDGETS", (2, 5))
+
+
 def _write_env(root: Path, env: str, seed: int) -> None:
     generator = torch.Generator().manual_seed(seed)
     dim, num_docs = pipeline.DIM, 40

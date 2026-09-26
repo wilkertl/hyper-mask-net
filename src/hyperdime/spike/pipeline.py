@@ -14,7 +14,7 @@ from torch import Tensor
 from hyperdime.baselines.learning_to_select import LinearSelector
 from hyperdime.contracts.hashing import file_sha256
 from hyperdime.data.loaders import beir_fingerprint, download_beir, read_beir
-from hyperdime.data.negatives import mine_hard_negatives
+from hyperdime.data.negatives import sample_hard_negatives
 from hyperdime.embeddings.cache import embed_cached, load_cached
 from hyperdime.evaluation.metrics import query_metrics
 from hyperdime.evaluation.selector_shift import (
@@ -34,9 +34,14 @@ from hyperdime.training.selector_trainer import TrainConfig, train_selector
 DIM = 1024
 HEADLINE_K = resolve_k(0.3, DIM)
 K_VALUES = (128, 256, HEADLINE_K, 512)
-TEMPERATURES = (0.01, 0.05, 0.1)
-NEGATIVE_DEPTH = 100
-NEGATIVE_POOL = 8
+# Selection grid, chosen on validation nDCG@10; the official Learning-to-Select code tunes
+# temperature and epoch count per dataset over similar values.
+TEMPERATURES = (0.005, 0.01, 0.02, 0.05, 0.1, 0.2)
+EPOCH_BUDGETS = (10, 50, 200)
+# Official label generation: 64 negatives sampled with replacement from the top-1000 non-positives.
+NEGATIVE_DEPTH = 1000
+NEGATIVE_POOL = 64
+NEGATIVE_SEED = 0
 RANKING_DEPTH = 100
 METRICS = ("ndcg@10", "recall@100")
 ALPHA = 0.05
@@ -129,6 +134,7 @@ def prepare(env: str, root: Path, encoder: Encoder, corpus_cap: int) -> None:
             "split_seed": SPLIT_SEED,
             "negative_depth": NEGATIVE_DEPTH,
             "negative_pool": NEGATIVE_POOL,
+            "negative_seed": NEGATIVE_SEED,
             "counts": {
                 name: len(getattr(splits, name)) for name in ("train", "validation", "evaluation")
             },
@@ -154,48 +160,51 @@ def _cache_manifest(directory: Path, settings: Mapping[str, Any], rows: int) -> 
 
 
 def train(env: str, root: Path, seeds: Sequence[int]) -> None:
-    """Pick the temperature on validation with seed 0, then train one selector per seed."""
+    """Pick temperature and epochs on validation with seed 0, then train one selector per seed."""
     require_complete(root / env)
     data = load_env(root, env)
     split = data.splits
-    labels = split["train_labels"]
-    validation_scores: dict[str, float] = {}
+    validation_scores: dict[str, dict[str, float]] = {}
     for temperature in TEMPERATURES:
-        model, _ = _fit(data, split, temperature, seed=0)
-        scores = _evaluate(
-            _importance(model, data.query_rows(split["validation"])),
-            HEADLINE_K,
-            data,
-            split["validation"],
-            labels,
-        )
-        validation_scores[str(temperature)] = _mean(scores, "ndcg@10")
-    temperature = max(TEMPERATURES, key=lambda t: validation_scores[str(t)])
+        validation_scores[str(temperature)] = {}
+        for epochs in EPOCH_BUDGETS:
+            model, _ = _fit(data, split, temperature, seed=0, epochs=epochs)
+            validation_scores[str(temperature)][str(epochs)] = _validation_ndcg(model, data)
+    temperature, epochs = max(
+        itertools.product(TEMPERATURES, EPOCH_BUDGETS),
+        key=lambda pair: validation_scores[str(pair[0])][str(pair[1])],
+    )
     directory = root / env / "selectors"
     config = {
         "env": env,
         "seeds": list(seeds),
         "temperature": temperature,
-        "train_config": asdict(TrainConfig()),
+        "train_config": asdict(TrainConfig(epochs=epochs)),
     }
     write_manifest(directory, "train", config, status="running")
     for seed in seeds:
-        model, history = _fit(data, split, temperature, seed)
+        model, history = _fit(data, split, temperature, seed, epochs)
         torch.save(model.state_dict(), directory / f"seed-{seed}.pt")
         write_json(directory / f"history-seed-{seed}.json", history)
     write_json(
         directory / "temperature.json",
-        {"temperature": temperature, "validation_ndcg@10": validation_scores},
+        {"temperature": temperature, "epochs": epochs, "validation_ndcg@10": validation_scores},
     )
     write_manifest(directory, "train", config)
 
 
 def train_global(envs: Sequence[str], root: Path, seeds: Sequence[int]) -> None:
-    """One selector on the union of every environment's training labels (risk R6 control)."""
+    """One selector on the union of every environment's training labels (risk R6 control).
+
+    Its epoch count gets the same tuning budget as the per-environment selectors: the mean
+    validation nDCG@10 over environments, with seed 0.
+    """
     parts: dict[str, list[Tensor]] = {"tq": [], "tt": [], "vq": [], "vt": []}
+    datasets: list[EnvData] = []
     for env in envs:
         require_complete(root / env / "selectors")
         data = load_env(root, env)
+        datasets.append(data)
         split = data.splits
         temperature = read_json(root / env / "selectors" / "temperature.json")["temperature"]
         for name, key in (("train", "t"), ("validation", "v")):
@@ -203,19 +212,28 @@ def train_global(envs: Sequence[str], root: Path, seeds: Sequence[int]) -> None:
             parts[f"{key}t"].append(
                 _targets(data, split[name], split["train_labels"], data.negatives, temperature)
             )
+    tq, tt, vq, vt = (torch.cat(parts[key]) for key in ("tq", "tt", "vq", "vt"))
+    validation_scores: dict[str, float] = {}
+    for epochs in EPOCH_BUDGETS:
+        model, _ = train_selector(tq, tt, vq, vt, TrainConfig(seed=0, epochs=epochs))
+        scores = [_validation_ndcg(model, data) for data in datasets]
+        validation_scores[str(epochs)] = sum(scores) / len(scores)
+    epochs = max(EPOCH_BUDGETS, key=lambda e: validation_scores[str(e)])
     directory = root / "global"
-    config = {"envs": list(envs), "seeds": list(seeds), "train_config": asdict(TrainConfig())}
+    config = {
+        "envs": list(envs),
+        "seeds": list(seeds),
+        "train_config": asdict(TrainConfig(epochs=epochs)),
+    }
     write_manifest(directory, "train-global", config, status="running")
     for seed in seeds:
-        model, history = train_selector(
-            torch.cat(parts["tq"]),
-            torch.cat(parts["tt"]),
-            torch.cat(parts["vq"]),
-            torch.cat(parts["vt"]),
-            TrainConfig(seed=seed),
-        )
+        model, history = train_selector(tq, tt, vq, vt, TrainConfig(seed=seed, epochs=epochs))
         torch.save(model.state_dict(), directory / f"seed-{seed}.pt")
         write_json(directory / f"history-seed-{seed}.json", history)
+    write_json(
+        directory / "selection.json",
+        {"epochs": epochs, "mean_validation_ndcg@10": validation_scores},
+    )
     write_manifest(directory, "train-global", config)
 
 
@@ -297,7 +315,7 @@ def analyze(envs: Sequence[str], root: Path, seeds: Sequence[int]) -> dict[str, 
 
 
 def _fit(
-    data: EnvData, split: Mapping[str, Any], temperature: float, seed: int
+    data: EnvData, split: Mapping[str, Any], temperature: float, seed: int, epochs: int
 ) -> tuple[LinearSelector, list[dict[str, float]]]:
     labels = split["train_labels"]
     return train_selector(
@@ -305,8 +323,16 @@ def _fit(
         _targets(data, split["train"], labels, data.negatives, temperature),
         data.query_rows(split["validation"]),
         _targets(data, split["validation"], labels, data.negatives, temperature),
-        TrainConfig(seed=seed),
+        TrainConfig(seed=seed, epochs=epochs),
     )
+
+
+def _validation_ndcg(model: LinearSelector, data: EnvData) -> float:
+    """Mean validation nDCG@10 at the headline budget; uses training labels only."""
+    qids = data.splits["validation"]
+    importance = _importance(model, data.query_rows(qids))
+    scores = _evaluate(importance, HEADLINE_K, data, qids, data.splits["train_labels"])
+    return _mean(scores, "ndcg@10")
 
 
 def _targets(
@@ -331,10 +357,11 @@ def _mine(
     qids: Sequence[str],
     labels: Mapping[str, Mapping[str, int]],
 ) -> dict[str, list[str]]:
-    """Top non-positive documents per query; the query's own ID is excluded too (ArguAna)."""
+    """Sampled hard negatives per query; the query's own ID is excluded too (ArguAna)."""
     excluded = [{d for d, g in labels[q].items() if g > 0} | {q} for q in qids]
-    depth = min(len(doc_ids), max(NEGATIVE_DEPTH, max(map(len, excluded)) + NEGATIVE_POOL))
-    pools = mine_hard_negatives(queries, docs, doc_ids, excluded, NEGATIVE_POOL, depth)
+    generator = torch.Generator().manual_seed(NEGATIVE_SEED)
+    depth = min(len(doc_ids), NEGATIVE_DEPTH)
+    pools = sample_hard_negatives(queries, docs, doc_ids, excluded, NEGATIVE_POOL, depth, generator)
     return dict(zip(qids, pools, strict=True))
 
 

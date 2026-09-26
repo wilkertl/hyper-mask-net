@@ -151,19 +151,21 @@ def render(analysis: Mapping[str, Any], manifest: Mapping[str, Any]) -> str:
         "",
         "## Setup",
         "",
-        _row("Environment", "Train", "Validation", "Eval", "Temperature (validation nDCG@10)"),
-        _rule(5),
+        _row("Environment", "Train", "Validation", "Eval", "Temperature", "Epochs", "Val nDCG@10"),
+        _rule(7),
     ]
     for env in envs:
-        counts, temp = config["counts"][env], config["temperatures"][env]
-        scores = ", ".join(f"{t}: {s:.4f}" for t, s in temp["validation_ndcg@10"].items())
+        counts, chosen = config["counts"][env], config["temperatures"][env]
+        best = chosen["validation_ndcg@10"][str(chosen["temperature"])][str(chosen["epochs"])]
         lines.append(
             _row(
                 env,
                 str(counts["train"]),
                 str(counts["validation"]),
                 str(counts["evaluation"]),
-                f"{temp['temperature']} ({scores})",
+                str(chosen["temperature"]),
+                str(chosen["epochs"]),
+                f"{best:.4f}",
             )
         )
     return "\n".join(lines) + "\n"

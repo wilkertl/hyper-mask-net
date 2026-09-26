@@ -19,8 +19,10 @@ def aggregate_targets(
 ) -> Tensor:
     """``softmax(e_q * (p - n) / tau)`` per query.
 
-    ``p`` is the relevance-weighted mean of the positive document rows and ``n`` the mean of the
-    hard-negative rows; ``positives[i]`` maps document row to graded relevance for query ``i``.
+    ``p`` is the mean of the positive document rows weighted by the exponential gain
+    ``2**rel - 1`` (as in the official Learning-to-Select code) and ``n`` the mean of the
+    hard-negative rows, repeats included; ``positives[i]`` maps document row to graded relevance
+    for query ``i``.
     """
     if not len(positives) == len(negatives) == queries.shape[0]:
         raise ValueError("positives and negatives must align with query rows.")
@@ -31,7 +33,7 @@ def aggregate_targets(
         if not weights or not pool:
             raise ValueError(f"query row {row} needs at least one positive and one negative.")
         rows = torch.tensor(list(weights))
-        gains = torch.tensor(list(weights.values()), dtype=torch.float32)
+        gains = 2.0 ** torch.tensor(list(weights.values()), dtype=torch.float32) - 1.0
         aggregated_p[row] = gains @ documents[rows].float() / gains.sum()
         aggregated_n[row] = documents[torch.tensor(list(pool))].float().mean(dim=0)
     return oracle_importance(queries.float(), aggregated_p, aggregated_n, temperature)

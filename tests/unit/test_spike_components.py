@@ -9,6 +9,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 import torch
+from torch.nn import functional as F
 
 from hyperdime.contracts.hashing import file_sha256, tree_sha256
 from hyperdime.data import loaders
@@ -54,10 +55,11 @@ def test_read_beir_parses_corpus_queries_and_qrels(tmp_path: Path) -> None:
 def test_aggregate_targets_match_manual_computation() -> None:
     query = torch.tensor([[1.0, 2.0]])
     documents = torch.tensor([[1.0, 0.0], [0.0, 1.0], [1.0, 1.0], [0.0, 0.0]])
-    # p = (1*[1,0] + 3*[0,1]) / 4 = [0.25, 0.75]; n = mean([1,1], [0,0]) = [0.5, 0.5]
-    # r = q * (p - n) = [-0.25, 0.5]
-    target = aggregate_targets(query, documents, [{0: 1, 1: 3}], [[2, 3]], temperature=1.0)
-    expected = torch.softmax(torch.tensor([[-0.25, 0.5]]), dim=-1)
+    # gains 2**rel - 1 = 1 and 7: p = (1*[1,0] + 7*[0,1]) / 8 = [0.125, 0.875]
+    # n = mean([1,1], [0,0], [0,0]) = [1/3, 1/3], the repeated negative counted twice
+    # r = q * (p - n) = [0.125 - 1/3, 2 * (0.875 - 1/3)] = [-5/24, 13/12]
+    target = aggregate_targets(query, documents, [{0: 1, 1: 3}], [[2, 3, 3]], temperature=1.0)
+    expected = torch.softmax(torch.tensor([[-5 / 24, 13 / 12]]), dim=-1)
     assert torch.allclose(target, expected)
 
 
@@ -72,13 +74,29 @@ def test_train_selector_is_deterministic_and_reduces_validation_kl() -> None:
     mapping = torch.randn(16, 16)
     queries = torch.randn(64, 16)
     targets = torch.softmax(queries @ mapping, dim=-1)
-    config = TrainConfig(lr=1e-2, max_epochs=40, patience=40, batch_size=16, seed=3)
+    config = TrainConfig(lr=1e-2, epochs=40, batch_size=16, seed=3)
     model_a, history = train_selector(
         queries[:48], targets[:48], queries[48:], targets[48:], config
     )
     model_b, _ = train_selector(queries[:48], targets[:48], queries[48:], targets[48:], config)
+    assert len(history) == config.epochs  # no early stopping
     assert history[-1]["val_kl"] < history[0]["val_kl"]
     assert torch.equal(model_a.projection.weight, model_b.projection.weight)
+
+
+def test_train_selector_returns_the_lowest_validation_kl_state() -> None:
+    """Validation targets opposite to the training ones make later epochs worse on validation."""
+    torch.manual_seed(0)
+    queries = torch.randn(32, 8)
+    train_targets = torch.softmax(4 * queries, dim=-1)
+    val_targets = torch.softmax(-4 * queries[:8], dim=-1)
+    config = TrainConfig(lr=1e-2, epochs=15, batch_size=8, seed=0)
+    model, history = train_selector(queries, train_targets, queries[:8], val_targets, config)
+    best = min(history, key=lambda row: row["val_kl"])
+    with torch.no_grad():
+        val_kl = F.kl_div(model(queries[:8]), val_targets, reduction="batchmean").item()
+    assert best["epoch"] < len(history) - 1
+    assert val_kl == pytest.approx(best["val_kl"], rel=1e-5)
 
 
 def test_holm_matches_manual_adjustment() -> None:
