@@ -67,3 +67,36 @@ ruff check . && ruff format --check . && mypy && pytest
 ```
 
 Datasets, embeddings, and checkpoints are never committed; they live under `artifacts/`.
+
+## Embedding service
+
+Qwen3-Embedding-0.6B is served by the same vLLM server as the `beir` project, through its
+OpenAI-compatible `POST {base_url}/embeddings`, with the same environment variables:
+
+| Variable | Meaning |
+|---|---|
+| `V4_EMBEDDING_BASE_URL` | endpoint, e.g. `http://127.0.0.1:8000/v1` (the local end of `ssh -L 8000:localhost:8000 <host>`) |
+| `V4_EMBEDDING_API_KEY` | bearer token, only if the server requires one; never passed on the command line |
+| `V4_EMBEDDING_TUNNEL_HOSTS` | comma-separated non-loopback hosts reached over an encrypted tunnel, allowed over plain http |
+
+The endpoint must be `https://`, loopback, or a declared tunnel host. Check it before a run:
+
+```bash
+curl -s $V4_EMBEDDING_BASE_URL/models    # must list Qwen/Qwen3-Embedding-0.6B
+```
+
+Texts are cut to 512 Qwen tokens on the client, which needs `transformers` for the tokenizer only
+(`pip install -e ".[embed]"`). Without the server, embedding falls back to local transformers.
+
+## F0 spike: test H1 first
+
+Before the roadmap is built, a spike tests selector shift (H1) on five small BEIR datasets
+([research R0](specs/002-hyperdime-roadmap/research.md)):
+
+```bash
+python -m pip install -e ".[embed,dev]"
+python -m hyperdime.spike all    # prepare → train → train-global → analyze → report
+```
+
+Only `prepare` uses the embedding service; the rest runs on CPU from cached vectors. The generated
+report is `reports/F0/README.md`, ending in the H1 verdict.

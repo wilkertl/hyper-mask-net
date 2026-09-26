@@ -16,3 +16,6 @@ __pycache__/
 *.safetensors
 *.npy
 *.parquet
+
+# Local credentials (e.g. V4_EMBEDDING_API_KEY); never versioned.
+.env

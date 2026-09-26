@@ -44,19 +44,20 @@ flowchart LR
 
 | Component | Plan | Package | Implemented |
 |---|---|---|---|
-| Contracts, manifests, seeds | M0 | `hyperdime.contracts` | — |
-| Loaders, splits, negatives | M1 | `hyperdime.data` | `splits.split_ids`, `negatives.mine_hard_negatives` |
-| Frozen Qwen embeddings | M2 | `hyperdime.embeddings` | `qwen.format_query`, `qwen.last_token_pool` |
-| Oracle targets `softmax(e_q ⊙ (p − n) / τ)` | M3 | `hyperdime.oracle` | `importance.oracle_scores`, `importance.oracle_importance` |
+| Contracts, manifests, seeds | M0 | `hyperdime.contracts` | `hashing.file_sha256`, `hashing.tree_sha256` |
+| Loaders, splits, negatives | M1 | `hyperdime.data` | `loaders.download_beir`, `loaders.read_beir`, `loaders.beir_fingerprint`, `splits.split_ids`, `negatives.mine_hard_negatives` |
+| Frozen Qwen embeddings | M2 | `hyperdime.embeddings` | `qwen.format_query`, `qwen.last_token_pool`, `qwen.QwenEncoder` (local), `remote.VllmEncoder` (vLLM, shared with the `beir` project), `cache.embed_cached` |
+| Oracle targets `softmax(e_q ⊙ (p − n) / τ)` | M3 | `hyperdime.oracle` | `importance.oracle_scores`, `importance.oracle_importance`, `targets.aggregate_targets` |
 | Learning-to-Select and other baselines | M3 | `hyperdime.baselines` | `learning_to_select.LinearSelector` |
-| Selector and meta-training | M3, M9 | `hyperdime.training` | `losses.selector_kl_loss` |
-| Selector-shift analysis | M4 | `hyperdime.evaluation` | — |
+| Selector and meta-training | M3, M9 | `hyperdime.training` | `losses.selector_kl_loss`, `selector_trainer.train_selector` |
+| Selector-shift analysis | M4 | `hyperdime.evaluation` | `selector_shift.overlap_at_k`, `selector_shift.js_divergence`, `selector_shift.spearman`, `selector_shift.mean_importance` |
 | Space Descriptor and Space Encoder | M5, M6 | `hyperdime.space` | — |
 | Low-rank selector and Hyper Head | M7, M8 | `hyperdime.hypernet` | — |
 | Inference protocols P0–P2 | M10 | `hyperdime.cli`, `hyperdime.contracts` | — |
 | Selection policies | M11 | `hyperdime.selection` | `topk.resolve_k`, `topk.top_k_mask`, `topk.apply_mask` |
-| Retrieval | M12 | `hyperdime.retrieval` | `exact.exact_search` |
-| Metrics and statistics | M12 | `hyperdime.evaluation` | `metrics.query_metrics`, `metrics.evaluate_run` |
+| Retrieval | M12 | `hyperdime.retrieval` | `exact.exact_search`, `scoring.rank_documents` (BEIR identical-ID exclusion) |
+| Metrics and statistics | M12 | `hyperdime.evaluation` | `metrics.query_metrics`, `metrics.evaluate_run`, `statistics.paired_randomization_test`, `statistics.paired_bootstrap_ci`, `statistics.holm` |
+| F0 selector-shift spike (exploratory) | research R0 | `hyperdime.spike` | `python -m hyperdime.spike prepare\|train\|train-global\|analyze\|report\|all` |
 
 File names inside each package follow plan §4.
 

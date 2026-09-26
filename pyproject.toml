@@ -26,6 +26,8 @@ addopts = "-q"
 line-length = 100
 target-version = "py311"
 src = ["src", "tests"]
+# Vendored spec-kit tooling is not project code.
+extend-exclude = [".specify", ".agents"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "SIM"]
@@ -34,7 +36,8 @@ select = ["E", "F", "I", "B", "UP", "SIM"]
 known-first-party = ["hyperdime"]
 
 [tool.mypy]
-python_version = "3.11"
+# numpy >= 2.5 stubs use Python 3.12 syntax; ruff still enforces 3.11-compatible code.
+python_version = "3.12"
 files = ["src"]
 strict = true
 ignore_missing_imports = true
