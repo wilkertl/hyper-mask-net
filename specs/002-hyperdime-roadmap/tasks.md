@@ -35,8 +35,8 @@ Single project: `src/hyperdime/`, `tests/`, `configs/`, `reports/`, `docs/decisi
 **Purpose**: Get governance, planning docs, and tooling into version control.
 
 - [X] T001 Fill the project constitution from AGENTS.md and the plan in .specify/memory/constitution.md (v1.0.0)
-- [ ] T002 Remove the Sync Impact Report HTML comment at the top of .specify/memory/constitution.md, then commit it with message `docs: ratify constitution v1.0.0`
-- [ ] T003 Commit specs/001-m0-foundation/ and specs/002-hyperdime-roadmap/ with message `docs(specs): add M0 foundation spec and project roadmap`
+- [X] T002 Remove the Sync Impact Report HTML comment at the top of .specify/memory/constitution.md, then commit it with message `docs: ratify constitution v1.0.0`
+- [X] T003 Commit specs/001-m0-foundation/ and specs/002-hyperdime-roadmap/ with message `docs(specs): add M0 foundation spec and project roadmap`
 - [X] T004 [P] Exclude vendored `.specify` and `.agents` from ruff via `extend-exclude` in pyproject.toml
 - [X] T005 [P] Set `[tool.mypy] python_version = "3.12"` in pyproject.toml, since numpy ≥ 2.5 stubs use 3.12 syntax (ruff keeps `target-version = "py311"`)
 
@@ -80,7 +80,7 @@ roadmap work.
 - [X] T019 [US0] Spike environments, leakage-safe splits (train qrels or 50/50 half split), and corpus sampling in src/hyperdime/spike/environments.py
 - [X] T020 [US0] Spike steps `prepare`, `train`, `train_global`, `analyze` with R0's verdict rule in src/hyperdime/spike/pipeline.py, plus lightweight manifests in src/hyperdime/spike/manifest.py
 - [X] T021 [US0] Report renderer in src/hyperdime/spike/report.py and CLI with `--backend auto|vllm|local` in src/hyperdime/spike/__main__.py
-- [ ] T022 [US0] Commit the spike on `agent/F0-h1-spike` with message `feat(spike): add F0 selector-shift experiment with vLLM embeddings`, after `ruff check . && ruff format --check . && mypy && pytest` passes
+- [X] T022 [US0] Commit the spike on `agent/F0-h1-spike` with message `feat(spike): add F0 selector-shift experiment with vLLM embeddings`, after `ruff check . && ruff format --check . && mypy && pytest` passes
 - [ ] T023 [US0] With the vLLM server up, export `V4_EMBEDDING_BASE_URL`, confirm `curl -s $V4_EMBEDDING_BASE_URL/models` lists `Qwen/Qwen3-Embedding-0.6B`, and run `python -m hyperdime.spike prepare` (writes artifacts/spike/<env>/ for scifact, nfcorpus, fiqa, arguana, scidocs)
 - [ ] T024 [US0] Run `python -m hyperdime.spike train`, then `train-global`, then `analyze` (writes artifacts/spike/<env>/selectors/, artifacts/spike/global/, artifacts/spike/analysis/)
 - [ ] T025 [US0] Run `python -m hyperdime.spike report` and commit the generated reports/F0/README.md on an `exp/F0-selector-shift` branch; never edit its numbers by hand
