@@ -19,3 +19,6 @@ __pycache__/
 
 # Local credentials (e.g. V4_EMBEDDING_API_KEY); never versioned.
 .env
+
+# Slurm job logs from cluster runs.
+/logs/
