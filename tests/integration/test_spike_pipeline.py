@@ -7,7 +7,7 @@ import pytest
 import torch
 from torch.nn import functional as F
 
-from hyperdime.spike import pipeline
+from hyperdime.spike import diagnostics, pipeline
 from hyperdime.spike.manifest import read_json, write_json, write_manifest
 from hyperdime.spike.report import write_report
 
@@ -17,6 +17,8 @@ def _small_selection_grid(monkeypatch: pytest.MonkeyPatch) -> None:
     """The full temperature x epoch grid is exercised with two values each to keep CPU time low."""
     monkeypatch.setattr(pipeline, "TEMPERATURES", (0.05, 0.1))
     monkeypatch.setattr(pipeline, "EPOCH_BUDGETS", (2, 5))
+    monkeypatch.setattr(diagnostics, "EPOCHS_ABOVE", (6,))
+    monkeypatch.setattr(diagnostics, "EPOCHS_BELOW", (1,))
 
 
 def _write_env(root: Path, env: str, seed: int) -> None:
@@ -130,3 +132,73 @@ def test_steps_refuse_inputs_from_interrupted_runs(tmp_path: Path) -> None:
     # analyze was refused before writing anything, so there is no analysis to report on.
     with pytest.raises(ValueError, match="has no manifest"):
         write_report(tmp_path, tmp_path / "report")
+
+
+def _corrupt_evaluation_labels(root: Path, envs: list[str]) -> None:
+    """Point each evaluation query at a different document than its true positive."""
+    for env in envs:
+        path = root / env / "splits.json"
+        splits = read_json(path)
+        splits["eval_labels"] = {
+            qid: {f"{env}-d{(int(qid.split('q')[-1]) + 7) % 40}": 1} for qid in splits["evaluation"]
+        }
+        write_json(path, splits)
+
+
+def _run_through_analyze(root: Path, envs: list[str], seeds: list[int]) -> None:
+    for env in envs:
+        pipeline.train(env, root, seeds)
+    pipeline.train_global(envs, root, seeds)
+    pipeline.analyze(envs, root, seeds)
+
+
+def test_diagnose_writes_its_result_and_ignores_evaluation_labels(tmp_path: Path) -> None:
+    """FR-000d, research R20: D1 and D3 read training labels only; D2 scores with eval labels."""
+    envs, seeds = ["alpha", "beta"], [0, 1]
+    options = {"permutations": 30, "half_splits": 8}
+    for variant in ("original", "corrupted"):
+        for index, env in enumerate(envs):
+            _write_env(tmp_path / variant, env, seed=index)
+    _corrupt_evaluation_labels(tmp_path / "corrupted", envs)
+    for variant in ("original", "corrupted"):
+        _run_through_analyze(tmp_path / variant, envs, seeds)
+
+    root = tmp_path / "original"
+    before = write_report(root, tmp_path / "report").read_text()
+    result = diagnostics.diagnose(envs, root, seeds, **options)
+    assert set(result) >= {"config", "oracle_shift", "trainer", "probe", "recommendation"}
+    assert read_json(root / "diagnostics" / "manifest.json")["status"] == "complete"
+    profile = result["oracle_shift"]["profiles"]["alpha"]
+    assert profile["labels"] == "train" and profile["num_queries"] == 16
+    assert sum(profile["frequency"]) == pytest.approx(pipeline.HEADLINE_K)
+    assert set(result["oracle_shift"]["pairs"]) == {"alpha|beta"}
+    assert set(result["trainer"]["envs"]) == set(envs)
+    assert result["recommendation"] in {"stop_or_pivot", "continue_strengthen_selector", "continue"}
+
+    first = (root / "diagnostics" / "diagnostics.json").read_bytes()
+    diagnostics.diagnose(envs, root, seeds, **options)
+    assert (root / "diagnostics" / "diagnostics.json").read_bytes() == first
+
+    corrupted = diagnostics.diagnose(envs, tmp_path / "corrupted", seeds, **options)
+    assert corrupted["oracle_shift"] == result["oracle_shift"]
+    assert corrupted["probe"] == result["probe"]
+
+    after = write_report(root, tmp_path / "report").read_text()
+    assert "Diagnostics (research R20)" not in before
+    assert after.startswith(before.rstrip("\n"))
+    assert "## Diagnostics (research R20)" in after
+    assert result["recommendation"] in after
+
+
+def test_diagnose_refuses_an_unfinished_analysis(tmp_path: Path) -> None:
+    envs, seeds = ["alpha", "beta"], [0, 1]
+    for index, env in enumerate(envs):
+        _write_env(tmp_path, env, seed=index)
+    _run_through_analyze(tmp_path, envs, seeds)
+    write_manifest(tmp_path / "analysis", "analyze", {"envs": envs}, status="running")
+    with pytest.raises(ValueError, match="was not completed"):
+        diagnostics.diagnose(envs, tmp_path, seeds, permutations=10, half_splits=4)
+    # A diagnostics result that never completed is not rendered.
+    write_manifest(tmp_path / "analysis", "analyze", {"envs": envs})
+    write_manifest(tmp_path / "diagnostics", "diagnose", {"envs": envs}, status="running")
+    assert "Diagnostics" not in write_report(tmp_path, tmp_path / "report").read_text()

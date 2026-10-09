@@ -10,6 +10,7 @@ another account.
 | `container.sh` | Unpack the image to node-local `/tmp` (~1 min) and run a script inside it |
 | `check.sbatch` / `check.sh` | Smoke test: GPU, torch, repo, internet access from the node |
 | `f0-spike.sbatch` / `f0-spike.sh` | F0 spike, `python -m hyperdime.spike all` on the local GPU backend |
+| `f0-diagnose.sbatch` / `f0-diagnose.sh` | F0 diagnostics (research R20), `diagnose` then `report`, on CPU from the cached embeddings and selectors of `f0-spike` |
 
 ## Cluster quirks these scripts work around
 
@@ -38,6 +39,7 @@ cd ~/hyper-mask-net
 sbatch scripts/slurm/import-image.sbatch   # once
 sbatch scripts/slurm/check.sbatch
 sbatch scripts/slurm/f0-spike.sbatch
+sbatch scripts/slurm/f0-diagnose.sbatch   # after f0-spike; reuses artifacts/spike/
 ```
 
 Bring results back to the desktop:

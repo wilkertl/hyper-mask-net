@@ -19,7 +19,9 @@ def main(argv: list[str] | None = None) -> None:
 
     parser = argparse.ArgumentParser(prog="python -m hyperdime.spike", description=__doc__)
     parser.add_argument(
-        "step", choices=["prepare", "train", "train-global", "analyze", "report", "all"]
+        "step",
+        choices=["prepare", "train", "train-global", "analyze", "diagnose", "report", "all"],
+        help="`all` runs every step except diagnose (research R20)",
     )
     parser.add_argument(
         "--env", action="append", choices=sorted(ENVIRONMENTS), help="repeatable; default: all five"
@@ -27,6 +29,9 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2])
     parser.add_argument("--root", type=Path, default=Path("artifacts/spike"))
     parser.add_argument("--report-dir", type=Path, default=Path("reports/F0"))
+    checks = parser.add_argument_group("diagnostics (diagnose step only)")
+    checks.add_argument("--permutations", type=int, default=1000, help="per environment pair")
+    checks.add_argument("--half-splits", type=int, default=200, help="random query halves")
     embedding = parser.add_argument_group("embedding (prepare step only)")
     embedding.add_argument(
         "--backend",
@@ -52,7 +57,7 @@ def main(argv: list[str] | None = None) -> None:
     )
     args = parser.parse_args(argv)
 
-    from hyperdime.spike import pipeline, report
+    from hyperdime.spike import diagnostics, pipeline, report
 
     envs: list[str] = args.env or list(ENVIRONMENTS)
     if args.step in ("prepare", "all"):
@@ -67,6 +72,15 @@ def main(argv: list[str] | None = None) -> None:
     if args.step in ("analyze", "all"):
         verdict = pipeline.analyze(envs, args.root, args.seeds)["criteria"]["verdict"]
         print(f"H1 {verdict}")
+    if args.step == "diagnose":
+        result = diagnostics.diagnose(
+            envs,
+            args.root,
+            args.seeds,
+            permutations=args.permutations,
+            half_splits=args.half_splits,
+        )
+        print(f"Diagnostics recommendation: {result['recommendation']}")
     if args.step in ("report", "all"):
         print(report.write_report(args.root, args.report_dir))
 

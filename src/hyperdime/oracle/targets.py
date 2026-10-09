@@ -17,7 +17,18 @@ def aggregate_targets(
     negatives: Sequence[Sequence[int]],
     temperature: float,
 ) -> Tensor:
-    """``softmax(e_q * (p - n) / tau)`` per query.
+    """``softmax(e_q * (p - n) / tau)`` per query, with ``p`` and ``n`` from ``aggregate_pairs``."""
+    aggregated_p, aggregated_n = aggregate_pairs(queries, documents, positives, negatives)
+    return oracle_importance(queries.float(), aggregated_p, aggregated_n, temperature)
+
+
+def aggregate_pairs(
+    queries: Tensor,
+    documents: Tensor,
+    positives: Sequence[Mapping[int, int]],
+    negatives: Sequence[Sequence[int]],
+) -> tuple[Tensor, Tensor]:
+    """Aggregated positive ``p`` and negative ``n`` per query, each of shape ``[batch, D]``.
 
     ``p`` is the mean of the positive document rows weighted by the exponential gain
     ``2**rel - 1`` (as in the official Learning-to-Select code) and ``n`` the mean of the
@@ -36,4 +47,4 @@ def aggregate_targets(
         gains = 2.0 ** torch.tensor(list(weights.values()), dtype=torch.float32) - 1.0
         aggregated_p[row] = gains @ documents[rows].float() / gains.sum()
         aggregated_n[row] = documents[torch.tensor(list(pool))].float().mean(dim=0)
-    return oracle_importance(queries.float(), aggregated_p, aggregated_n, temperature)
+    return aggregated_p, aggregated_n

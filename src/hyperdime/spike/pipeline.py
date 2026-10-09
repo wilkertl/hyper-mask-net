@@ -342,12 +342,23 @@ def _targets(
     negatives: Mapping[str, Sequence[str]],
     temperature: float,
 ) -> Tensor:
+    positives, pools = _supervision(data, qids, labels, negatives)
+    return aggregate_targets(data.query_rows(qids), data.docs, positives, pools, temperature)
+
+
+def _supervision(
+    data: EnvData,
+    qids: Sequence[str],
+    labels: Mapping[str, Mapping[str, int]],
+    negatives: Mapping[str, Sequence[str]],
+) -> tuple[list[dict[int, int]], list[list[int]]]:
+    """Positive document rows with their grades, and negative rows, per query."""
     positives = [
         {data.doc_index[d]: g for d, g in labels[q].items() if g > 0 and d in data.doc_index}
         for q in qids
     ]
     pools = [[data.doc_index[d] for d in negatives[q]] for q in qids]
-    return aggregate_targets(data.query_rows(qids), data.docs, positives, pools, temperature)
+    return positives, pools
 
 
 def _mine(
