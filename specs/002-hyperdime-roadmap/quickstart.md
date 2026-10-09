@@ -24,7 +24,7 @@ export V4_EMBEDDING_BASE_URL=http://127.0.0.1:8000/v1   # e.g. the local end of 
 curl -s $V4_EMBEDDING_BASE_URL/models                    # must list Qwen/Qwen3-Embedding-0.6B
 
 pip install -e ".[embed,dev]"                  # transformers is needed only for the tokenizer
-pytest                                         # 61 tests, CPU only, no network, fake vLLM
+pytest                                         # 64 tests before R20, CPU only, no network, fake vLLM
 python -m hyperdime.spike all                  # prepare → train → train-global → analyze → report
 ```
 
@@ -41,7 +41,26 @@ from saved chunks after an interruption; reusing a cache built with a different 
 
 **Expected**: `reports/F0/README.md` shows the 5 × 5 transfer matrix, the baseline rows,
 cross-environment vs cross-seed mask overlap, the per-domain vs global headroom, and the H1 verdict
-under research R0's rule. **Continue below only if H1 is supported.**
+under research R0's rule.
+
+### F0 diagnostics (research R20) → ADR-0003
+
+Commit R20 first, so the diagnostics manifest's git commit postdates the rules it applies. Then,
+on CPU, from the cached F0 artifacts:
+
+```bash
+python -m hyperdime.spike report && git diff --exit-code reports/F0   # unchanged before diagnose
+python -m hyperdime.spike diagnose                                     # writes artifacts/spike/diagnostics/
+python -m hyperdime.spike report                                       # adds the Diagnostics section
+```
+
+**Expected**: the new section lists, for D1, the oracle profiles' split-half and cross-environment
+Spearman, the 10 Holm-adjusted pair tests, and O1; for D2, the learning curve, seed-ensemble test,
+fit gap, recovery, grid-edge check, and T; for D3, per-fold probe gain over the baseline, the exact
+permutation p (out of 120), and S; then the recommendation from R20's table. A test confirms that
+scrambling `eval_labels` leaves D1 and D3 unchanged. Record the verdict, R0's criteria, R20's
+outcome, and the decision in `docs/decisions/ADR-0003-h1-spike-verdict.md`.
+**Continue below only if that ADR says to continue.**
 
 ## Milestone 1 → G1 (features F1–F3)
 

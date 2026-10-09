@@ -53,9 +53,10 @@ sampling seed, `tree_sha256` of the normalized files. One per environment.
 |---|---|---|
 | `environment` | `Id` | |
 | `split` | `Literal["train"]` | pools are never built for other splits |
-| `depth` | `int` | 100 |
-| `pool_size` | `int` | M; default 8 |
-| `pools` | JSONL of `{query_id, doc_ids}` | no judged positive in `doc_ids` |
+| `depth` | `int` | 1000 (research R5) |
+| `pool_size` | `int` | M; default 64, sampled with replacement |
+| `seed` | `int` | sampling seed |
+| `pools` | JSONL of `{query_id, doc_ids}` | no judged positive, and not the query's own ID, in `doc_ids`; repeats allowed |
 
 ### TargetImportance — owner F3 (ticket M3.1)
 
@@ -64,7 +65,7 @@ sampling seed, `tree_sha256` of the normalized files. One per environment.
 | `environment` | `Id` | |
 | `split` | `"train" \| "validation"` | |
 | `temperature` | `float` | > 0 |
-| `aggregation` | `{positives: "relevance_mean", negatives: "mean_top_m", m: int}` | research R4 |
+| `aggregation` | `{positives: "exp_gain_mean", negatives: "mean_sampled", m: int}` | research R4 (ADR-0002) |
 | `ids` | `list[Id]` | row order |
 | `payload` | `PayloadRef` | `(num_queries, 1024)`, rows sum to 1, finite |
 
@@ -99,12 +100,38 @@ sampling seed, `tree_sha256` of the normalized files. One per environment.
 | Field | Type | Rules |
 |---|---|---|
 | `feature_set` | `list[str]` | descriptor groups used |
-| `target` | `str` | e.g. `mean_importance` |
+| `target` | `"mean_importance" \| "oracle_selection_frequency"` | the second is trainer-free (research R10, R20) |
 | `held_out_environment` | `Id` | leave-one-environment-out |
 | `score` | `float` | e.g. R² or Spearman |
 | `baseline_score` | `float` | trivial baseline (research R10) |
 | `p_value` | `float` | permutation test |
 | `num_permutations` | `int` | ≥ 1,000 |
+
+### OracleProfile — owner F0 (reused by F4, F5)
+
+| Field | Type | Rules |
+|---|---|---|
+| `environment` | `Id` | |
+| `k` | `int` | 307 in F0 |
+| `num_queries` | `int` | labelled queries used (training + validation) |
+| `labels` | `Literal["train"]` | built from training labels only; never from evaluation or meta-test labels |
+| `frequency` | `PayloadRef` | `(1024,)`, values in [0, 1], sums to k; mean top-k mask of `e_q ⊙ (p − n)` |
+| `split_half_spearman` | `float` | mean over 200 seeded half-splits (research R20 D1) |
+
+### DiagnosticsResult — owner F0 (research R20)
+
+One JSON file, `artifacts/spike/diagnostics/diagnostics.json`, with a manifest.
+
+| Field | Type | Rules |
+|---|---|---|
+| `config` | object | envs, seeds, k, permutation counts, split seed, ridge α, grid extensions |
+| `oracle_shift` | `{profiles: {env: OracleProfile}, pairs: {"a\|b": {rho_cross, p, p_holm}}, rho_within_mean, rho_cross_mean, o1: bool}` | D1 |
+| `trainer` | `{env: {curve: {"25"\|"50"\|"100": ndcg}, curve_test, ensemble_test, fit_gap, recovery, grid_edge}, t: bool}` | D2; each `*_test` = `{diff, p, p_holm, ci}` |
+| `probe` | `{folds: {env: {score, baseline, gain}}, mean_gain, p, num_permutations: 120, s: bool, secondary: {...}}` | D3 |
+| `recommendation` | `"stop_or_pivot" \| "continue_strengthen_selector" \| "continue"` | from the R20 table; S is reported separately |
+
+State: written with `status: running` before any output, `complete` at the end; `report` renders the
+section only from a complete result.
 
 ## Prototype
 
@@ -168,6 +195,7 @@ Evaluation on meta-test:  locked → (meta-validation verdict = match/beat) → 
 EnvironmentSpec ─┬─▶ DatasetManifest ─▶ EmbeddingArtifact ─▶ NegativePool ─▶ TargetImportance
                  └─▶ MetaSplit
 TargetImportance ─▶ SelectorCheckpoint (linear/global/per_domain) ─▶ SelectorProperties ─▶ TransferCell
+EmbeddingArtifact + NegativePool + train labels ─▶ OracleProfile ─▶ DiagnosticsResult (F0), ProbeResult
 EmbeddingArtifact + MetaSplit ─▶ SpaceDescriptor ─▶ ProbeResult
 SpaceDescriptor ─▶ hypernet ─▶ ModulationPackage ─▶ EvaluationResult / EfficiencyRecord
 EvaluationResult, TransferCell, ProbeResult ─▶ GateDecision

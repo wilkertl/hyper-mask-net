@@ -1,6 +1,6 @@
 # Implementation Plan: HyperDIME-Qwen Project Roadmap
 
-**Branch**: `docs/hyperdime-roadmap` | **Date**: 2026-09-25 | **Spec**: [spec.md](spec.md)
+**Branch**: `agent/F0-h1-spike` | **Date**: 2026-09-25, amended 2026-10-09 | **Spec**: [spec.md](spec.md)
 
 **Input**: Feature specification from `specs/002-hyperdime-roadmap/spec.md`
 
@@ -11,6 +11,14 @@ documents) using the code already on `master` plus a thin loader, encoder, train
 transfer-matrix analysis. It ends in an H1 verdict. Everything below is built only if the verdict is
 "supported"; otherwise the project stops or pivots to a universal selector, having spent days rather
 than months.
+
+**Amendment 2026-10-09 (FR-000d, research R20)**: the spike ran and returned "supported", but two
+of the three criteria passed exactly at their thresholds, and the signals that should vary across
+environments were weak or noisy. Before the H1 ADR, a `diagnose` step separates "little selector
+shift" from "a selector that recovers little of its target". It tests shift on the oracle targets
+directly (trainer-free), checks whether the trained selector is the limiting factor, and runs a
+first descriptor-group-A probe. Its rules are fixed in R20 before it runs. Research R0 and R4–R6
+now match the official Learning-to-Select recipe adopted in ADR-0002.
 
 If H1 is supported, deliver the whole HyperDIME-Qwen study as seven gated features: F1 foundation (already planned in
 `specs/001-m0-foundation`), F2 data and embeddings, F3 Learning-to-Select baseline (G1), F4 selector
@@ -67,10 +75,10 @@ Checked against [constitution v1.0.0](../../.specify/memory/constitution.md).
 | Principle | Pre-research | Post-design | Evidence |
 |---|---|---|---|
 | I. Frozen Coordinate System | ✅ | ✅ | Embeddings computed once (F2) and reused; selection only masks queries; `LowRankSelector` acts on `e_q` only |
-| II. Leakage-Free Protocols | ✅ | ✅ | Meta-train uses only datasets with *train* qrels (R3); `load_environment` hides test qrels by default; protocol-typed descriptor builders (R11); `DescriptorNormalizer.fit` and `meta_train` refuse non-meta-train input; per-domain ceiling on test-only datasets uses a disjoint query half and is never an input to the method |
+| II. Leakage-Free Protocols | ✅ | ✅ | Meta-train uses only datasets with *train* qrels (R3); `load_environment` hides test qrels by default; protocol-typed descriptor builders (R11); `DescriptorNormalizer.fit` and `meta_train` refuse non-meta-train input; per-domain ceiling on test-only datasets uses a disjoint query half and is never an input to the method; R20's oracle profiles and probe use `train_labels` only, the probe's z-scoring is fit on the 4 training environments of each fold, and a test scrambles `eval_labels` and checks that D1 and D3 do not change |
 | III. Contracts and Provenance First | ✅ | ✅ | F1 precedes everything; every CLI writes through `ArtifactWriter`; new entities in data-model carry schema versions |
-| IV. Evidence-Gated Complexity | ✅ | ✅ | Features F4–F7 are specified only after the previous gate; quantitative gate criteria (R7, R8, R10); V2 encoder, contrast/redundancy groups, and adaptive-k are ablation-triggered; the 12 environments beyond SciFact, NFCorpus, and MS MARCO are embedded only after G2 |
-| V. Exact, Generated Measurement | ✅ | ✅ | Exact scoring everywhere except E6 deployment tables; `hyperdime report` generates all tables deterministically; mandatory full-1024, MRL, and global-selector rows; randomization tests + Holm + bootstrap CIs (R9) |
+| IV. Evidence-Gated Complexity | ✅ | ✅ | Features F4–F7 are specified only after the previous gate; quantitative gate criteria (R7, R8, R10); V2 encoder, contrast/redundancy groups, and adaptive-k are ablation-triggered; the 12 environments beyond SciFact, NFCorpus, and MS MARCO are embedded only after G2. R20 adds no model capacity: a stronger per-environment selector enters F3 only if a D2 check shows the linear one is limiting, and the group-A probe is analysis, not hypernetwork code |
+| V. Exact, Generated Measurement | ✅ | ✅ | Exact scoring everywhere except E6 deployment tables; R20's decision rules are fixed before `diagnose` runs and its section of the F0 report is generated; `hyperdime report` generates all tables deterministically; mandatory full-1024, MRL, and global-selector rows; randomization tests + Holm + bootstrap CIs (R9) |
 | VI. Test-Verified Mathematics | ✅ | ✅ | Hand-computed tests for oracle aggregation, statistics, descriptor stats, low-rank reconstruction; property tests from plan §8.2 are acceptance criteria in the interface contract |
 | VII. Independent, Replaceable Modules | ✅ | ✅ | `ImportanceModel` protocol unifies baselines and generated selectors; policies consume importance only; module boundaries fixed in [contracts/module-interfaces.md](contracts/module-interfaces.md) |
 | Artifacts and Data Handling | ✅ | ✅ | Datasets pulled by `prepare-data` into `artifacts/`, pinned by revision; nothing large in Git |
@@ -81,7 +89,7 @@ Checked against [constitution v1.0.0](../../.specify/memory/constitution.md).
 ## Milestone Features and Sequencing
 
 ```text
-F0 H1 spike ──H1 verdict──▶ (stop / pivot if not supported)
+F0 H1 spike ──analyze──▶ diagnose (R20) ──H1 verdict, ADR-0003──▶ (stop / pivot if not supported)
    │ supported
    ▼
 F1 foundation ──▶ F2 data+embeddings ──▶ F3 L2S baseline ──G1──▶ F4 selector shift ──G2──▶
@@ -90,7 +98,7 @@ F5 env pool + descriptor ──G3──▶ F6 hypernet prototype ──meta-val�
 
 | Feature | Scope (backlog tickets) | Depends on | Exit | Key risks addressed |
 |---|---|---|---|---|
-| **F0** `h1-spike` | BEIR loader from the official UKP zips (train/dev/test qrels in one archive, SHA-256 recorded; the Hugging Face path stays the F2 plan, research R2), Qwen encoder via the `beir` project's vLLM server or local transformers + `.npy` cache, selector training loop, global selector, transfer matrix + mask analysis + stats, lightweight JSON manifests, generated report (R0) | code on `master` | **H1 verdict** | R1 small shift, found in days |
+| **F0** `h1-spike` | BEIR loader from the official UKP zips (train/dev/test qrels in one archive, SHA-256 recorded; the Hugging Face path stays the F2 plan, research R2), Qwen encoder via the `beir` project's vLLM server or local transformers + `.npy` cache, selector training loop (official recipe, ADR-0002), global selector, transfer matrix + mask analysis + stats, lightweight JSON manifests, generated report (R0); `diagnose` step: oracle-level shift, trainer checks, group-A probe (R20) | code on `master` | **H1 verdict** in ADR-0003, with R20's outcome | R1 small shift, found in days; weak trainer mistaken for weak shift |
 | **F1** `001-m0-foundation` | M0.1–M0.4 — **planned** | — | contracts, manifests, lock | pipeline differences mistaken for model differences |
 | **F2** `data-embeddings` | M1.1 loaders (HF + `ir_datasets`, generic over `EnvironmentSpec`) for SciFact and NFCorpus, M1.2 full MS MARCO + TREC DL'19/'20/DL-HARD query sets (R2), M1.3 splits + leakage guards, M2.1 Qwen encoder, M2.2 sharded, resumable embedding cache, M1.4 negative pools (R5) | F1 | dataset manifests + cached embeddings for SciFact, NFCorpus, MS MARCO | test-label leakage; 8.8M-document embedding time |
 | **F3** `l2s-baseline` | M12.1 exact evaluation pipeline (streamed over document shards; adds AP), M3.1 oracle targets with aggregation (R4), M3.2 selector trainer (L2S protocol, R6), M3.3 baselines, E0 report comparable with Learning to Select and the DIME papers' DL tables | F2 | **G1** (R7) | invalid baseline; R7 ANN effects |
@@ -110,7 +118,7 @@ gate ADR, tag.
 ```text
 specs/002-hyperdime-roadmap/
 ├── plan.md              # This file
-├── research.md          # R1–R18 cross-cutting decisions
+├── research.md          # R0–R20 cross-cutting decisions (R20: F0 diagnostics)
 ├── data-model.md        # entities added after M0
 ├── quickstart.md        # gate-by-gate validation
 ├── contracts/
@@ -171,4 +179,5 @@ feature fills only its packages, and cross-feature boundaries are those in
 | Few meta-test environments (3 public + Robust04) | F7 (G4) | per-query paired tests within each; leave-one-dataset-out as optional robustness study |
 | Embedding cost (≈28.5M documents, ≈60 GB) | F2, F5 | shared corpora embedded once; sharded, resumable jobs; ≈19M of it only after G2; 500k-cap fallback (R2) |
 | Robust04 license unavailable | F5, F7 | local-path loader, explicit skip; meta-test still has 3 public datasets |
+| Weak trainer read as weak shift (or the reverse) | F0, F4 | trainer-free oracle-level test and trainer checks with rules fixed in advance (R20) |
 | Shared corpora look like separate domains | F5, F7 | `corpus_group` validation in `MetaSplit`; Climate-FEVER reported as query-shift only; DL sets are MS MARCO eval sets |

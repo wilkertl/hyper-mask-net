@@ -57,6 +57,10 @@ the verdict in the generated report.
    not, and the headroom (per-domain minus global nDCG@10) the hypernetwork could close.
 4. **Given** no evaluation query, **When** selectors are trained, **Then** no evaluation label is
    used in training, negative mining, or targets.
+5. **Given** the spike's cached embeddings and training labels, **When** the diagnostics run, **Then**
+   the report states, under rules fixed before the run, whether selector shift exists in the
+   oracle targets themselves (independent of any trainer), whether the trained selector is the
+   limiting factor, and whether label-free corpus statistics predict the oracle-level shift.
 
 The users are the researcher (who makes gate decisions and writes the paper), coding agents (who
 implement tickets), and reviewers or readers (who must be able to reproduce every number).
@@ -188,6 +192,10 @@ studies, measures offline and online cost separately, and generates every table 
   but are reported as not equivalent to unseen domains.
 - Prefix truncation alone matches query-aware selection: that is a reportable negative result, not
   a reason to drop the comparison (risk R5).
+- The trained selector is weak: a selector that recovers little of its oracle target cannot show
+  selector shift or feed descriptor probes. Shift is then tested on the oracle targets directly
+  (FR-000d), and a weak trainer justifies a stronger per-environment selector only through the
+  diagnostic evidence, never as a reason to add hypernetwork capacity.
 - The hypernetwork's gain matches a global selector trained with the same labels: the result is
   attributed to supervision, not to the hypernetwork (risk R6).
 - Pseudo-feedback in P1 is circular: P0 remains the control and P1 is always labeled as such.
@@ -215,6 +223,14 @@ studies, measures offline and online cost separately, and generates every table 
   dirty flag, config, seed, package versions), and its report MUST be generated from result files.
 - **FR-000c**: The spike report MUST end with a recorded H1 verdict. Requirements FR-001 onward
   apply only if the verdict is "supported".
+- **FR-000d**: Before the H1 decision is recorded, the spike MUST run trainer-free and trainer
+  diagnostics on its cached embeddings: (a) H1 at the oracle level, comparing environments'
+  oracle top-k selection profiles against within-environment split-half reliability; (b) whether
+  the trained selector limits the result (learning curve, seed ensemble, train-versus-evaluation
+  gap, grid-edge check); (c) a first H2 probe, predicting each environment's oracle profile from
+  label-free corpus statistics, leave-one-environment-out. Oracle profiles and every trained model
+  use training labels only. The decision rules are fixed in research R20 before the diagnostics
+  run, and their outcome is recorded in the H1 decision ADR.
 
 **Milestone 1 — Reproduction (M0–M3, E0)**
 

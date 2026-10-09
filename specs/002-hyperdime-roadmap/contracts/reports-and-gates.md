@@ -4,6 +4,7 @@
 
 ```text
 reports/
+├── F0/   H1 spike + diagnostics     → H1 verdict (exploratory)
 ├── E0/   baseline reproduction      → G1
 ├── E1/   selector shift             → G2
 ├── E2/   space signal (probes)      → G3
@@ -26,6 +27,7 @@ reports/
 
 | Gate | Report | Criteria source | ADR | Tag |
 |---|---|---|---|---|
+| H1 (F0) | F0 | research R0 + R20 | `ADR-0003-h1-spike-verdict.md` (ADR-0002 is the training recipe) | `f0-h1-verdict` |
 | G1 | E0 | research R7 | `ADR-XXXX-g1-baseline.md` | `g1-baseline-valid` |
 | G2 | E1 | research R8 | `ADR-XXXX-g2-selector-shift.md` | `g2-selector-shift` |
 | G3 | E2 | research R10 | `ADR-XXXX-g3-space-signal.md` | `g3-space-signal` |

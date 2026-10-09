@@ -36,3 +36,28 @@ Rules:
 - `train-hypernet` validates every environment against the frozen `MetaSplit` and exits 2 on any
   meta-test environment.
 - `report` output is deterministic: running it twice on the same result files gives identical bytes.
+
+## Spike F0: `python -m hyperdime.spike <step>`
+
+The spike has its own small CLI (argparse, lightweight JSON manifests; plan Complexity Tracking).
+F1 later moves its manifests onto `RunManifest`.
+
+| Step | Reads (`artifacts/spike/`) | Writes | Labels it may read |
+|---|---|---|---|
+| `prepare` | BEIR zips (network) | `<env>/` splits, embeddings, negatives | training labels for negatives |
+| `train` | `<env>/` | `<env>/selectors/` | training labels |
+| `train-global` | `<env>/`, `<env>/selectors/temperature.json` | `global/` | training labels |
+| `analyze` | all of the above | `analysis/` | evaluation labels, for scoring only |
+| `diagnose` | all of the above, `analysis/` | `diagnostics/diagnostics.json` + manifest (research R20) | training labels for oracle profiles, models, and the probe; evaluation labels for scoring only |
+| `report` | `analysis/`, `diagnostics/` if complete | `reports/F0/README.md` | none |
+| `all` | | `prepare` → `train` → `train-global` → `analyze` → `report` | |
+
+Rules:
+
+- `diagnose` is not part of `all`, so the existing F0 run reproduces unchanged. It refuses to run
+  unless `analyze` and every input it reads are `complete`. It is deterministic for fixed seeds.
+- `diagnose` takes the same `--env`, `--seeds`, and `--root` options, plus `--permutations`
+  (default 1,000) and `--half-splits` (default 200). It needs no GPU and no network.
+- `report` adds a "Diagnostics (research R20)" section with D1, D2, D3, the values of rules O1, T,
+  and S, and the recommendation. The section exists only when `diagnostics/` is complete, so a
+  report regenerated before `diagnose` runs is byte-identical to the current one.

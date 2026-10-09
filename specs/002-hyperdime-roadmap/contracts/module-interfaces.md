@@ -10,6 +10,35 @@ Existing functions keep their signatures: `split_ids`, `mine_hard_negatives`, `f
 `last_token_pool`, `exact_search`, `query_metrics`, `evaluate_run`, `oracle_scores`,
 `oracle_importance`, `resolve_k`, `top_k_mask`, `apply_mask`, `LinearSelector`, `selector_kl_loss`.
 
+## F0 diagnostics — `hyperdime.evaluation`, `hyperdime.space`, `hyperdime.spike` (research R20)
+
+Added by the spike and kept by later features; F4 and F5 reuse them rather than redefining them.
+
+```python
+# evaluation/selector_shift.py
+def selection_frequency(scores: Tensor, k: int) -> Tensor               # (n, 1024) -> (1024,), mean top-k mask
+def split_half_spearman(scores: Tensor, k: int, draws: int, seed: int) -> float
+def profile_permutation_test(a: Tensor, b: Tensor, k: int, n: int, seed: int) -> float
+    # a, b: per-query scores of two environments; statistic 1 - Spearman of their profiles
+
+# space/marginal.py — descriptor group A, protocol P0 (documents only)
+def marginal_stats(documents: Tensor) -> Tensor                          # (n_docs, 1024) -> (1024, 9)
+MARGINAL_FEATURES: tuple[str, ...]  # mean, std, mean_abs, rms, q05, q25, q50, q75, q95
+
+# spike/diagnostics.py
+def oracle_scores_for(data: EnvData, qids: Sequence[str]) -> Tensor      # e_q * (p - n), train labels
+def diagnose(envs: Sequence[str], root: Path, seeds: Sequence[int], *, permutations: int = 1000,
+             half_splits: int = 200) -> dict[str, Any]                   # writes DiagnosticsResult
+def loeo_probe(features: Mapping[str, Tensor], targets: Mapping[str, Tensor], alpha: float = 1.0) -> dict[str, Any]
+```
+- `marginal_stats` is invariant to document order and equivariant to dimension permutation
+  (tested); quantiles are hand-checkable on a small tensor.
+- `selection_frequency` rows sum to k; on a hand-built 3-query example it matches the counted masks.
+- `loeo_probe` z-scores with statistics from the training folds only; with a planted linear
+  signal its gain is positive, and with shuffled targets it is near zero.
+- `oracle_scores_for` reads `splits["train_labels"]` and the stored negatives only; replacing
+  `eval_labels` with labels on other documents leaves every D1 and D3 output unchanged (test).
+
 ## F2 — `hyperdime.data`, `hyperdime.embeddings`
 
 ```python
