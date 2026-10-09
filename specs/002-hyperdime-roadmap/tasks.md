@@ -23,6 +23,8 @@ own `tasks.md`. A story starts only when the previous gate passed.
 - **[P]**: Can run in parallel (different files, no dependencies)
 - **[Story]**: US0–US5 from spec.md
 - `[X]` marks tasks already completed on `agent/F0-h1-spike`
+- Task IDs are stable: tasks added later (T053–T068, for FR-000d and research R20) take the next free
+  IDs and are placed where they run, so IDs are not always in execution order
 
 ## Path Conventions
 
@@ -47,8 +49,9 @@ Single project: `src/hyperdime/`, `tests/`, `configs/`, `reports/`, `docs/decisi
 **Purpose**: The only prerequisite shared by every story: the package must be runnable as installed.
 
 - [X] T006 Verify `pip install -e ".[embed,dev]"` in a fresh virtualenv makes `python -m hyperdime.spike --help` work without `PYTHONPATH`; if not, fix package discovery under `[tool.setuptools.packages.find]` in pyproject.toml
+- [X] T053 Declare `numpy>=2` in `[project] dependencies` of pyproject.toml (imported by src/hyperdime/embeddings/remote.py, src/hyperdime/embeddings/cache.py, src/hyperdime/evaluation/statistics.py, src/hyperdime/spike/manifest.py; torch does not install it), then confirm that `pip install -e ".[dev]"` in a fresh Python 3.12 virtualenv runs `pytest` with no collection errors
 
-**Checkpoint**: `ruff check . && ruff format --check . && mypy && pytest` passes (60 tests).
+**Checkpoint**: `ruff check . && ruff format --check . && mypy && pytest` passes (64 tests) in a fresh virtualenv.
 
 ---
 
@@ -81,13 +84,40 @@ roadmap work.
 - [X] T020 [US0] Spike steps `prepare`, `train`, `train_global`, `analyze` with R0's verdict rule in src/hyperdime/spike/pipeline.py, plus lightweight manifests in src/hyperdime/spike/manifest.py
 - [X] T021 [US0] Report renderer in src/hyperdime/spike/report.py and CLI with `--backend auto|vllm|local` in src/hyperdime/spike/__main__.py
 - [X] T022 [US0] Commit the spike on `agent/F0-h1-spike` with message `feat(spike): add F0 selector-shift experiment with vLLM embeddings`, after `ruff check . && ruff format --check . && mypy && pytest` passes
-- [ ] T023 [US0] With the vLLM server up, export `V4_EMBEDDING_BASE_URL`, confirm `curl -s $V4_EMBEDDING_BASE_URL/models` lists `Qwen/Qwen3-Embedding-0.6B`, and run `python -m hyperdime.spike prepare` (writes artifacts/spike/<env>/ for scifact, nfcorpus, fiqa, arguana, scidocs)
-- [ ] T024 [US0] Run `python -m hyperdime.spike train`, then `train-global`, then `analyze` (writes artifacts/spike/<env>/selectors/, artifacts/spike/global/, artifacts/spike/analysis/)
-- [ ] T025 [US0] Run `python -m hyperdime.spike report` and commit the generated reports/F0/README.md on an `exp/F0-selector-shift` branch; never edit its numbers by hand
-- [ ] T026 [US0] Record the H1 verdict, the three criteria values, the headroom per environment, and the decision (continue to US1, or stop / pivot to a universal selector) in docs/decisions/ADR-0002-h1-spike-verdict.md, starting from docs/decisions/ADR-0000-template.md
-- [ ] T027 [P] [US0] Optional (research R0): a first H2 signal with group A document-marginal statistics (mean, std, mean_abs, RMS, q05–q95 per dimension) in src/hyperdime/space/marginal.py, a leave-one-environment-out probe predicting each dimension's mean importance against the "mean of other environments" baseline as a `probe` step in src/hyperdime/spike/pipeline.py, and a hand-computed test in tests/unit/test_space_marginal.py
+- [X] T023 [US0] Embed the five environments: run `python -m hyperdime.spike prepare` (done on the DGX Spark cluster with `--backend local --device cuda` via scripts/slurm/f0-spike.sbatch, job f0-spike-407, commit `d6453f0`; writes artifacts/spike/<env>/ for scifact, nfcorpus, fiqa, arguana, scidocs)
+- [X] T024 [US0] Run `python -m hyperdime.spike train`, then `train-global`, then `analyze` (same job; writes artifacts/spike/<env>/selectors/, artifacts/spike/global/, artifacts/spike/analysis/; every manifest `complete`, `git_dirty: false`)
 
-**Checkpoint**: The ADR states whether H1 is supported. Stop here if it is not.
+### Diagnostics for User Story 0 (FR-000d, research R20)
+
+The rules are fixed in research R20 (commit `a72a3c9`) and must not change once `diagnose` has run.
+Every new function follows contracts/module-interfaces.md, section "F0 diagnostics"; the output
+follows `DiagnosticsResult` in data-model.md; the CLI follows contracts/cli.md, section "Spike F0".
+
+**Tests** (write first; they must fail before T058–T063 exist):
+
+- [ ] T054 [P] [US0] Hand-computed tests for `selection_frequency` (3 queries × 4 dimensions, k = 2: the result equals the counted masks and sums to k), `split_half_spearman` (two identical halves give 1.0; seeded and repeatable), and `profile_permutation_test` (identical score sets give p near 1, disjoint top-k supports give p ≤ 1/(n+1) + tolerance; seeded) in tests/unit/test_selector_shift_profiles.py
+- [ ] T055 [P] [US0] Hand-computed tests for `marginal_stats` in tests/unit/test_space_marginal.py: on a 4 × 3 tensor, check mean, std, mean_abs, RMS, and the q05/q25/q50/q75/q95 quantiles column by column; shuffling document rows leaves the output unchanged; permuting dimensions permutes output rows; output shape `(1024, 9)` on a random `(10, 1024)` input, with `MARGINAL_FEATURES` naming the 9 columns in order
+- [ ] T056 [P] [US0] Tests for `loeo_probe` and the D3 permutation test in tests/unit/test_spike_diagnostics.py: with 5 synthetic environments whose targets are a planted linear function of the features plus noise, the mean gain is > 0 and the exact permutation p is ≤ 0.05; with targets shuffled across environments, the gain is ≤ 0; multiplying the held-out environment's features by 1000 does not change the z-scoring statistics of that fold (normalization uses the 4 training environments only); the permutation test enumerates exactly 120 assignments
+- [ ] T057 [US0] Extend tests/integration/test_spike_pipeline.py: after the synthetic `analyze`, `diagnose` writes artifacts/spike/diagnostics/diagnostics.json with `oracle_shift`, `trainer`, `probe`, and `recommendation` keys and a `complete` manifest; replacing every `eval_labels` entry in each splits.json with labels on other documents leaves `oracle_shift` and `probe` unchanged; `diagnose` refuses to run when analysis/manifest.json is not `complete`; `report` output is byte-identical to the pre-diagnose output when diagnostics/ is absent, and gains a "Diagnostics (research R20)" section when it is complete; two `diagnose` runs give identical JSON
+
+**Implementation**:
+
+- [ ] T058 [P] [US0] Add `selection_frequency(scores, k)`, `split_half_spearman(scores, k, draws, seed)`, and `profile_permutation_test(a, b, k, n, seed)` to src/hyperdime/evaluation/selector_shift.py, reusing `top_k_mask` from src/hyperdime/selection/topk.py and the existing `spearman`; statistic `1 − Spearman` of the two profiles, group sizes kept when shuffling, `p = (count + 1) / (n + 1)`
+- [ ] T027 [P] [US0] Descriptor group A, protocol P0: `marginal_stats(documents) -> Tensor (1024, 9)` and `MARGINAL_FEATURES = ("mean", "std", "mean_abs", "rms", "q05", "q25", "q50", "q75", "q95")` in a new src/hyperdime/space/marginal.py; documents only, no queries or labels (replaces the earlier optional `probe` step; the probe itself is T061)
+- [ ] T059 [US0] D1 in a new src/hyperdime/spike/diagnostics.py: `oracle_scores_for(data, qids)` returns `e_q ⊙ (p − n)` (reuse the positive weighting of `aggregate_targets` in src/hyperdime/oracle/targets.py and `oracle_scores` in src/hyperdime/oracle/importance.py) from `splits["train_labels"]` and the stored negatives only, for the train + validation queries; per environment the OracleProfile (`frequency` in [0, 1], "sums to k", k = 307) and `split_half_spearman` over 200 half-splits; for the 10 pairs, `rho_cross` over the same 200 random-half draws and `profile_permutation_test` with 1,000 permutations, Holm-adjusted; `o1 = (Holm-significant pairs ≥ 5) and (mean rho_cross < mean rho_within)`
+- [ ] T060 [US0] D2 in src/hyperdime/spike/diagnostics.py, per environment with τ and epochs read from <env>/selectors/temperature.json: (a) seed 0 on nested seeded subsets of 25/50/100% of the training queries, evaluation nDCG@10 at k = 307, 100%-vs-50% paired randomization test; (b) ensemble = mean of the three seeds' log-importances vs per-query mean of single seeds, paired test; (c) nDCG@10 on training queries (train labels) and evaluation queries, and overlap@k of selector mask vs oracle mask on each set; (d) Spearman of the selector's selection profile on train + validation queries vs the environment's OracleProfile; (e) grid-edge extension exactly as research R20 lists it, scored on validation nDCG@10 only, limited when the best extended cell beats the chosen one by > 0.005; Holm over environments for (a) and (b); `t = ` (a), (b), or (e) holds on ≥ 2 of 5 environments. Reuse `_fit`, `_evaluate`, `_load_selector`, and `_importance` from src/hyperdime/spike/pipeline.py rather than copying them
+- [ ] T061 [US0] D3 and the result in src/hyperdime/spike/diagnostics.py: `loeo_probe(features, targets, alpha=1.0)` with features from `marginal_stats` of each corpus, z-scored with statistics from the 4 training environments of each fold, ridge regression (closed form, α = 1 fixed) to the OracleProfile `frequency`, score = Spearman vs the held-out profile, baseline = mean profile of the other 4, gain = score − baseline; exact test over all 120 descriptor-to-environment assignments with mean gain as statistic; `s = mean_gain > 0 and p ≤ 0.05`; secondary target = trained selectors' mean importance, reported only; `recommendation` = `"stop_or_pivot"` if not O1, `"continue_strengthen_selector"` if O1 and T, else `"continue"`. `diagnose(envs, root, seeds, *, permutations=1000, half_splits=200)` calls `require_complete` on every input including analysis/, writes diagnostics/manifest.json with `status: "running"` before any output, then diagnostics.json, then the manifest with `complete`
+- [ ] T062 [US0] Add the `diagnose` step to src/hyperdime/spike/__main__.py with `--permutations` (default 1000) and `--half-splits` (default 200), honoring `--env`, `--seeds`, and `--root`; it is not part of `all`, and it prints the recommendation
+- [ ] T063 [US0] Render a "Diagnostics (research R20)" section in src/hyperdime/spike/report.py from diagnostics/diagnostics.json, only when its manifest is `complete`: a D1 table (per environment `rho_within`; per pair `rho_cross`, p Holm), the O1 value; a D2 table per environment (curve, ensemble test, fit gap, recovery, grid edge) and T; a D3 table per fold (score, baseline, gain), the permutation p out of 120, and S; then the recommendation, worded as in research R20's table
+
+**Run and decide**:
+
+- [ ] T064 [US0] Add scripts/slurm/f0-diagnose.sh and scripts/slurm/f0-diagnose.sbatch, copied from scripts/slurm/f0-spike.sh and .sbatch, running `$PY -m hyperdime.spike diagnose && $PY -m hyperdime.spike report` on CPU (no `--gres`; `--time=02:00:00`); the full caches and selector weights live only on the cluster (the local artifacts/spike/ copy has no `embeddings.npy` or `seed-*.pt`). List the job in scripts/slurm/README.md
+- [ ] T065 [US0] Copy the repo to the cluster at a clean commit that contains T053–T064, run `sbatch scripts/slurm/f0-diagnose.sbatch`, and bring back artifacts/spike/diagnostics/, reports/F0/, and logs/ with the tar command in scripts/slurm/README.md; check that diagnostics/manifest.json is `complete` with `git_dirty: false` and a commit after `a72a3c9`
+- [ ] T025 [US0] Commit the generated reports/F0/README.md (with its Diagnostics section) on an `exp/F0-selector-shift` branch; never edit its numbers by hand
+- [ ] T026 [US0] Record in docs/decisions/ADR-0003-h1-spike-verdict.md (from docs/decisions/ADR-0000-template.md; ADR-0002 is the training recipe): the R0 verdict and its three criteria values, the per-environment headroom, the R20 values of O1, T, and S, the recommendation, and the decision (continue to US1 as planned, continue and strengthen the per-environment selector in F3, or stop / pivot to a universal selector). State that criteria 1 and 3 passed exactly at their thresholds and that ADR-0002 changed the recipe after a "not supported" run; tag the merge `f0-h1-verdict`
+
+**Checkpoint**: ADR-0003 states whether H1 is supported and what R20 found. Stop here if it is not.
 
 ---
 
@@ -168,7 +198,10 @@ meta-test environments.
 
 - [X] T043 [P] Update the Components table and invariants in docs/architecture.md with the modules added by the spike (loaders, remote/cache embeddings, targets, trainer, statistics, selector_shift, scoring, spike)
 - [X] T044 [P] Document the vLLM setup (`V4_EMBEDDING_*` variables, `ssh -L` tunnel, `curl $V4_EMBEDDING_BASE_URL/models`) and the spike command in README.md
-- [ ] T045 Confirm the `checks` job in .github/workflows/ci.yml passes on the spike branch: it installs `.[dev]` without transformers and runs mypy (now `python_version = "3.12"`) on CI's Python 3.12; the 52 tests need neither network nor transformers
+- [ ] T045 Confirm the `checks` job in .github/workflows/ci.yml passes on the spike branch (open the pull request so it runs; so far it has run only on `master`): it installs `.[dev]` without transformers, which needs T053's numpy dependency, and runs mypy (`python_version = "3.12"`) on CI's Python 3.12; no test needs network or transformers
+- [ ] T066 [P] Add `hyperdime.space` (`marginal`) and the spike's `diagnose` step to the Components table in docs/architecture.md (the "F0 selector-shift spike" row lists `prepare|train|train-global|analyze|report|all`; add `diagnose`)
+- [ ] T067 [P] Update the test count in specs/002-hyperdime-roadmap/quickstart.md ("64 tests before R20") to the count `pytest` reports after T054–T057
+- [ ] T068 Decide on the untracked scripts/reports/build_project_report.py and reports/project/index.html: either commit them under a `chore(reports)` commit with the `gh` and logs/ inputs documented in the script docstring and kept out of any table that research R18 requires to come from result files alone, or delete them
 
 ---
 
@@ -177,11 +210,14 @@ meta-test environments.
 ### Phase Dependencies
 
 - **Setup (Phase 1)**: none
-- **Foundational (Phase 2)**: after Setup; blocks US0's run tasks (T023–T026)
-- **US0 (Phase 3)**: code done; the run (T023–T026) needs the vLLM server
+- **Foundational (Phase 2)**: after Setup; T053 blocks the diagnostics tasks and the pull request (T045)
+- **US0 (Phase 3)**: spike code done and run (T023–T024). Diagnostics order: tests T054–T057 →
+  T058, T027 (parallel) → T059 → T060 → T061 → T062, T063 → T064 → T065 (cluster run) → T025 →
+  T026
 - **US1–US5 (Phases 4–8)**: strictly sequential, each gated on the previous decision: ADR-0002 (H1
   supported) → G1 → G2 → G3 → meta-validation verdict → G4/G5
-- **Polish (Phase 9)**: T043–T044 any time after T022; T045 before the first pull request
+- **Polish (Phase 9)**: T043–T044 any time after T022; T045 before the first pull request, after T053;
+  T066–T067 after T063; T068 any time
 
 ### User Story Dependencies
 
@@ -200,7 +236,8 @@ meta-test environments.
 ### Parallel Opportunities
 
 - T004, T005 (done); T007–T018 (done, independent modules)
-- T027 (optional H2 probe) in parallel with T023–T026
+- T054, T055, T056 (separate test files) together; then T058 and T027 (separate modules) together
+- T066, T067, T068 in parallel with the cluster run (T065)
 - T043, T044 in parallel with any story phase
 
 ---
@@ -208,10 +245,13 @@ meta-test environments.
 ## Parallel Example: User Story 0
 
 ```bash
-# While embeddings run on the vLLM server (T023), work on independent files:
-Task: "Optional group-A descriptor probe in src/hyperdime/space/marginal.py (T027)"
-Task: "Update docs/architecture.md components table (T043)"
-Task: "Document vLLM setup in README.md (T044)"
+# Diagnostics tests, three files at once:
+Task: "Profile tests in tests/unit/test_selector_shift_profiles.py (T054)"
+Task: "Group-A marginal tests in tests/unit/test_space_marginal.py (T055)"
+Task: "LOEO probe tests in tests/unit/test_spike_diagnostics.py (T056)"
+# Then the two independent modules:
+Task: "Profile functions in src/hyperdime/evaluation/selector_shift.py (T058)"
+Task: "marginal_stats in src/hyperdime/space/marginal.py (T027)"
 ```
 
 ---
@@ -220,10 +260,12 @@ Task: "Document vLLM setup in README.md (T044)"
 
 ### MVP First (User Story 0 Only)
 
-1. Finish Setup (T002–T003) and Foundational (T006)
-2. Commit the spike (T022), run it on the vLLM server (T023–T025)
-3. **STOP and decide**: record the H1 verdict (T026)
-4. Only if supported: continue with US1
+1. Setup and Foundational done except T053 (numpy); do T053 first
+2. Spike committed and run (T022–T024)
+3. Diagnostics (T054–T063), cluster run (T064–T065), commit the report (T025)
+4. **STOP and decide**: record the H1 verdict and R20's outcome in ADR-0003 (T026)
+5. Only if ADR-0003 says continue: US1, with stronger per-environment selector candidates in F3
+   when R20's recommendation is `continue_strengthen_selector`
 
 ### Incremental Delivery
 
