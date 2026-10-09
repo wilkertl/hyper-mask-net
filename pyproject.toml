@@ -8,7 +8,7 @@ version = "0.0.1"
 description = "Environment-conditioned hypernetwork for query-aware dimension selection on Qwen3-Embedding-0.6B"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = ["torch>=2.4"]
+dependencies = ["numpy>=2", "torch>=2.4"]
 
 [project.optional-dependencies]
 embed = ["transformers>=4.51"]
