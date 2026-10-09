@@ -125,8 +125,8 @@ One JSON file, `artifacts/spike/diagnostics/diagnostics.json`, with a manifest.
 | Field | Type | Rules |
 |---|---|---|
 | `config` | object | envs, seeds, k, permutation counts, split seed, ridge α, grid extensions |
-| `oracle_shift` | `{profiles: {env: OracleProfile}, pairs: {"a\|b": {rho_cross, p, p_holm}}, rho_within_mean, rho_cross_mean, o1: bool}` | D1 |
-| `trainer` | `{env: {curve: {"25"\|"50"\|"100": ndcg}, curve_test, ensemble_test, fit_gap, recovery, grid_edge}, t: bool}` | D2; each `*_test` = `{diff, p, p_holm, ci}` |
+| `oracle_shift` | `{profiles: {env: OracleProfile}, pairs: {"a\|b": {rho_cross, p, p_holm}}, significant_pairs, rho_within_mean, rho_cross_mean, o1: bool}` | D1 |
+| `trainer` | `{envs: {env: {curve: {"25"\|"50"\|"100": ndcg}, curve_test, ensemble, single, ensemble_test, fit_gap, recovery, grid_edge}}, limited: {curve, ensemble, grid_edge: [env]}, t: bool}` | D2; each `*_test` = `{diff, p, p_holm, ci}`; `t` holds when one check is limited on ≥ 2 environments |
 | `probe` | `{folds: {env: {score, baseline, gain}}, mean_gain, p, num_permutations: 120, s: bool, secondary: {...}}` | D3 |
 | `recommendation` | `"stop_or_pivot" \| "continue_strengthen_selector" \| "continue"` | from the R20 table; S is reported separately |
 

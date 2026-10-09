@@ -17,7 +17,9 @@ Added by the spike and kept by later features; F4 and F5 reuse them rather than 
 ```python
 # evaluation/selector_shift.py
 def selection_frequency(scores: Tensor, k: int) -> Tensor               # (n, 1024) -> (1024,), mean top-k mask
+def half_split_profiles(scores: Tensor, k: int, draws: int, seed: int) -> tuple[Tensor, Tensor]  # 2 x (draws, 1024)
 def split_half_spearman(scores: Tensor, k: int, draws: int, seed: int) -> float
+# spearman(a, b) gives tied values their average rank (selection frequencies tie often)
 def profile_permutation_test(a: Tensor, b: Tensor, k: int, n: int, seed: int) -> float
     # a, b: per-query scores of two environments; statistic 1 - Spearman of their profiles
 
@@ -30,6 +32,12 @@ def oracle_scores_for(data: EnvData, qids: Sequence[str]) -> Tensor      # e_q *
 def diagnose(envs: Sequence[str], root: Path, seeds: Sequence[int], *, permutations: int = 1000,
              half_splits: int = 200) -> dict[str, Any]                   # writes DiagnosticsResult
 def loeo_probe(features: Mapping[str, Tensor], targets: Mapping[str, Tensor], alpha: float = 1.0) -> dict[str, Any]
+def probe_permutation_test(features: Mapping[str, Tensor], targets: Mapping[str, Tensor], alpha: float = 1.0) -> tuple[float, int]
+def recommendation(o1: bool, t: bool) -> str   # "stop_or_pivot" | "continue_strengthen_selector" | "continue"
+
+# oracle/targets.py
+def aggregate_pairs(queries: Tensor, documents: Tensor, positives: Sequence[Mapping[int, int]],
+                    negatives: Sequence[Sequence[int]]) -> tuple[Tensor, Tensor]   # (p, n); aggregate_targets uses it
 ```
 - `marginal_stats` is invariant to document order and equivariant to dimension permutation
   (tested); quantiles are hand-checkable on a small tensor.
