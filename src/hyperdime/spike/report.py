@@ -124,7 +124,8 @@ def render_diagnostics(result: Mapping[str, Any], manifest: Mapping[str, Any]) -
         "Limited on: "
         + "; ".join(f"{check} {', '.join(found) or 'none'}" for check, found in limited.items())
         + ". Recovery is the Spearman between the selector's and the oracle's selection",
-        "profiles; its ceiling is the environment's split-half Spearman above.",
+        "profiles over all labelled queries. It is not bounded by the split-half Spearman above,",
+        "which compares profiles built from half the queries each.",
         "",
         f"### D3: corpus statistics predict the oracle profile (S = {_yes(probe['s'])})",
         "",
