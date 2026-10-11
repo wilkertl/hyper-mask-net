@@ -34,13 +34,20 @@ Mandatory for every coding agent, and for humans, working in this repository.
 
 ```bash
 ruff check . && ruff format --check . && mypy && pytest
+PYTHONPATH=tools python -m scrap tests   # test-code quality (ADR-0004)
 ```
+
+The SCRAP step fails only on structural errors (a test shadowed by a later test of the same name,
+a test nested inside another, a parse error). Its scores and recommendations are decision
+support: act on `HIGH` recommendations for test files you changed, or say in the pull request why
+not. To check that a refactor of tests helped, write a baseline before it
+(`--write-baseline`) and compare after (`--compare artifacts/scrap/baseline.json`).
 
 Use Conventional Commits scoped by package, e.g. `feat(oracle): aggregate multiple positives`.
 
 ## When finishing a ticket
 
-Report the tests you ran, ruff and mypy results, the relevant smoke test, `git diff --stat`,
+Report the tests you ran, ruff, mypy, and SCRAP results, the relevant smoke test, `git diff --stat`,
 decisions and risks, and the proposed commit message. Fill in every section of the pull request
 template.
 

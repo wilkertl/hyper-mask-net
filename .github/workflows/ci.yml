@@ -29,3 +29,13 @@ jobs:
         run: mypy
       - name: Test
         run: pytest
+      - name: Test-code quality (SCRAP for pytest, ADR-0004)
+        shell: bash
+        run: |
+          # Fails only on structural errors; the report goes to the job summary either way.
+          status=0
+          echo '```text' >> "$GITHUB_STEP_SUMMARY"
+          PYTHONPATH=tools python -m scrap tests > scrap.txt || status=$?
+          tee -a "$GITHUB_STEP_SUMMARY" < scrap.txt
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit $status
