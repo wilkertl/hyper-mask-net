@@ -52,17 +52,28 @@ def test_pressure_score_and_level_by_hand() -> None:
     summary = _summary()
     assert pressure_score(summary) == pytest.approx(28.0)
     assert pressure_level(summary) == "MEDIUM"
-    # Two tests get size factor 0.40, and a coverage matrix earns credit.
+
+
+def test_small_files_and_coverage_matrices_lower_the_pressure() -> None:
+    # Two tests get size factor 0.40: 0.40 * (1.2 * 10 + 0.6 * 20) - 1.5 matrix credit
     small = _summary(example_count=2, low_assertion_examples=0, case_matrix_repetition=1)
     assert pressure_score(small) == pytest.approx(0.40 * 24 - 1.5)
 
 
-def test_stable_and_split_modes() -> None:
+def test_small_clean_files_are_stable() -> None:
     assert stable(_summary(example_count=2, max_scrap=5.0, low_assertion_examples=0))
-    assert remediation_mode(_summary(example_count=2, max_scrap=5.0), []) == "STABLE"
-    assert remediation_mode(_summary(), []) == "LOCAL"
-    crowded = _summary(example_count=12, max_scrap=40.0)
-    assert remediation_mode(crowded, []) == "SPLIT"
+
+
+@pytest.mark.parametrize(
+    ("overrides", "mode"),
+    [
+        ({"example_count": 2, "max_scrap": 5.0}, "STABLE"),
+        ({}, "LOCAL"),
+        ({"example_count": 12, "max_scrap": 40.0}, "SPLIT"),
+    ],
+)
+def test_remediation_mode(overrides: dict[str, Any], mode: str) -> None:
+    assert remediation_mode(_summary(**overrides), []) == mode
 
 
 def test_structurally_identical_tests_form_one_duplicate_cluster() -> None:
@@ -97,7 +108,7 @@ def test_comparison_verdicts(deltas: dict[str, float], expected: str) -> None:
     assert verdict(comparison) == expected
 
 
-def test_cli_reports_json_writes_a_baseline_and_fails_on_structural_errors(
+def test_cli_writes_json_and_an_identical_baseline(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     good = tmp_path / "test_good.py"
@@ -108,9 +119,18 @@ def test_cli_reports_json_writes_a_baseline_and_fails_on_structural_errors(
     assert doc["reports"][0]["remediation_mode"] == "STABLE"
     assert json.loads(baseline.read_text()) == doc
 
+
+def test_cli_compares_with_a_baseline(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    good = tmp_path / "test_good.py"
+    good.write_text("def test_ok():\n    assert 1 + 1 == 2\n")
+    baseline = tmp_path / "baseline.json"
+    main([str(good), "--write-baseline", str(baseline)])
+    capsys.readouterr()
     assert main([str(good), "--compare", str(baseline)]) == 0
     assert "vs baseline: unchanged" in capsys.readouterr().out
 
+
+def test_cli_fails_on_structural_errors(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
     bad = tmp_path / "test_bad.py"
     bad.write_text(textwrap.dedent("def test_x():\n    assert 1\n\ndef test_x():\n    assert 2\n"))
     assert main([str(tmp_path)]) == 1
