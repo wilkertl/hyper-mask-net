@@ -1,0 +1,420 @@
+<title>HyperDIME-Qwen Project Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,500;0,8..60,600;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>/* Layout: single reading column, lab-notebook register; wide tables and charts scroll in place */
+:root {
+  --bg: #f7f8f9; --panel: #ffffff; --fg: #15191e; --muted: #5a626c; --rule: #dde1e6; --grid: #e6e9ed;
+  --accent: #1f4f8f;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a;
+  --ok-bg: #e3f1e6; --ok-fg: #1d6130; --no-bg: #fbe6e4; --no-fg: #9a2b22; --warn-bg: #fdf0d8; --warn-fg: #7a5200;
+  --display: "Source Serif 4", Georgia, serif;
+  --body: "IBM Plex Sans", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14171b; --panel: #1b1f24; --fg: #e8ebee; --muted: #a2aab4; --rule: #2e343b; --grid: #262b31;
+    --accent: #8fb6ea; --s1: #3987e5; --s2: #d95926; --s3: #199e70;
+    --ok-bg: #1d3324; --ok-fg: #9fd8ad; --no-bg: #3a201e; --no-fg: #f1a79f; --warn-bg: #3a2e14; --warn-fg: #f0cd86;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14171b; --panel: #1b1f24; --fg: #e8ebee; --muted: #a2aab4; --rule: #2e343b; --grid: #262b31;
+  --accent: #8fb6ea; --s1: #3987e5; --s2: #d95926; --s3: #199e70;
+  --ok-bg: #1d3324; --ok-fg: #9fd8ad; --no-bg: #3a201e; --no-fg: #f1a79f; --warn-bg: #3a2e14; --warn-fg: #f0cd86;
+  color-scheme: dark;
+}
+body { background: var(--bg); color: var(--fg); font: 15px/1.6 var(--body); }
+main { max-width: 860px; margin: 0 auto; padding: 40px 20px 64px; display: grid; gap: 40px; }
+section, header, footer { min-width: 0; }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; text-wrap: balance; margin: 0; line-height: 1.2; }
+h1 { font-size: 2.3rem; }
+h2 { font-size: 1.45rem; padding-bottom: 6px; border-bottom: 1px solid var(--rule); margin-bottom: 12px; }
+h3 { font-size: 1.05rem; margin: 22px 0 8px; font-family: var(--body); }
+p { margin: 10px 0; max-width: 68ch; }
+code { font-family: var(--mono); font-size: 0.88em; }
+.eyebrow { font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin: 0 0 6px; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 28px; margin: 16px 0 0; }
+.meta dt { font-size: 0.74rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 0; font-variant-numeric: tabular-nums; }
+.lede { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 18px 22px; }
+.lede p { margin: 6px 0; }
+.verdict { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill { display: inline-block; font-size: 0.78rem; font-weight: 600; padding: 2px 10px; border-radius: 999px; white-space: nowrap; }
+.pill.ok { background: var(--ok-bg); color: var(--ok-fg); }
+.pill.no { background: var(--no-bg); color: var(--no-fg); }
+.pill.warn { background: var(--warn-bg); color: var(--warn-fg); }
+.tw { overflow-x: auto; margin: 10px 0; }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; font-variant-numeric: tabular-nums; }
+table.narrow { width: auto; min-width: 50%; }
+th { text-align: left; font-weight: 600; color: var(--muted); font-size: 0.76rem; letter-spacing: 0.03em; border-bottom: 1px solid var(--rule); padding: 6px 10px; vertical-align: bottom; }
+td { padding: 6px 10px; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+table.crit td { white-space: normal; vertical-align: top; }
+table.crit td:first-child { font-weight: 500; }
+.star { color: var(--accent); font-weight: 600; display: inline-block; width: 0.6em; }
+.note { color: var(--muted); font-size: 0.85rem; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 0.85rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.sw.s1 { background: var(--s1); } .sw.s2 { background: var(--s2); } .sw.s3 { background: var(--s3); }
+figure.chart { margin: 8px 0; overflow-x: auto; }
+figure.chart svg { width: 100%; min-width: 480px; height: auto; display: block; }
+svg .grid { stroke: var(--grid); stroke-width: 1; }
+svg .zero { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; }
+svg .span { stroke: var(--rule); stroke-width: 2; }
+svg .whisk { stroke: var(--s1); stroke-width: 2; stroke-linecap: round; opacity: 0.55; }
+svg .tick { fill: var(--muted); font: 11px var(--mono); }
+svg .axlab { fill: var(--muted); font: 12px var(--body); }
+svg .rowlab, svg .ptlab { fill: var(--fg); font: 13px var(--body); }
+svg .dot { stroke: var(--panel); stroke-width: 2; cursor: default; }
+svg .dot:hover { stroke: var(--fg); }
+svg .s1 { fill: var(--s1); } svg .s2 { fill: var(--s2); } svg .s3 { fill: var(--s3); }
+svg .dot.hollow { fill: var(--panel); stroke: var(--s1); stroke-width: 2; }
+ol { padding-left: 1.3em; max-width: 68ch; } li { margin: 6px 0; }
+footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--rule); padding-top: 12px; }
+@media (max-width: 520px) { h1 { font-size: 1.8rem; } main { padding-block: 24px 48px; } }
+
+.sub { font-family: var(--display); font-style: italic; font-size: 1.1rem; color: var(--muted); margin: 6px 0 0; max-width: 60ch; }
+.toc { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 0.86rem; padding: 12px 0; border-block: 1px solid var(--rule); }
+.toc a { color: var(--accent); text-decoration: none; }
+.toc a:hover, .toc a:focus-visible { text-decoration: underline; }
+.abstract { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 18px 22px; }
+.abstract h2 { border: 0; padding: 0; margin-bottom: 4px; font-size: 1.1rem; letter-spacing: 0.04em; text-transform: uppercase; font-family: var(--body); }
+.chain { font-family: var(--mono); font-size: 0.86rem; color: var(--accent); background: var(--panel); border: 1px solid var(--rule); border-radius: 4px; padding: 10px 14px; max-width: none; }
+.eq { font-family: var(--display); font-size: 1.15rem; text-align: center; max-width: none; padding: 6px 0; }
+var { font-family: var(--display); font-style: italic; }
+table.wrap td { white-space: normal; vertical-align: top; }
+table.wrap td:first-child { white-space: nowrap; font-weight: 500; }
+.pill.idle { background: var(--grid); color: var(--muted); }
+figcaption { font-size: 0.84rem; color: var(--muted); margin-top: 6px; }
+pre.mermaid { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 12px; overflow-x: auto; margin: 10px 0; }
+.refs li { font-size: 0.88rem; }
+section[id] { scroll-margin-top: 16px; }
+</style>
+<main>
+<header class="mast">
+  <p class="eyebrow">Project report · 2026-09-26 run · compiled from repository and run files</p>
+  <h1>HyperDIME-Qwen</h1>
+  <p class="sub">Environment-conditioned hypernetworks for query-aware dimension selection on a frozen Qwen3-Embedding-0.6B (D = 1024)</p>
+  <dl class="meta">
+    <div><dt>Repository</dt><dd>wilkertl/hyper-mask-net · restarted 2026-07-21</dd></div>
+    <div><dt>Stage</dt><dd>F0 hypothesis spike done; roadmap not started</dd></div>
+    <div><dt>Evidence so far</dt><dd>1 experiment (F0, H1)</dd></div>
+  </dl>
+</header>
+
+<nav class="toc" aria-label="Contents">
+  <a href="#abstract">Abstract</a><a href="#intro">1 Introduction</a><a href="#method">2 Proposed method</a>
+  <a href="#protocol">3 Research protocol</a><a href="#f0">4 F0: methodology</a><a href="#impl">5 Implementation</a>
+  <a href="#results">6 F0: results</a><a href="#discussion">7 Discussion</a><a href="#status">8 Status and next steps</a><a href="#refs">References</a>
+</nav>
+
+<section id="abstract" class="abstract">
+  <h2>Abstract</h2>
+  <p>Learning to Select (Wu et al., 2026) shows that a small query-only predictor can pick which coordinates of a dense
+  embedding a query should use, keeping document vectors and the index untouched. Such a selector is trained for one
+  retrieval environment. HyperDIME-Qwen asks whether the best selector changes across environments (H1), whether
+  statistics of the embedding space explain that change (H2), and whether a hypernetwork can turn those statistics into
+  selector parameters for an unseen environment (H3). The project is gated so each link can be refuted before the next is
+  built. The first experiment, the F0 spike, tested H1 on five BEIR datasets with 3 seeds per selector.
+  Its pre-registered rule returned <b>H1 supported</b>, but two of the three criteria passed exactly at threshold.
+  All of the gain came from scifact and nfcorpus. On those two sets 63.7% and
+  99.9% of eval positives are also training positives; on fiqa and arguana none are.
+  We read F0 as a preliminary signal that does not yet settle Gate G2. Section 8 lists the controls needed first.</p>
+</section>
+
+<section id="intro">
+  <h2>1 Introduction</h2>
+  <p>Dense retrievers score a query against documents with an inner product over all D coordinates. Not every coordinate
+  helps every query. Query-aware dimension selection keeps, for each query, the <var>k</var> coordinates most useful
+  for ranking and zeroes the rest on the query side only, so the document index is unchanged.</p>
+  <p>Learning to Select trains a linear layer <var>f</var>(<var>e<sub>q</sub></var>) = log-softmax(<var>W e<sub>q</sub></var> + <var>b</var>)
+  to imitate an oracle importance distribution built from labelled positives and hard negatives. The selector is
+  trained per dataset. A new corpus, query population or instruction means new labels and a new selector.</p>
+  <p>HyperDIME-Qwen fixes the encoder, Qwen3-Embedding-0.6B at full dimension, so the 1024 coordinates keep a stable
+  identity. It then studies how the best selector depends on the environment
+  <var>T</var> = (corpus, query distribution, instruction, frozen encoder). The project tests a causal chain one link at a time:</p>
+  <p class="chain">distribution shift → embedding geometry shift → optimal selector shift → hypernetwork adaptation</p>
+  <div class="tw"><table class="wrap"><thead><tr><th></th><th>Hypothesis</th><th>If it fails</th></tr></thead><tbody><tr><td>H1</td><td>Selector shift: the optimal selector for the same Qwen model changes systematically across environments</td><td>Build one universal selector; no hypernetwork</td></tr><tr><td>H2</td><td>Geometry explains the shift: space statistics predict part of the change</td><td>Iterate on the space descriptor</td></tr><tr><td>H3</td><td>A Hyper Head maps environment statistics to selector parameters that beat a global selector on unseen environments</td><td>The parameterization or training is the problem</td></tr></tbody></table></div>
+  <p>The repository began as Hyper-Mask-Net, which generated a mask network per query from Qwen token states. On SciFact it
+  beat random masks but not the full embedding or the linear Learning-to-Select selector at 30% of dimensions.
+  It was restarted on 2026-07-21 with the environment-conditioned design (ADR-0001).</p>
+</section>
+
+<section id="method">
+  <h2>2 Proposed method</h2>
+  <h3>2.1 Two paths</h3>
+  <p><b>Offline, once per environment.</b> A space descriptor summarizes how the environment uses each coordinate.
+  A space encoder and a Hyper Head turn it into selector parameters <var>θ<sub>T</sub></var>, which are stored.</p>
+  <pre class="mermaid">
+flowchart LR
+  C["Corpus + optional calibration queries"] --> E["Frozen Qwen embeddings"]
+  E --> R["Space descriptor R_T (1024 × h)"]
+  R --> G["Space encoder G_ψ"]
+  G --> H["Hyper Head H_φ"]
+  H --> P["θ_T = W_0 + A_T B_Tᵀ, b_0 + Δb_T"]
+  </pre>
+  <p><b>Online, per query.</b> The selector scores dimensions, a policy keeps the top <var>k</var>, and exact search runs
+  over unchanged documents: <var>e′<sub>q</sub></var> = <var>e<sub>q</sub></var> ⊙ <var>m<sub>q</sub></var>,
+  score(<var>q</var>, <var>d</var>) = <var>e′<sub>q</sub></var>ᵀ<var>e<sub>d</sub></var>. The masked query is not re-normalized.</p>
+  <pre class="mermaid">
+flowchart LR
+  Q["query + instruction"] --> QE["e_q (1024)"] --> S["selector f_θT"] --> P["top-k policy"] --> M["mask m_q"]
+  QE --> X["e_q ⊙ m_q"]
+  M --> X --> RET["exact search, documents unchanged"]
+  </pre>
+  <h3>2.2 Components</h3>
+  <div class="tw"><table class="wrap"><thead><tr><th>Component</th><th>Design</th><th>Rationale</th></tr></thead><tbody><tr><td>Space descriptor <var>R<sub>T</sub></var></td><td>Per-dimension statistics in five groups: A document marginals, B query marginals, C query–document interaction <var>q<sub>j</sub>d<sub>j</sub></var>, D contrast <var>q<sub>j</sub></var>(<var>p<sub>j</sub></var> − <var>n<sub>j</sub></var>), E redundancy</td><td>Invariant to sample order, not to dimension identity; normalized with meta-train statistics only</td></tr><tr><td>Space encoder <var>G<sub>ψ</sub></var></td><td>V1: shared MLP over each row plus a learned dimension-ID embedding; V2 adds 1–3 Transformer blocks across dimensions</td><td>Low capacity first; V2 only if an ablation shows V1 is limiting</td></tr><tr><td>Target selector</td><td><var>W<sub>T</sub></var> = <var>W</var><sub>0</sub> + <var>A<sub>T</sub>B<sub>T</sub></var>ᵀ, rank 4–32, <var>b<sub>T</sub></var> = <var>b</var><sub>0</sub> + Δ<var>b<sub>T</sub></var></td><td>Generating a full 1024×1024 matrix per environment is intractable; residual form starts from the global selector</td></tr><tr><td>Hyper Head <var>H<sub>φ</sub></var></td><td>Separate heads for <var>A<sub>T</sub></var>, <var>B<sub>T</sub></var>, Δ<var>b<sub>T</sub></var>, with near-zero initialization of the deltas</td><td>With zero deltas the output equals the base selector</td></tr><tr><td>Training</td><td>Episodic: sample an environment, generate <var>θ<sub>T</sub></var>, fit KL(<var>π<sub>q</sub></var> ‖ <var>π̂<sub>q</sub></var>) on its queries, backpropagate into the Hyper Head and encoder</td><td>Environments, not queries, are the training unit</td></tr><tr><td>Selection policy</td><td>Fixed top-k or ratio first; RDIME-style adaptive k and budget-aware policies later</td><td>Importance prediction stays separate from how many dimensions to keep</td></tr></tbody></table></div>
+  <h3>2.3 Adaptation protocols</h3>
+  <div class="tw"><table class="wrap"><thead><tr><th>Protocol</th><th>Available in a new environment</th><th>Descriptor groups</th></tr></thead><tbody><tr><td>P0 corpus-only</td><td>document embeddings</td><td>A, E</td></tr><tr><td>P1 unlabeled calibration</td><td>documents + a small unlabeled query set</td><td>A, B, C, E; D through pseudo-feedback</td></tr><tr><td>P2 few-label calibration</td><td>P1 + a few labelled queries</td><td>all; never reported as zero-shot</td></tr></tbody></table></div>
+</section>
+
+<section id="protocol">
+  <h2>3 Research protocol</h2>
+  <p>Work proceeds through five gates. Each gate decision is recorded as an architecture decision record (ADR), and a
+  failed gate stops the project from adding complexity.</p>
+  <div class="tw"><table class="wrap"><thead><tr><th>Gate</th><th>Passes when</th><th>Decided by</th><th>Status</th></tr></thead><tbody><tr><td>G1</td><td>Valid baseline: Learning-to-Select converges, masking is correct, exact retrieval ranks as expected</td><td>E0</td><td><span class="pill idle">not started</span></td></tr><tr><td>G2</td><td>H1 supported: selectors differ beyond seed noise and transfer degrades retrieval</td><td>E1 / M4</td><td><span class="pill warn">preliminary signal (F0)</span></td></tr><tr><td>G3</td><td>H2 supported: descriptors predict selector or transfer properties above a trivial baseline</td><td>E2 / M5.4</td><td><span class="pill idle">not started</span></td></tr><tr><td>G4</td><td>H3 supported: the hypernetwork narrows the global vs per-domain gap on unseen environments</td><td>E3</td><td><span class="pill idle">not started</span></td></tr><tr><td>G5</td><td>Offline adaptation is amortizable; online overhead keeps the dimension-reduction benefit</td><td>E6 / M12.2</td><td><span class="pill idle">not started</span></td></tr></tbody></table></div>
+  <p><b>Leakage rules.</b> Splits exist at two levels. Environments are divided into meta-train, meta-validation and
+  meta-test; queries into train, validation and test. Test labels never reach training, negative mining, oracle
+  targets, descriptors or normalization. P0 and P1 code paths may not read labels at all.</p>
+  <p><b>Reporting rules.</b> Metrics use exact scoring (nDCG@10, MRR@10/100, Recall@100, linear gains as in trec_eval).
+  Every table includes the full 1024-dimension embedding and MRL prefix truncation (risk R5), plus a global multi-domain
+  selector trained on the same labels (risk R6). Significance uses paired per-query tests with multiple-comparison
+  correction and confidence intervals. Offline adaptation cost is reported separately from per-query cost.
+  Every table is generated from result files that carry a run manifest.</p>
+</section>
+
+<section id="f0">
+  <h2>4 F0 spike: methodology</h2>
+  <p>F0 tests H1 before any roadmap code is written, with the smallest setup that could refute it.</p>
+  <h3>4.1 Environments</h3>
+  <div class="tw"><table class=""><thead><tr><th>Environment</th><th>Documents</th><th>Training labels</th><th>Train q</th><th>Val q</th><th>Eval q</th><th>Positives / eval q</th></tr></thead><tbody><tr><td>scifact</td><td>5,183</td><td>official train qrels</td><td>728</td><td>81</td><td>300</td><td>1.1</td></tr><tr><td>nfcorpus</td><td>3,633</td><td>official train qrels</td><td>2331</td><td>259</td><td>323</td><td>38.2</td></tr><tr><td>fiqa</td><td>57,638</td><td>official train qrels</td><td>4950</td><td>550</td><td>648</td><td>2.6</td></tr><tr><td>arguana</td><td>8,674</td><td>50/50 split of test queries</td><td>631</td><td>70</td><td>700</td><td>1.0</td></tr><tr><td>scidocs</td><td>25,657</td><td>50/50 split of test queries</td><td>450</td><td>50</td><td>500</td><td>4.9</td></tr></tbody></table></div>
+  <p>Full corpora are used. Datasets without a train split (arguana, scidocs) use a fixed 50/50 split of their judged test
+  queries, and 10% of each training pool becomes validation. Train and evaluation queries are disjoint in every
+  environment, and evaluation labels never reach training.</p>
+  <h3>4.2 Embeddings</h3>
+  <p>Qwen/Qwen3-Embedding-0.6B (revision <code>97b0c614</code>), bfloat16,
+  texts cut to 512 tokens, last-token pooling, L2-normalized, 1024 dimensions. Queries carry each dataset's
+  Qwen3 evaluation instruction as <code>Instruct: …\nQuery:…</code>; documents have no prefix.</p>
+  <h3>4.3 Oracle targets</h3>
+  <p>For each labelled query the target is a distribution over dimensions:</p>
+  <p class="eq"><var>π<sub>q</sub></var> = softmax( <var>e<sub>q</sub></var> ⊙ (<var>p̄</var> − <var>n̄</var>) / <var>τ</var> )</p>
+  <p>Here <var>p̄</var> is the mean of the positive documents weighted by gain 2<sup>rel</sup> − 1, and <var>n̄</var> is the mean of
+  64 negatives sampled with replacement from the query's top-1000 non-positive documents
+  under the full embedding. This follows the official Learning-to-Select label generation (ADR-0002).</p>
+  <h3>4.4 Selector and training</h3>
+  <p>The selector is one 1024→1024 linear layer with log-softmax, trained on KL(<var>π<sub>q</sub></var> ‖ <var>π̂<sub>q</sub></var>) with
+  AdamW (lr 0.0001, weight decay 0.0001), batch 32 and cosine decay over a fixed epoch budget.
+  The state with the lowest validation KL is kept. Temperature and epochs are chosen per environment on validation
+  nDCG@10 at k = 307 from <var>τ</var> ∈ {0.005, 0.01, 0.02, 0.05, 0.1, 0.2} × epochs ∈ {10, 50, 200}, using seed 0
+  and training labels only. Each environment then gets 3 selectors (seeds 0, 1, 2).
+  The global selector is trained on the union of all environments' training labels, with its epoch count tuned on mean validation nDCG@10.</p>
+  <h3>4.5 Systems compared</h3>
+  <div class="tw"><table class="wrap"><thead><tr><th>System</th><th>Importance used for the top-k mask</th></tr></thead><tbody><tr><td>Full</td><td>no mask, 1024 dimensions</td></tr><tr><td>Prefix</td><td>first k dimensions (Qwen3 is Matryoshka-trained)</td></tr><tr><td>Random</td><td>uniform random scores, 3 draws</td></tr><tr><td>Global</td><td>selector trained on all five environments</td></tr><tr><td>In-domain</td><td>selector trained on the evaluation environment</td></tr><tr><td>Transferred</td><td>selector trained on each other environment</td></tr><tr><td>Oracle</td><td>targets built from the eval query's own labels; an upper bound, never trained on</td></tr></tbody></table></div>
+  <p>Evaluation uses exact scoring at k ∈ {128, 256, 307, 512} (headline k = 307, 30% of dimensions), excluding a document
+  whose ID equals the query ID, as BEIR does for ArguAna. Per-query metrics are averaged over seeds before testing.</p>
+  <h3>4.6 Mask analysis and statistics</h3>
+  <p>All 2471 evaluation queries form one unlabelled battery. Each selector's top-307 masks on the battery
+  give overlap@k within an environment (across seeds) and across environments. Mean importance vectors are compared with
+  Jensen–Shannon divergence and Spearman rank correlation. Paired differences use a two-sided sign-flip randomization test
+  (10,000 permutations), a percentile bootstrap 95% CI (10,000 resamples over queries) and Holm correction within
+  each family (α = 0.05).</p>
+  <h3>4.7 Verdict rule</h3>
+  <p>H1 is supported only if all three criteria hold at k = 307, on nDCG@10:</p>
+  <div class="tw"><table class="wrap"><thead><tr><th></th><th>Criterion</th></tr></thead><tbody><tr><td>C1</td><td>Transferred selectors lose significantly to the in-domain selector on ≥ half of the ordered pairs</td></tr><tr><td>C2</td><td>Cross-environment mask overlap@k is significantly below cross-seed overlap</td></tr><tr><td>C3</td><td>In-domain beats the global selector significantly on ≥ 2 of 5 environments</td></tr></tbody></table></div>
+  <p>C3 is the practical test: without a gap between per-domain and global selectors there is nothing for a hypernetwork
+  to recover, even if H1 is technically true.</p>
+</section>
+
+<section id="impl">
+  <h2>5 Implementation</h2>
+  <p>The code is a Python 3.12 / PyTorch package, <code>src/hyperdime</code>, laid out by the plan's modules M0–M12. So far
+  only the pieces F0 needs exist, together with 57 unit and integration test functions. These cover hand-computed oracle
+  and Holm values, trainer determinism, leakage-safe splits, the vLLM client against a fake server, and a synthetic
+  end-to-end run that must reproduce byte-identical output.</p>
+  <div class="tw"><table class="wrap"><thead><tr><th>Package</th><th>What it does</th><th>State</th></tr></thead><tbody><tr><td><code>embeddings</code></td><td>Frozen Qwen3-Embedding-0.6B: last-token pooling, L2 norm, instruction prefix; local transformers or vLLM backend; resumable cache with a settings guard</td><td>done (F0)</td></tr><tr><td><code>data</code></td><td>BEIR download and parsing, deterministic ID splits, hard-negative mining and sampling</td><td>done (F0)</td></tr><tr><td><code>oracle</code></td><td>Target distribution softmax(e<sub>q</sub> ⊙ (p̄ − n̄) / τ) with gain-weighted positives</td><td>done (F0)</td></tr><tr><td><code>baselines</code>, <code>training</code></td><td>Linear D→D selector with log-softmax; KL trainer (AdamW, cosine schedule, best validation state)</td><td>done (F0)</td></tr><tr><td><code>selection</code>, <code>retrieval</code></td><td>Top-k mask, query-only masking without re-normalization; exact batched dot-product search, BEIR identical-ID exclusion</td><td>done (F0)</td></tr><tr><td><code>evaluation</code></td><td>nDCG / recall / MRR (trec_eval gains); overlap@k, JS, Spearman; sign-flip test, bootstrap CI, Holm</td><td>done (F0)</td></tr><tr><td><code>spike</code></td><td>F0 pipeline: prepare → train → train-global → analyze → report, with a JSON manifest per step</td><td>done (F0)</td></tr><tr><td><code>contracts</code></td><td>Schemas, run manifests, seeding, configs (M0)</td><td>hashing only</td></tr><tr><td><code>space</code>, <code>hypernet</code>, <code>cli</code></td><td>Space descriptor and encoder, low-rank selector, Hyper Head, protocols P0–P2</td><td>not started</td></tr></tbody></table></div>
+  <p><b>Pipeline.</b> <code>python -m hyperdime.spike all</code> runs five steps. Each step writes a JSON manifest
+  (git commit, dirty flag, config, library versions) first with <code>status: running</code>, then <code>complete</code>.
+  The next step refuses inputs that are not complete.</p>
+  <div class="tw"><table class="wrap"><thead><tr><th>Step</th><th>Work</th></tr></thead><tbody><tr><td>prepare</td><td>Download BEIR, split queries, embed corpus and queries (cached), sample hard negatives for train/val queries</td></tr><tr><td>train</td><td>Per environment: 6×3 grid on validation nDCG@10 with seed 0, then one selector per seed</td></tr><tr><td>train-global</td><td>One selector on the union of all training labels; epoch count tuned on mean validation nDCG@10</td></tr><tr><td>analyze</td><td>Every system on every eval set at every k; transfer matrix; mask battery; paired tests; verdict</td></tr><tr><td>report</td><td>Markdown report rendered from analysis.json</td></tr></tbody></table></div>
+  <p><b>Compute.</b> Run on the CEIA DGX Spark cluster (one NVIDIA GB10, aarch64) inside an NGC PyTorch 25.09 container unpacked to
+  node-local disk by enroot. Slurm job 407 ran 12:55:26–13:24:42; embeddings were reused from an earlier job's cache.
+  Selector training dominated; the per-environment grid is 18 fits plus 3 seeds.
+  Commit <code>d6453f0</code>, clean tree.</p>
+</section>
+
+<section id="results">
+  <h2>6 F0: results</h2>
+  <h3>6.1 Verdict</h3>
+  <div class="tw"><table class="wrap"><thead><tr><th></th><th>Criterion</th><th>Result</th><th>Status</th></tr></thead><tbody><tr><td>C1</td><td>Transferred selectors lose significantly to the in-domain selector on ≥ half of the ordered pairs</td><td>10/20 (needs 10); 8 of them on scifact / nfcorpus</td><td><span class="pill ok">met, at threshold</span></td></tr><tr><td>C2</td><td>Cross-environment mask overlap@k is significantly below cross-seed overlap</td><td>0.521 vs 0.380, p = 0.0001</td><td><span class="pill ok">met</span></td></tr><tr><td>C3</td><td>In-domain beats the global selector significantly on ≥ 2 of 5 environments</td><td>2/5: scifact, nfcorpus</td><td><span class="pill ok">met, at threshold</span></td></tr></tbody></table></div>
+  <h3>6.2 Retrieval quality at k = 307</h3>
+  <div class="tw"><table class=""><thead><tr><th>Env</th><th>Full 1024</th><th>Prefix</th><th>Random</th><th>Global</th><th>In-domain</th><th>Mean transferred</th><th>Oracle</th></tr></thead><tbody><tr><td>scifact</td><td>0.6997</td><td>0.6669</td><td>0.6623</td><td>0.7399</td><td><b>0.8026</b></td><td>0.6644</td><td>0.9981</td></tr><tr><td>nfcorpus</td><td>0.3619</td><td>0.3274</td><td>0.3255</td><td>0.3356</td><td><b>0.3620</b></td><td>0.3283</td><td>0.7702</td></tr><tr><td>fiqa</td><td>0.4703</td><td>0.4270</td><td>0.4166</td><td>0.4374</td><td><b>0.4341</b></td><td>0.4241</td><td>0.9460</td></tr><tr><td>arguana</td><td>0.7199</td><td>0.6876</td><td>0.6783</td><td>0.6850</td><td><b>0.6786</b></td><td>0.6754</td><td>0.9573</td></tr><tr><td>scidocs</td><td>0.2327</td><td>0.2116</td><td>0.2018</td><td>0.2119</td><td><b>0.2134</b></td><td>0.2043</td><td>0.7127</td></tr></tbody></table></div>
+  <div class="legend"><span><i class="sw s1"></i>in-domain</span><span><i class="sw s2"></i>global</span><span><i class="sw s3"></i>prefix</span></div>
+  <figure class="chart"><svg viewBox="0 0 640 258" role="img" aria-label="Change in nDCG@10 versus full 1024 dimensions">
+<line class="grid" x1="92.0" x2="92.0" y1="24" y2="232"/>
+<text class="tick" x="92.0" y="248" text-anchor="middle">−0.06</text>
+<line class="grid" x1="150.7" x2="150.7" y1="24" y2="232"/>
+<text class="tick" x="150.7" y="248" text-anchor="middle">−0.04</text>
+<line class="grid" x1="209.3" x2="209.3" y1="24" y2="232"/>
+<text class="tick" x="209.3" y="248" text-anchor="middle">−0.02</text>
+<line class="zero" x1="268.0" x2="268.0" y1="24" y2="232"/>
+<text class="tick" x="268.0" y="248" text-anchor="middle">+0.00</text>
+<line class="grid" x1="326.7" x2="326.7" y1="24" y2="232"/>
+<text class="tick" x="326.7" y="248" text-anchor="middle">+0.02</text>
+<line class="grid" x1="385.3" x2="385.3" y1="24" y2="232"/>
+<text class="tick" x="385.3" y="248" text-anchor="middle">+0.04</text>
+<line class="grid" x1="444.0" x2="444.0" y1="24" y2="232"/>
+<text class="tick" x="444.0" y="248" text-anchor="middle">+0.06</text>
+<line class="grid" x1="502.7" x2="502.7" y1="24" y2="232"/>
+<text class="tick" x="502.7" y="248" text-anchor="middle">+0.08</text>
+<line class="grid" x1="561.3" x2="561.3" y1="24" y2="232"/>
+<text class="tick" x="561.3" y="248" text-anchor="middle">+0.10</text>
+<line class="grid" x1="620.0" x2="620.0" y1="24" y2="232"/>
+<text class="tick" x="620.0" y="248" text-anchor="middle">+0.12</text>
+<text class="tick" x="272.0" y="18">full 1024 dims</text>
+<text class="rowlab" x="80" y="54.0" text-anchor="end">scifact</text>
+<line class="span" x1="171.9" x2="569.9" y1="50.0" y2="50.0"/>
+<circle class="dot s1" cx="569.9" cy="50.0" r="6"><title>scifact · in-domain: +0.1029 vs full</title></circle>
+<circle class="dot s2" cx="386.0" cy="50.0" r="6"><title>scifact · global: +0.0402 vs full</title></circle>
+<circle class="dot s3" cx="171.9" cy="50.0" r="6"><title>scifact · prefix: −0.0328 vs full</title></circle>
+<text class="rowlab" x="80" y="94.0" text-anchor="end">nfcorpus</text>
+<line class="span" x1="166.6" x2="268.2" y1="90.0" y2="90.0"/>
+<circle class="dot s1" cx="268.2" cy="90.0" r="6"><title>nfcorpus · in-domain: +0.0001 vs full</title></circle>
+<circle class="dot s2" cx="190.7" cy="90.0" r="6"><title>nfcorpus · global: −0.0263 vs full</title></circle>
+<circle class="dot s3" cx="166.6" cy="90.0" r="6"><title>nfcorpus · prefix: −0.0346 vs full</title></circle>
+<text class="rowlab" x="80" y="134.0" text-anchor="end">fiqa</text>
+<line class="span" x1="141.0" x2="171.5" y1="130.0" y2="130.0"/>
+<circle class="dot s1" cx="162.0" cy="130.0" r="6"><title>fiqa · in-domain: −0.0361 vs full</title></circle>
+<circle class="dot s2" cx="171.5" cy="130.0" r="6"><title>fiqa · global: −0.0329 vs full</title></circle>
+<circle class="dot s3" cx="141.0" cy="130.0" r="6"><title>fiqa · prefix: −0.0433 vs full</title></circle>
+<text class="rowlab" x="80" y="174.0" text-anchor="end">arguana</text>
+<line class="span" x1="147.0" x2="173.3" y1="170.0" y2="170.0"/>
+<circle class="dot s1" cx="147.0" cy="170.0" r="6"><title>arguana · in-domain: −0.0412 vs full</title></circle>
+<circle class="dot s2" cx="165.6" cy="170.0" r="6"><title>arguana · global: −0.0349 vs full</title></circle>
+<circle class="dot s3" cx="173.3" cy="170.0" r="6"><title>arguana · prefix: −0.0323 vs full</title></circle>
+<text class="rowlab" x="80" y="214.0" text-anchor="end">scidocs</text>
+<line class="span" x1="205.8" x2="211.3" y1="210.0" y2="210.0"/>
+<circle class="dot s1" cx="211.3" cy="210.0" r="6"><title>scidocs · in-domain: −0.0193 vs full</title></circle>
+<circle class="dot s2" cx="207.0" cy="210.0" r="6"><title>scidocs · global: −0.0208 vs full</title></circle>
+<circle class="dot s3" cx="205.8" cy="210.0" r="6"><title>scidocs · prefix: −0.0212 vs full</title></circle>
+</svg><figcaption>Figure 1. nDCG@10 change against the full embedding at k = 307. Hover a point for its value.</figcaption></figure>
+  <p>Only scifact gains from masking: the in-domain selector is +0.103 above the full embedding. nfcorpus breaks even.
+  On fiqa, arguana and scidocs every method loses a few points, and the learned selectors land close to prefix truncation.</p>
+  <h3>6.3 Transfer matrix</h3>
+  <div class="tw"><table class=""><thead><tr><th>train \ test</th><th>scifact</th><th>nfcorpus</th><th>fiqa</th><th>arguana</th><th>scidocs</th></tr></thead><tbody><tr><td><b>scifact</b></td><td><b>0.8026</b></td><td>0.3286<span class="star">*</span></td><td>0.4275<span class="star"></span></td><td>0.6725<span class="star"></span></td><td>0.2079<span class="star"></span></td></tr><tr><td><b>nfcorpus</b></td><td>0.6526<span class="star">*</span></td><td><b>0.3620</b></td><td>0.4243<span class="star"></span></td><td>0.6681<span class="star"></span></td><td>0.2014<span class="star">*</span></td></tr><tr><td><b>fiqa</b></td><td>0.6669<span class="star">*</span></td><td>0.3302<span class="star">*</span></td><td><b>0.4341</b></td><td>0.6846<span class="star"></span></td><td>0.2068<span class="star"></span></td></tr><tr><td><b>arguana</b></td><td>0.6683<span class="star">*</span></td><td>0.3261<span class="star">*</span></td><td>0.4208<span class="star"></span></td><td><b>0.6786</b></td><td>0.2012<span class="star">*</span></td></tr><tr><td><b>scidocs</b></td><td>0.6698<span class="star">*</span></td><td>0.3281<span class="star">*</span></td><td>0.4237<span class="star"></span></td><td>0.6763<span class="star"></span></td><td><b>0.2134</b></td></tr></tbody></table></div>
+  <p class="note">nDCG@10 at k = 307, rows train and columns test. * = significantly below the in-domain selector (Holm, α = 0.05).</p>
+  <h3>6.4 Where the gain comes from</h3>
+  <figure class="chart"><svg viewBox="0 0 640 300" role="img" aria-label="Headroom versus share of eval positives seen in training">
+<line class="grid" x1="64" x2="616" y1="256.0" y2="256.0"/>
+<text class="tick" x="56" y="260.0" text-anchor="end">−0.02</text>
+<line class="zero" x1="64" x2="616" y1="216.7" y2="216.7"/>
+<text class="tick" x="56" y="220.7" text-anchor="end">+0.00</text>
+<line class="grid" x1="64" x2="616" y1="177.3" y2="177.3"/>
+<text class="tick" x="56" y="181.3" text-anchor="end">+0.02</text>
+<line class="grid" x1="64" x2="616" y1="138.0" y2="138.0"/>
+<text class="tick" x="56" y="142.0" text-anchor="end">+0.04</text>
+<line class="grid" x1="64" x2="616" y1="98.7" y2="98.7"/>
+<text class="tick" x="56" y="102.7" text-anchor="end">+0.06</text>
+<line class="grid" x1="64" x2="616" y1="59.3" y2="59.3"/>
+<text class="tick" x="56" y="63.3" text-anchor="end">+0.08</text>
+<line class="grid" x1="64" x2="616" y1="20.0" y2="20.0"/>
+<text class="tick" x="56" y="24.0" text-anchor="end">+0.10</text>
+<text class="tick" x="64.0" y="278" text-anchor="middle">0%</text>
+<text class="tick" x="202.0" y="278" text-anchor="middle">25%</text>
+<text class="tick" x="340.0" y="278" text-anchor="middle">50%</text>
+<text class="tick" x="478.0" y="278" text-anchor="middle">75%</text>
+<text class="tick" x="616.0" y="278" text-anchor="middle">100%</text>
+<text class="axlab" x="340.0" y="296" text-anchor="middle">eval positives that are also train/val positives</text>
+<line class="whisk" x1="415.7" x2="415.7" y1="136.9" y2="47.1"/>
+<circle class="dot s1" cx="415.7" cy="93.3" r="6"><title>scifact: +0.0627 [+0.0406, +0.0862]; 63.7% of eval positives seen in training</title></circle>
+<text class="ptlab" x="427.7" y="97.3" text-anchor="start">scifact</text>
+<line class="whisk" x1="615.4" x2="615.4" y1="188.9" y2="140.3"/>
+<circle class="dot s1" cx="615.4" cy="164.7" r="6"><title>nfcorpus: +0.0264 [+0.0141, +0.0388]; 99.9% of eval positives seen in training</title></circle>
+<text class="ptlab" x="603.4" y="168.7" text-anchor="end">nfcorpus</text>
+<line class="whisk" x1="64.0" x2="64.0" y1="231.4" y2="214.4"/>
+<circle class="dot s1 hollow" cx="64.0" cy="223.0" r="6"><title>fiqa: −0.0032 [−0.0075, +0.0011]; 0.0% of eval positives seen in training</title></circle>
+<text class="ptlab" x="76.0" y="227.0" text-anchor="start">fiqa</text>
+<line class="whisk" x1="64.0" x2="64.0" y1="250.2" y2="208.5"/>
+<circle class="dot s1 hollow" cx="64.0" cy="229.1" r="6"><title>arguana: −0.0063 [−0.0171, +0.0041]; 0.0% of eval positives seen in training</title></circle>
+<text class="ptlab" x="76.0" y="233.1" text-anchor="start">arguana</text>
+<line class="whisk" x1="178.8" x2="178.8" y1="225.1" y2="202.2"/>
+<circle class="dot s1 hollow" cx="178.8" cy="213.8" r="6"><title>scidocs: +0.0015 [−0.0043, +0.0074]; 20.8% of eval positives seen in training</title></circle>
+<text class="ptlab" x="190.8" y="217.8" text-anchor="start">scidocs</text>
+</svg><figcaption>Figure 2. Headroom (in-domain − global, 95% CI) against the share of eval positives that are also
+  train/validation positives. Filled points are significant.</figcaption></figure>
+  <h3>6.5 Mask behavior</h3>
+  <p>Mean overlap@307 is 0.5211 across seeds and 0.3801 across environments
+  (difference CI [+0.1404, +0.1417]). Per-environment Spearman correlations of mean importance between seeds:</p>
+  <div class="tw"><table class="narrow"><thead><tr><th>Env</th><th>Between seeds</th><th>Best match to another env</th></tr></thead><tbody><tr><td>scifact</td><td>0.945</td><td>0.583</td></tr><tr><td>nfcorpus</td><td>0.100</td><td>0.517</td></tr><tr><td>fiqa</td><td>0.823</td><td>0.583</td></tr><tr><td>arguana</td><td>0.120</td><td>0.549</td></tr><tr><td>scidocs</td><td>0.313</td><td>0.583</td></tr></tbody></table></div>
+  <h3>6.6 Selected hyperparameters</h3>
+  <div class="tw"><table class="narrow"><thead><tr><th>Env</th><th>τ</th><th>Epochs</th><th>Best val nDCG@10</th></tr></thead><tbody><tr><td>scifact</td><td>0.005</td><td>200</td><td>0.8253</td></tr><tr><td>nfcorpus</td><td>0.2</td><td>200</td><td>0.3635</td></tr><tr><td>fiqa</td><td>0.005</td><td>10</td><td>0.3998</td></tr><tr><td>arguana</td><td>0.05</td><td>10</td><td>0.6797</td></tr><tr><td>scidocs</td><td>0.005</td><td>10</td><td>0.2707</td></tr></tbody></table></div>
+  <p class="note">Global selector: 10 epochs.</p>
+</section>
+
+<section id="discussion">
+  <h2>7 Discussion</h2>
+  <p>The verdict is correct under the rule as written, but the evidence is thin. The main threats to validity:</p>
+  <ol>
+    <li><b>Document overlap drives the gain.</b> Queries are split, documents are not. Headroom appears where eval positives
+    were seen as training positives (scifact 63.7%, nfcorpus 99.9%)
+    and vanishes where they were not (fiqa, arguana 0%). A selector may learn which corpus regions are relevant rather than
+    how the domain uses coordinates. This uses legitimate training labels, so it is not leakage. It is a confound for H1,
+    and for the hypernetwork, which will not see labels on new environments. scidocs (20.8%
+    overlap, no gain) shows overlap is not sufficient on its own.</li>
+    <li><b>Thresholds.</b> C1 passes with 10/20; 8 of those losses land on scifact and nfcorpus.
+    C3 passes with exactly two environments.</li>
+    <li><b>Instruction shift.</b> A transferred selector sees queries carrying another dataset's instruction prefix, so
+    part of the measured transfer loss may be instruction shift rather than corpus shift.</li>
+    <li><b>Seed noise.</b> For nfcorpus, arguana, scidocs, seeds agree with each other less than with some other environment.
+    Jensen–Shannon divergence stays below 0.0002, so mean importance is close to uniform. C2's CI is tight
+    because the bootstrap resamples the 2471 battery queries only, not seeds or environment pairs.</li>
+    <li><b>Training.</b> 5 of 5 epoch choices and 4 of 5 temperatures sit on a grid edge, and
+    12 of 15 training runs kept a state from their last three epochs, so validation KL was mostly still falling
+    when training stopped. Yet the grid picked the shortest budget for three environments, where longer training lowered validation nDCG. KL to the oracle and ranking quality
+    may not be well aligned.</li>
+    <li><b>Prefix is strong.</b> Outside scifact and nfcorpus the selectors do not beat MRL prefix truncation. This is risk R5 in practice.</li>
+  </ol>
+  <p>An earlier F0 run at commit <code>94bbefc</code> returned "not supported". Its selectors did not beat random masks on four
+  environments, which ADR-0002 traced to early stopping and label generation that differed from the official recipe.
+  Fixing the recipe flipped the verdict, which shows how sensitive H1 is to training choices.</p>
+</section>
+
+<section id="status">
+  <h2>8 Status and next steps</h2>
+  <p>35 roadmap issues exist and 35 are open. There are 0 pull requests. Of
+  16 ticket and experiment branches, 15 have no commits beyond <code>master</code>. The F0 branch
+  is 9 commits ahead and not merged. In the roadmap task list 31 of 52 tasks are done, all of them F0
+  setup, implementation, documentation and hardening. Running F0 and committing its report (T023–T025) happened on the cluster but is not recorded in
+  the repository. The verdict ADR (T026) is still unwritten.</p>
+  <div class="tw"><table class="wrap"><thead><tr><th>Phase</th><th>Name</th><th>Scope</th><th>Issues</th></tr></thead><tbody><tr><td>A</td><td>Foundation</td><td>M0–M2: contracts, manifests, loaders, splits, Qwen encoder, cache, negatives</td><td>10 open</td></tr><tr><td>B</td><td>Scientific baseline</td><td>M3, M12.1, E0: oracle, Learning-to-Select trainer, baselines → G1</td><td>5 open</td></tr><tr><td>C</td><td>Evidence for H1</td><td>M4, M12.3: per-domain selectors, transfer matrix, behavior analysis → G2</td><td>5 open</td></tr><tr><td>D</td><td>Space representation</td><td>M5: descriptor groups A–E, H2 probes → G3</td><td>5 open</td></tr><tr><td>E</td><td>Hypernetwork</td><td>M6–M9: space encoder, low-rank selector, Hyper Head, episodic training</td><td>5 open</td></tr><tr><td>F</td><td>Final evaluation</td><td>M10–M12, E3–E6: protocols, policies, main result, ablations, efficiency → G4, G5</td><td>5 open</td></tr></tbody></table></div>
+  <h3>Recommended before Gate G2</h3>
+  <ol>
+    <li>Evaluate scifact and nfcorpus on eval queries whose positives never occur in training, or split the corpus as well
+    as the queries. If headroom survives, H1 stands on firmer ground.</li>
+    <li>Control instruction shift: encode transferred queries with a shared instruction, or measure transfer with the
+    instruction swapped.</li>
+    <li>Widen the grid (below 10 and above 200 epochs, below τ = 0.005) and check the KL–nDCG mismatch.</li>
+    <li>Bootstrap C2 over seeds and environment pairs as well as queries.</li>
+    <li>Add environments with real train splits and little document overlap before investing in phases D–E.</li>
+    <li>Commit the F0 report on <code>exp/F0-selector-shift</code> and record the decision in an ADR, per the workflow.</li>
+  </ol>
+</section>
+
+<section id="refs" class="refs">
+  <h2>References</h2>
+  <ol>
+    <li>Wu, Z.; Zhang, R.; Nie, Z. Learning to Select: Query-Aware Adaptive Dimension Selection for Dense Retrieval. ACL 2026.</li>
+    <li>Killingback, J.; Zeng, H.; Zamani, H. Hypencoder: Hypernetworks for Information Retrieval. SIGIR 2025.</li>
+    <li>Eichholtz, A. et al. Hypencoder Revisited: Reproducibility and Analysis of Non-Linear Scoring for First-Stage Retrieval. SIGIR 2026.</li>
+    <li>D'Erasmo, G. et al. Statistical Foundations of DIME: Risk Estimation for Practical Index Selection. EACL 2026.</li>
+    <li>Zhang, Y. et al. Qwen3 Embedding: Advancing Text Embedding and Reranking Through Foundation Models. 2025.</li>
+    <li>Kusupati, A. et al. Matryoshka Representation Learning. NeurIPS 2022.</li>
+    <li>Thakur, N. et al. BEIR: A Heterogeneous Benchmark for Zero-shot Evaluation of Information Retrieval Models. NeurIPS Datasets and Benchmarks 2021.</li>
+  </ol>
+  <p class="note">Sources: docs/plan, docs/architecture.md, docs/protocols.md, ADR-0001, ADR-0002, specs/002-hyperdime-roadmap,
+  src/hyperdime at <code>d6453f0</code>; F0 numbers from artifacts/spike/analysis/analysis.json, per-environment
+  manifests, splits, histories and BEIR qrels copied from the cluster; project state from git and GitHub at build time.
+  Exploratory results, not paper numbers.</p>
+</section>
+</main>
