@@ -201,7 +201,7 @@ meta-test environments.
 - [ ] T045 Confirm the `checks` job in .github/workflows/ci.yml passes on the spike branch (open the pull request so it runs; so far it has run only on `master`): it installs `.[dev]` without transformers, which needs T053's numpy dependency, and runs mypy (`python_version = "3.12"`) on CI's Python 3.12; no test needs network or transformers
 - [X] T066 [P] Add `hyperdime.space` (`marginal`) and the spike's `diagnose` step to the Components table in docs/architecture.md (the "F0 selector-shift spike" row lists `prepare|train|train-global|analyze|report|all`; add `diagnose`)
 - [X] T067 [P] Update the test count in specs/002-hyperdime-roadmap/quickstart.md ("64 tests before R20") to the count `pytest` reports after T054–T057
-- [ ] T068 Decide on the untracked scripts/reports/build_project_report.py and reports/project/index.html: either commit them under a `chore(reports)` commit with the `gh` and logs/ inputs documented in the script docstring and kept out of any table that research R18 requires to come from result files alone, or delete them
+- [X] T068 Decide on the untracked scripts/reports/build_project_report.py and reports/project/index.html: either commit them under a `chore(reports)` commit with the `gh` and logs/ inputs documented in the script docstring and kept out of any table that research R18 requires to come from result files alone, or delete them
 
 ---
 

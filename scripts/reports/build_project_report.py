@@ -3,6 +3,11 @@
 Numbers come from the F0 run's files (artifacts/spike/**, BEIR qrels, the Slurm log in logs/),
 from git, and from the GitHub issue tracker (``gh``). Nothing numeric is typed in.
 
+This is a project-status page, not an experiment report: because it also reads git, the issue
+tracker, and Slurm logs, it does not meet research R18's "generated from result files alone"
+rule, and no table in it may be cited as a result. Experiment numbers live in reports/F0/ and
+later reports/E*/.
+
 Bring the run back from the cluster first (scripts/slurm/README.md), then, from the repo root:
 
     python scripts/reports/build_project_report.py [--out reports/project/index.html]
