@@ -90,13 +90,22 @@ def encoder(fake: FakeVllm, **kwargs: Any) -> VllmEncoder:
     return VllmEncoder(fake.url, truncate=truncate, sleep=lambda _: None, **kwargs)
 
 
-def test_validate_endpoint_allows_only_protected_channels(monkeypatch: pytest.MonkeyPatch) -> None:
-    assert validate_endpoint("https://embed.example/v1")
-    assert validate_endpoint("http://127.0.0.1:8000/v1")
-    assert validate_endpoint("http://localhost:8000/v1")
-    for bad in ("http://10.0.0.5:8000/v1", "ftp://127.0.0.1/v1", "https://u:p@embed.example/v1"):
-        with pytest.raises(EndpointConfigurationError):
-            validate_endpoint(bad)
+@pytest.mark.parametrize(
+    "url", ["https://embed.example/v1", "http://127.0.0.1:8000/v1", "http://localhost:8000/v1"]
+)
+def test_validate_endpoint_allows_https_and_loopback(url: str) -> None:
+    assert validate_endpoint(url)
+
+
+@pytest.mark.parametrize(
+    "url", ["http://10.0.0.5:8000/v1", "ftp://127.0.0.1/v1", "https://u:p@embed.example/v1"]
+)
+def test_validate_endpoint_rejects_unprotected_channels(url: str) -> None:
+    with pytest.raises(EndpointConfigurationError):
+        validate_endpoint(url)
+
+
+def test_validate_endpoint_allows_declared_tunnel_hosts(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv(TUNNEL_HOSTS_ENV, "10.0.0.5")
     assert validate_endpoint("http://10.0.0.5:8000/v1")
 
@@ -126,16 +135,21 @@ def test_results_are_reordered_by_index(fake: FakeVllm) -> None:
 
     fake.replies.append(shuffled)
     vectors = encoder(fake).encode(["x", "yy"])
-    assert vectors[0, 1] == 1.0 and vectors[1, 2] == 1.0
+    assert vectors[0, 1] == 1.0  # "x" has length 1
+    assert vectors[1, 2] == 1.0  # "yy" has length 2
 
 
-def test_transient_failures_are_retried_and_permanent_ones_are_not(fake: FakeVllm) -> None:
+def test_transient_failures_are_retried(fake: FakeVllm) -> None:
     fake.replies += [lambda _: (503, {}), lambda _: (429, {})]
     assert encoder(fake).encode(["x"]).shape == (1, 1024)
     assert len(fake.requests) == 3
+
+
+def test_permanent_failures_are_not_retried_and_do_not_leak_inputs(fake: FakeVllm) -> None:
     fake.replies.append(lambda _: (400, {"error": "bad"}))
     with pytest.raises(EmbeddingServiceError) as error:
         encoder(fake).encode(["x"])
+    assert len(fake.requests) == 1
     assert not error.value.retryable and "x" not in str(error.value)
 
 
@@ -160,11 +174,14 @@ def test_server_must_serve_the_qwen_model(fake: FakeVllm) -> None:
         encoder(fake)
 
 
-def test_api_key_is_sent_only_from_the_environment(
-    fake: FakeVllm, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_no_api_key_is_sent_without_the_environment_variable(fake: FakeVllm) -> None:
     encoder(fake).encode(["x"])
     assert "Authorization" not in fake.headers[-1]
+
+
+def test_api_key_from_the_environment_is_sent_but_never_shown(
+    fake: FakeVllm, monkeypatch: pytest.MonkeyPatch
+) -> None:
     monkeypatch.setenv(API_KEY_ENV, "secret-token")
     enc = encoder(fake)
     enc.encode(["x"])

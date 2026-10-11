@@ -174,8 +174,8 @@ def test_make_splits_keeps_evaluation_labels_out_of_training() -> None:
 def test_make_splits_halves_test_only_datasets_deterministically() -> None:
     spec = EnvSpec("toy", "", None)
     first, second = make_splits(spec, _dataset()), make_splits(spec, _dataset())
-    assert first == second
     pool = set(first.train) | set(first.validation)
+    assert first == second
     assert pool.isdisjoint(first.evaluation)
     assert len(pool) + len(first.evaluation) == 19
     assert set(first.train_labels) == pool
@@ -214,26 +214,44 @@ def test_file_and_tree_hashes_match_manual_values(tmp_path: Path) -> None:
     assert tree_sha256(tmp_path) == expected
 
 
-def test_download_beir_records_archive_and_tree_fingerprints(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+@pytest.fixture
+def toy_archive(monkeypatch: pytest.MonkeyPatch) -> bytes:
+    """A two-file BEIR zip served by a fake ``urlopen``."""
     buffer = io.BytesIO()
     with zipfile.ZipFile(buffer, "w") as bundle:
         bundle.writestr("toy/corpus.jsonl", '{"_id": "d1", "text": "x"}\n')
         bundle.writestr("toy/queries.jsonl", '{"_id": "q1", "text": "y"}\n')
     archive = buffer.getvalue()
     monkeypatch.setattr(loaders.urllib.request, "urlopen", lambda url: io.BytesIO(archive))
+    return archive
+
+
+def test_download_beir_records_archive_and_tree_fingerprints(
+    tmp_path: Path, toy_archive: bytes
+) -> None:
     directory = download_beir("toy", tmp_path)
     record = beir_fingerprint(tmp_path, "toy")
-    assert record["zip_sha256"] == hashlib.sha256(archive).hexdigest()
+    assert record["zip_sha256"] == hashlib.sha256(toy_archive).hexdigest()
     assert record["tree_sha256"] == tree_sha256(directory)
     assert record["url"].endswith("/toy.zip")
+
+
+def test_download_beir_reuses_an_extracted_dataset(
+    tmp_path: Path, toy_archive: bytes, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    directory = download_beir("toy", tmp_path)
 
     def offline(url: str) -> io.BytesIO:
         raise AssertionError("an extracted dataset must not be downloaded again")
 
     monkeypatch.setattr(loaders.urllib.request, "urlopen", offline)
     assert download_beir("toy", tmp_path) == directory
+
+
+def test_beir_fingerprint_marks_a_missing_archive_record_unknown(
+    tmp_path: Path, toy_archive: bytes
+) -> None:
+    download_beir("toy", tmp_path)
     (tmp_path / "toy.sha256.json").unlink()
     assert beir_fingerprint(tmp_path, "toy")["zip_sha256"] == "unknown"
 

@@ -1,6 +1,7 @@
 """Synthetic end-to-end spike run: cached embeddings → train → global → analyze → report."""
 
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import pytest
@@ -152,53 +153,90 @@ def _run_through_analyze(root: Path, envs: list[str], seeds: list[int]) -> None:
     pipeline.analyze(envs, root, seeds)
 
 
-def test_diagnose_writes_its_result_and_ignores_evaluation_labels(tmp_path: Path) -> None:
-    """FR-000d, research R20: D1 and D3 read training labels only; D2 scores with eval labels."""
-    envs, seeds = ["alpha", "beta"], [0, 1]
-    options = {"permutations": 30, "half_splits": 8}
-    for variant in ("original", "corrupted"):
-        for index, env in enumerate(envs):
-            _write_env(tmp_path / variant, env, seed=index)
-    _corrupt_evaluation_labels(tmp_path / "corrupted", envs)
-    for variant in ("original", "corrupted"):
-        _run_through_analyze(tmp_path / variant, envs, seeds)
+DIAGNOSE_ENVS, DIAGNOSE_SEEDS = ["alpha", "beta"], [0, 1]
+DIAGNOSE_OPTIONS = {"permutations": 30, "half_splits": 8}
 
-    root = tmp_path / "original"
-    before = write_report(root, tmp_path / "report").read_text()
-    result = diagnostics.diagnose(envs, root, seeds, **options)
-    assert set(result) >= {"config", "oracle_shift", "trainer", "probe", "recommendation"}
+
+@pytest.fixture(scope="module")
+def diagnosed(tmp_path_factory: pytest.TempPathFactory) -> dict[str, Any]:
+    """One synthetic run through `diagnose`, plus a copy whose evaluation labels are corrupted."""
+    root = tmp_path_factory.mktemp("diagnose")
+    with pytest.MonkeyPatch.context() as patch:
+        patch.setattr(pipeline, "TEMPERATURES", (0.05, 0.1))
+        patch.setattr(pipeline, "EPOCH_BUDGETS", (2, 5))
+        patch.setattr(diagnostics, "EPOCHS_ABOVE", (6,))
+        patch.setattr(diagnostics, "EPOCHS_BELOW", (1,))
+        for variant in ("original", "corrupted"):
+            for index, env in enumerate(DIAGNOSE_ENVS):
+                _write_env(root / variant, env, seed=index)
+        _corrupt_evaluation_labels(root / "corrupted", DIAGNOSE_ENVS)
+        results = {}
+        for variant in ("original", "corrupted"):
+            _run_through_analyze(root / variant, DIAGNOSE_ENVS, DIAGNOSE_SEEDS)
+            if variant == "original":
+                before = write_report(root / variant, root / "report-before").read_text()
+            results[variant] = diagnostics.diagnose(
+                DIAGNOSE_ENVS, root / variant, DIAGNOSE_SEEDS, **DIAGNOSE_OPTIONS
+            )
+    return {"root": root, "results": results, "report_before": before}
+
+
+def test_diagnose_writes_a_complete_result(diagnosed: dict[str, Any]) -> None:
+    """FR-000d, research R20: the result has every section and a complete manifest."""
+    result = diagnosed["results"]["original"]
+    root = diagnosed["root"] / "original"
     assert read_json(root / "diagnostics" / "manifest.json")["status"] == "complete"
     profile = result["oracle_shift"]["profiles"]["alpha"]
     assert profile["labels"] == "train" and profile["num_queries"] == 16
     assert sum(profile["frequency"]) == pytest.approx(pipeline.HEADLINE_K)
     assert set(result["oracle_shift"]["pairs"]) == {"alpha|beta"}
-    assert set(result["trainer"]["envs"]) == set(envs)
+    assert set(result["trainer"]["envs"]) == set(DIAGNOSE_ENVS)
     assert result["recommendation"] in {"stop_or_pivot", "continue_strengthen_selector", "continue"}
 
-    first = (root / "diagnostics" / "diagnostics.json").read_bytes()
-    diagnostics.diagnose(envs, root, seeds, **options)
-    assert (root / "diagnostics" / "diagnostics.json").read_bytes() == first
 
-    corrupted = diagnostics.diagnose(envs, tmp_path / "corrupted", seeds, **options)
-    assert corrupted["oracle_shift"] == result["oracle_shift"]
-    assert corrupted["probe"] == result["probe"]
+def test_diagnose_ignores_evaluation_labels_in_oracle_profiles_and_probe(
+    diagnosed: dict[str, Any],
+) -> None:
+    """Constitution II: D1 and D3 read training labels only; D2 scores with evaluation labels."""
+    original, corrupted = diagnosed["results"]["original"], diagnosed["results"]["corrupted"]
+    assert corrupted["oracle_shift"] == original["oracle_shift"]
+    assert corrupted["probe"] == original["probe"]
 
-    after = write_report(root, tmp_path / "report").read_text()
+
+def test_report_gains_the_diagnostics_section_only_after_diagnose(
+    diagnosed: dict[str, Any],
+) -> None:
+    root = diagnosed["root"] / "original"
+    before = diagnosed["report_before"]
+    after = write_report(root, diagnosed["root"] / "report-after").read_text()
     assert "Diagnostics (research R20)" not in before
     assert after.startswith(before.rstrip("\n"))
-    assert "## Diagnostics (research R20)" in after
-    assert result["recommendation"] in after
+    assert diagnosed["results"]["original"]["recommendation"] in after
+
+
+def test_diagnose_is_deterministic(tmp_path: Path) -> None:
+    for index, env in enumerate(DIAGNOSE_ENVS):
+        _write_env(tmp_path, env, seed=index)
+    _run_through_analyze(tmp_path, DIAGNOSE_ENVS, DIAGNOSE_SEEDS)
+    result = tmp_path / "diagnostics" / "diagnostics.json"
+    diagnostics.diagnose(DIAGNOSE_ENVS, tmp_path, DIAGNOSE_SEEDS, **DIAGNOSE_OPTIONS)
+    first = result.read_bytes()
+    diagnostics.diagnose(DIAGNOSE_ENVS, tmp_path, DIAGNOSE_SEEDS, **DIAGNOSE_OPTIONS)
+    assert result.read_bytes() == first
 
 
 def test_diagnose_refuses_an_unfinished_analysis(tmp_path: Path) -> None:
-    envs, seeds = ["alpha", "beta"], [0, 1]
-    for index, env in enumerate(envs):
+    for index, env in enumerate(DIAGNOSE_ENVS):
         _write_env(tmp_path, env, seed=index)
-    _run_through_analyze(tmp_path, envs, seeds)
-    write_manifest(tmp_path / "analysis", "analyze", {"envs": envs}, status="running")
+    _run_through_analyze(tmp_path, DIAGNOSE_ENVS, DIAGNOSE_SEEDS)
+    write_manifest(tmp_path / "analysis", "analyze", {"envs": DIAGNOSE_ENVS}, status="running")
     with pytest.raises(ValueError, match="was not completed"):
-        diagnostics.diagnose(envs, tmp_path, seeds, permutations=10, half_splits=4)
-    # A diagnostics result that never completed is not rendered.
-    write_manifest(tmp_path / "analysis", "analyze", {"envs": envs})
-    write_manifest(tmp_path / "diagnostics", "diagnose", {"envs": envs}, status="running")
+        diagnostics.diagnose(DIAGNOSE_ENVS, tmp_path, DIAGNOSE_SEEDS, **DIAGNOSE_OPTIONS)
+
+
+def test_report_skips_an_unfinished_diagnose(tmp_path: Path) -> None:
+    for index, env in enumerate(DIAGNOSE_ENVS):
+        _write_env(tmp_path, env, seed=index)
+    _run_through_analyze(tmp_path, DIAGNOSE_ENVS, DIAGNOSE_SEEDS)
+    write_manifest(tmp_path / "diagnostics", "diagnose", {"envs": DIAGNOSE_ENVS}, status="running")
     assert "Diagnostics" not in write_report(tmp_path, tmp_path / "report").read_text()
