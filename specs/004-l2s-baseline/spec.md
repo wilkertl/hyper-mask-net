@@ -196,7 +196,8 @@ result file.
 - **SC-006**: 0 training or selection steps read a test or evaluation-set judgment, verified by
   tests.
 - **SC-007**: The full E0 evaluation of all methods, budgets, and query sets for MS MARCO
-  completes on the single RTX 4090 in under 3 hours.
+  completes on the single RTX 4090 in under 10 minutes (measured 6.5 minutes on 2026-10-12;
+  the earlier ceiling was 3 hours).
 
 ## Assumptions
 

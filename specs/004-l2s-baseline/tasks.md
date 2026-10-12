@@ -46,10 +46,10 @@ tests first in each story. Run tasks (T020+) execute on DataPolicy-4090.
 
 ## Phase 7: Runs on DataPolicy-4090
 
-- [ ] T019 Sync the branch to DataPolicy-4090; train official selectors for scifact, nfcorpus, msmarco; train the global selector; train candidates
-- [ ] T020 Evaluate every environment; record MS MARCO wall time (replace SC-007's ceiling)
-- [ ] T021 Generate reports/E0 twice on the host (identical bytes), copy it back, and commit it on `exp/E0-baseline-reproduction`
-- [ ] T022 Draft docs/decisions/ADR-0006-g1-baseline.md (status proposed) from the report for the researcher's decision
+- [X] T019 Sync the branch to DataPolicy-4090; train official selectors for scifact, nfcorpus, msmarco; train the global selector; train candidates — done on DataPolicy-4090 at `d2633a6`: official 15 s / 44 s / 15 min; global 3.4 min; candidates 1.6 / 4.4 / 82 min
+- [X] T020 Evaluate every environment; record MS MARCO wall time (replace SC-007's ceiling) — done: evaluate 2 s / 3 s / 6.5 min (MS MARCO, all methods, 11 budgets, 4 query sets)
+- [X] T021 Generate reports/E0 twice on the host (identical bytes), copy it back, and commit it on `exp/E0-baseline-reproduction` — done: generated twice on the host, byte-identical; committed on `exp/E0-g1-baseline` (the pre-restart `exp/E0-baseline-reproduction` branch still exists on GitHub)
+- [X] T022 Draft docs/decisions/ADR-0006-g1-baseline.md (status proposed) from the report for the researcher's decision — done: drafted as proposed; G1 fails criterion (a) on NFCorpus only, outcome for the researcher
 
 ## Dependencies
 
