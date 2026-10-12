@@ -1,0 +1,4 @@
+environment,official cell,official validation nDCG@10,selected,family scores
+scifact,official-t0.005-e200,0.8212,wide-grid,"global-regularized 0.7825, official 0.8212, val-stopped 0.8200, wide-grid 0.8238"
+nfcorpus,official-t0.1-e200,0.3619,wide-grid,"global-regularized 0.3178, official 0.3619, val-stopped 0.3622, wide-grid 0.3670"
+msmarco,official-t0.005-e50,0.3238,global-regularized,"global-regularized 0.3241, official 0.3238, val-stopped 0.3239, wide-grid 0.3239"
