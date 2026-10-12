@@ -1,0 +1,4 @@
+environment: scifact
+source: BeIR/scifact
+instruction: Given a scientific claim, retrieve documents that support or refute the claim
+validation_fraction: 0.1
