@@ -59,13 +59,26 @@ configs/  experiments/  tests/  scripts/  docs/
 
 ## Development
 
-Install PyTorch for your platform first (CUDA or CPU build), then:
+Dependencies are locked in `uv.lock` ([uv](https://docs.astral.sh/uv/)). Pick the PyTorch build
+with one extra, `cpu` or `cu128` (CUDA 12.8); they cannot be combined.
 
 ```bash
-python -m pip install -e ".[dev]"
-ruff check . && ruff format --check . && mypy && pytest
+uv sync --locked --extra cpu --extra dev      # CPU; tests need nothing more
+uv sync --locked --extra cu128 --extra dev    # NVIDIA GPU
+uv run pre-commit install                     # run the checks below before each commit
+uv run hyperdime diagnose                     # smoke test: validates configs/, writes a manifest
 ```
 
+`hyperdime diagnose` prints `artifacts/diagnose/<run_id>` and writes only its `manifest.json`;
+it loads no model and needs no network. The checks CI runs, also run by pre-commit:
+
+```bash
+uv run ruff check . && uv run ruff format --check . && uv run mypy && uv run pytest
+PYTHONPATH=tools uv run python -m scrap tests   # test-code quality (ADR-0004)
+```
+
+Extras for later milestones are locked too: `embed` (transformers), `data` (datasets,
+ir-datasets), `science` (scipy, scikit-learn, ir-measures), and `deploy` (faiss-cpu).
 Datasets, embeddings, and checkpoints are never committed; they live under `artifacts/`.
 
 ## Embedding service
@@ -86,7 +99,7 @@ curl -s $V4_EMBEDDING_BASE_URL/models    # must list Qwen/Qwen3-Embedding-0.6B
 ```
 
 Texts are cut to 512 Qwen tokens on the client, which needs `transformers` for the tokenizer only
-(`pip install -e ".[embed]"`). Without the server, embedding falls back to local transformers.
+(the `embed` extra). Without the server, embedding falls back to local transformers.
 
 ## F0 spike: test H1 first
 
@@ -94,8 +107,8 @@ Before the roadmap is built, a spike tests selector shift (H1) on five small BEI
 ([research R0](specs/002-hyperdime-roadmap/research.md)):
 
 ```bash
-python -m pip install -e ".[embed,dev]"
-python -m hyperdime.spike all    # prepare → train → train-global → analyze → report
+uv sync --locked --extra cu128 --extra embed --extra dev   # or --extra cpu
+uv run python -m hyperdime.spike all    # prepare → train → train-global → analyze → report
 ```
 
 Only `prepare` uses the embedding service; the rest runs on CPU from cached vectors. The generated

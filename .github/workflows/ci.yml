@@ -13,29 +13,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
+      - uses: astral-sh/setup-uv@v7
         with:
           python-version: "3.12"
-          cache: pip
-      - name: Install CPU PyTorch
-        run: python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
-      - name: Install project
-        run: python -m pip install -e ".[dev]"
+          enable-cache: true
+      - name: Install from the lockfile
+        run: uv sync --locked --extra cpu --extra dev
       - name: Lint
-        run: ruff check --output-format=github .
+        run: uv run --no-sync ruff check --output-format=github .
       - name: Format
-        run: ruff format --check --diff .
+        run: uv run --no-sync ruff format --check --diff .
       - name: Type check
-        run: mypy
+        run: uv run --no-sync mypy
       - name: Test
-        run: pytest
+        run: uv run --no-sync pytest
       - name: Test-code quality (SCRAP for pytest, ADR-0004)
         shell: bash
         run: |
           # Fails only on structural errors; the report goes to the job summary either way.
           status=0
           echo '```text' >> "$GITHUB_STEP_SUMMARY"
-          PYTHONPATH=tools python -m scrap tests > scrap.txt || status=$?
+          PYTHONPATH=tools uv run --no-sync python -m scrap tests > scrap.txt || status=$?
           tee -a "$GITHUB_STEP_SUMMARY" < scrap.txt
           echo '```' >> "$GITHUB_STEP_SUMMARY"
           exit $status
