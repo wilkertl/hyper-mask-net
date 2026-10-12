@@ -136,7 +136,8 @@ gpu = next(line for line in logs if line.startswith("GPU 0:")).split(":")[1].spl
 step_times = {}
 for f in sorted(SP.glob("*/manifest.json")) + sorted(SP.glob("*/selectors/manifest.json")):
     m = rj(f)
-    step_times[str(f.relative_to(SP))] = (m["command"], m["created_at"][11:19])
+    finished = m.get("created_at") or m.get("finished_at") or m.get("started_at")
+    step_times[str(f.relative_to(SP))] = (m["command"], finished[11:19])
 
 # ---- derived F0 facts
 n_sig, n_pairs = len(crit["transfer_significant"]), len(crit["transfer"])
@@ -492,7 +493,7 @@ TM_HEAD = "train \\ test"
 # fmt: off
 body = f"""
 <header class="mast">
-  <p class="eyebrow">Project report · {AM['created_at'][:10]} run · compiled from repository and run files</p>
+  <p class="eyebrow">Project report · {(AM.get('created_at') or AM['finished_at'])[:10]} run · compiled from repository and run files</p>
   <h1>HyperDIME-Qwen</h1>
   <p class="sub">Environment-conditioned hypernetworks for query-aware dimension selection on a frozen Qwen3-Embedding-0.6B (D = 1024)</p>
   <dl class="meta">

@@ -1,0 +1,10 @@
+# @package _global_
+defaults:
+  - /model: qwen3_0_6b
+  - /data: scifact
+  - /run: default
+  - _self_
+
+config_version: 1
+model:
+  revision: main

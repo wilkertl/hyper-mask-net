@@ -1,0 +1,8 @@
+# Frozen encoder (constitution I). The revision is the commit the F0 embeddings were made with.
+name: Qwen/Qwen3-Embedding-0.6B
+revision: 97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3
+embedding_dim: 1024
+frozen: true
+normalize: true
+max_length: 512
+dtype: bfloat16

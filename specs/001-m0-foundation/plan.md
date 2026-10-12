@@ -39,7 +39,7 @@ well under a minute on CPU
 not import `transformers`, `datasets`, or `faiss`; no datasets, embeddings, or checkpoints in Git
 
 **Scale/Scope**: 7 record types + `RunManifest` + 4 config models; ~6 new modules in
-`hyperdime.contracts`, 1 CLI module, 4 config files; existing 27 tests unchanged
+`hyperdime.contracts`, 1 CLI module, 4 config files; existing tests (118 at `5f49b89`) unchanged
 
 No `NEEDS CLARIFICATION` items remain; all choices are resolved in [research.md](research.md).
 

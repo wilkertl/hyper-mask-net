@@ -8,8 +8,15 @@ import pytest
 import torch
 from torch.nn import functional as F
 
+from hyperdime.contracts.manifests import RunManifest
 from hyperdime.spike import diagnostics, pipeline
-from hyperdime.spike.manifest import read_json, write_json, write_manifest
+from hyperdime.spike.manifest import (
+    is_complete,
+    read_json,
+    require_complete,
+    write_json,
+    write_manifest,
+)
 from hyperdime.spike.report import write_report
 
 
@@ -120,7 +127,7 @@ def test_steps_refuse_inputs_from_interrupted_runs(tmp_path: Path) -> None:
         pipeline.train(env, tmp_path, seeds)
     pipeline.train_global(envs, tmp_path, seeds)
     for env in envs:
-        assert read_json(tmp_path / env / "selectors" / "manifest.json")["status"] == "complete"
+        assert is_complete(read_json(tmp_path / env / "selectors" / "manifest.json"))
 
     write_manifest(tmp_path / "beta" / "selectors", "train", {"env": "beta"}, status="running")
     with pytest.raises(ValueError, match="was not completed"):
@@ -185,7 +192,7 @@ def test_diagnose_writes_a_complete_result(diagnosed: dict[str, Any]) -> None:
     """FR-000d, research R20: the result has every section and a complete manifest."""
     result = diagnosed["results"]["original"]
     root = diagnosed["root"] / "original"
-    assert read_json(root / "diagnostics" / "manifest.json")["status"] == "complete"
+    assert is_complete(read_json(root / "diagnostics" / "manifest.json"))
     profile = result["oracle_shift"]["profiles"]["alpha"]
     assert profile["labels"] == "train" and profile["num_queries"] == 16
     assert sum(profile["frequency"]) == pytest.approx(pipeline.HEADLINE_K)
@@ -240,3 +247,34 @@ def test_report_skips_an_unfinished_diagnose(tmp_path: Path) -> None:
     _run_through_analyze(tmp_path, DIAGNOSE_ENVS, DIAGNOSE_SEEDS)
     write_manifest(tmp_path / "diagnostics", "diagnose", {"envs": DIAGNOSE_ENVS}, status="running")
     assert "Diagnostics" not in write_report(tmp_path, tmp_path / "report").read_text()
+
+
+def test_spike_manifests_are_run_manifests(tmp_path: Path) -> None:
+    """F1 task T033: a spike step's manifest validates as a RunManifest and lists its files."""
+    _write_env(tmp_path, "alpha", seed=0)
+    pipeline.train("alpha", tmp_path, [0])
+    manifest = RunManifest.model_validate(
+        read_json(tmp_path / "alpha" / "selectors" / "manifest.json")
+    )
+    assert manifest.command == "train" and manifest.finished_at is not None
+    assert {a.name for a in manifest.artifacts} >= {"seed-0.pt", "temperature.json"}
+
+
+def test_a_running_manifest_keeps_its_run_when_completed(tmp_path: Path) -> None:
+    write_manifest(tmp_path, "train", {"env": "alpha"}, status="running")
+    running = read_json(tmp_path / "manifest.json")
+    (tmp_path / "out.json").write_text("{}")
+    write_manifest(tmp_path, "train", {"env": "alpha"})
+    complete = read_json(tmp_path / "manifest.json")
+    assert running["finished_at"] is None and complete["finished_at"] is not None
+    assert complete["run_id"] == running["run_id"]
+    assert [a["name"] for a in complete["artifacts"]] == ["out.json"]
+
+
+def test_pre_f1_manifests_stay_readable(tmp_path: Path) -> None:
+    legacy = {"command": "train", "status": "complete", "config": {}, "git_commit": "abc"}
+    write_json(tmp_path / "manifest.json", legacy)
+    assert require_complete(tmp_path) == legacy
+    write_json(tmp_path / "manifest.json", {**legacy, "status": "running"})
+    with pytest.raises(ValueError, match="was not completed"):
+        require_complete(tmp_path)

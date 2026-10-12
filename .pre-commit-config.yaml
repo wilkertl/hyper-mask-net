@@ -1,0 +1,29 @@
+# Local hooks run the locked tools from the project environment, so pre-commit and CI
+# cannot drift (research R4). Install once with `uv run pre-commit install`.
+# Vendored spec-kit tooling is not project code (FR-015).
+exclude: ^(\.specify|\.agents)/
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff check
+        entry: ruff check --force-exclude
+        language: system
+        types: [python]
+      - id: ruff-format
+        name: ruff format --check
+        entry: ruff format --check --force-exclude
+        language: system
+        types: [python]
+      - id: mypy
+        name: mypy
+        entry: mypy
+        language: system
+        types: [python]
+        pass_filenames: false
+      - id: scrap
+        name: SCRAP test-code quality (ADR-0004)
+        entry: env PYTHONPATH=tools python -m scrap tests
+        language: system
+        files: ^(tests/|tools/scrap/)
+        pass_filenames: false

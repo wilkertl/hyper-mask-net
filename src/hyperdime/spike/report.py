@@ -6,7 +6,7 @@ from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
 
-from hyperdime.spike.manifest import read_json, require_complete
+from hyperdime.spike.manifest import is_complete, read_json, require_complete
 
 
 def write_report(root: Path, output: Path) -> Path:
@@ -28,7 +28,7 @@ def _complete_diagnostics(directory: Path) -> tuple[dict[str, Any], dict[str, An
     if not path.exists():
         return None
     manifest: dict[str, Any] = read_json(path)
-    if manifest.get("status") != "complete":
+    if not is_complete(manifest):
         return None
     return read_json(directory / "diagnostics.json"), manifest
 
