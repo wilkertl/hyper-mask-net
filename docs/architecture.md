@@ -49,14 +49,14 @@ flowchart LR
 | Frozen Qwen embeddings | M2 | `hyperdime.embeddings` | `qwen.QwenEncoder` (local), `remote.VllmEncoder` (vLLM, shared with the `beir` project), **F2**: `encoders.encoder_settings` / `build_encoder`, `cache.embed_sharded` (resumable shards), `cache.publish_embeddings` / `load_embeddings`; spike: `cache.embed_cached` |
 | Oracle targets `softmax(e_q ⊙ (p − n) / τ)` | M3 | `hyperdime.oracle` | `importance.oracle_scores`, `importance.oracle_importance`, `targets.aggregate_targets`, `targets.aggregate_pairs` |
 | Learning-to-Select and other baselines | M3 | `hyperdime.baselines` | `learning_to_select.LinearSelector` |
-| Selector and meta-training | M3, M9 | `hyperdime.training` | `losses.selector_kl_loss`, `selector_trainer.train_selector` |
+| Selector and meta-training | M3, M9 | `hyperdime.training` | `losses.selector_kl_loss`, `selector_trainer.train_selector` (device, anchor, patience), **F3**: `selection` (ADR-0002 grid and ADR-0003 candidates, validation-only choice), `inputs.load_inputs` |
 | Selector-shift analysis | M4 | `hyperdime.evaluation` | `selector_shift.overlap_at_k`, `selector_shift.js_divergence`, `selector_shift.spearman` (tied values share their average rank), `selector_shift.mean_importance`, `selector_shift.selection_frequency`, `selector_shift.half_split_profiles`, `selector_shift.split_half_spearman`, `selector_shift.profile_permutation_test` |
 | Space Descriptor and Space Encoder | M5, M6 | `hyperdime.space` | `marginal.marginal_stats` (descriptor group A, P0) |
 | Low-rank selector and Hyper Head | M7, M8 | `hyperdime.hypernet` | — |
 | Inference protocols P0–P2 | M10 | `hyperdime.cli`, `hyperdime.contracts` | — |
 | Selection policies | M11 | `hyperdime.selection` | `topk.resolve_k`, `topk.top_k_mask`, `topk.apply_mask` |
 | Retrieval | M12 | `hyperdime.retrieval` | `exact.exact_search`, `exact.exact_search_streamed` (memory-mapped corpora, F2), `scoring.rank_documents` (BEIR identical-ID exclusion) |
-| Metrics and statistics | M12 | `hyperdime.evaluation` | `metrics.query_metrics`, `metrics.evaluate_run`, `statistics.paired_randomization_test`, `statistics.paired_bootstrap_ci`, `statistics.holm` |
+| Metrics and statistics | M12 | `hyperdime.evaluation` | `metrics.query_metrics`, `metrics.evaluate_run`, `statistics.paired_randomization_test`, `statistics.paired_bootstrap_ci`, `statistics.holm`, **F3**: `metrics.query_metrics` (AP, TREC relevance threshold), `runs.evaluate_methods` (all methods and budgets in one corpus pass) |
 | F0 selector-shift spike (exploratory) | research R0 | `hyperdime.spike` | `python -m hyperdime.spike prepare\|train\|train-global\|analyze\|diagnose\|report\|all`; `diagnose` (research R20, not part of `all`) in `spike.diagnostics` |
 
 File names inside each package follow plan §4.

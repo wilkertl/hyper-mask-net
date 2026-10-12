@@ -63,7 +63,7 @@ Dependencies are locked in `uv.lock` ([uv](https://docs.astral.sh/uv/)). Pick th
 with one extra, `cpu` or `cu128` (CUDA 12.8); they cannot be combined.
 
 ```bash
-uv sync --locked --extra cpu --extra dev --extra data   # CPU; enough for every test
+uv sync --locked --extra cpu --extra dev --extra data --extra science   # CPU; every test
 uv sync --locked --extra cu128 --extra dev    # NVIDIA GPU
 uv run pre-commit install                     # run the checks below before each commit
 uv run hyperdime diagnose                     # smoke test: validates configs/, writes a manifest
@@ -95,6 +95,21 @@ uv run hyperdime mine-negatives data=scifact   # ADR-0002 pools -> artifacts/neg
 
 Test judgments are written to their own files and are read only by evaluation. `embed` resumes
 after an interruption and reuses an existing embedding made with the same settings.
+
+## Baseline selector and gate G1 (F3)
+
+```bash
+for env in scifact nfcorpus msmarco; do uv run hyperdime train-selector data=$env --recipe official; done
+uv run hyperdime train-global                     # anchor for the ADR-0003 regularized candidate
+for env in scifact nfcorpus msmarco; do
+  uv run hyperdime train-selector data=$env --recipe candidates
+  uv run hyperdime evaluate data=$env             # every method at ratios 0.1-1.0, exact scoring
+done
+uv run hyperdime report E0                        # reports/E0 with the G1 criteria
+```
+
+Selectors are chosen on validation queries only; `evaluate` is the only step that reads test
+judgments.
 
 ## Embedding service
 

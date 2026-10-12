@@ -1,7 +1,6 @@
 """F2 commands end to end on a toy environment: fake sources, stub encoder, no network."""
 
 import json
-import shutil
 from pathlib import Path
 
 import numpy as np
@@ -9,31 +8,9 @@ import pytest
 
 from hyperdime.cli import embed, prepare_data
 from hyperdime.cli.__main__ import main
-from hyperdime.data import environments
 from hyperdime.embeddings.cache import load_embeddings
 
-from conftest import FakeQuerySet, StubEncoder, toy_eval_sets, toy_source, toy_spec
-
-CONFIGS = Path(__file__).parents[1] / "fixtures" / "configs" / "valid"
-
-
-@pytest.fixture
-def toy_configs(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
-    """A config tree whose `data=toy` is the registered toy environment with fake sources."""
-    spec = toy_spec()
-    monkeypatch.setitem(environments.ENVIRONMENTS, "toy", spec)  # type: ignore[index]
-    monkeypatch.setattr(prepare_data, "SOURCE_FACTORY", lambda s: toy_source())
-    eval_sets = toy_eval_sets()
-    monkeypatch.setattr(prepare_data, "QUERY_SET_FACTORY", lambda s: eval_sets[s.name])
-    monkeypatch.setattr(embed, "ENCODER_FACTORY", lambda *args: StubEncoder())
-    configs = tmp_path / "configs"
-    shutil.copytree(CONFIGS, configs)
-    (configs / "data" / "toy.yaml").write_text(
-        f"environment: toy\nsource: {spec.source}\ninstruction: {spec.instruction}\n"
-        "validation_fraction: 0.1\n"
-    )
-    shutil.copy(configs / "experiment" / "diagnose.yaml", configs / "experiment" / "prepare.yaml")
-    return configs
+from conftest import FakeQuerySet, StubEncoder, toy_eval_sets
 
 
 def _run(configs: Path, output: Path, command: str, *extra: str) -> int:

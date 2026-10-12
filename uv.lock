@@ -920,6 +920,7 @@ dependencies = [
     { name = "numpy", version = "2.5.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12' or (extra == 'extra-14-hyperdime-qwen-cpu' and extra == 'extra-14-hyperdime-qwen-cu128')" },
     { name = "omegaconf" },
     { name = "pydantic" },
+    { name = "safetensors" },
 ]
 
 [package.optional-dependencies]
@@ -971,6 +972,7 @@ requires-dist = [
     { name = "pydantic", specifier = ">=2.7,<3" },
     { name = "pytest", marker = "extra == 'dev'", specifier = "==9.1.1" },
     { name = "ruff", marker = "extra == 'dev'", specifier = "==0.16.7" },
+    { name = "safetensors", specifier = ">=0.4" },
     { name = "scikit-learn", marker = "extra == 'science'", specifier = ">=1.5" },
     { name = "scipy", marker = "extra == 'science'", specifier = ">=1.13" },
     { name = "torch", marker = "extra == 'cpu'", specifier = ">=2.4", index = "https://download.pytorch.org/whl/cpu", conflict = { package = "hyperdime-qwen", extra = "cpu" } },
