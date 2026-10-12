@@ -34,10 +34,10 @@ tests first in each story. Run tasks (T020+) execute on DataPolicy-4090.
 
 ## Phase 5: User Story 4 — E0 report and G1 (P2)
 
-- [ ] T013 [US4] Add `hyperdime evaluate` in src/hyperdime/cli/evaluate.py (every method at ratios 0.1–1.0 on test and each evaluation set; k = 1024 equality recorded in `checks.json`)
-- [ ] T014 [P] [US4] Tests in tests/unit/reports/test_e0.py: tables from synthetic result files, Holm-adjusted tests, G1 criteria values, identical bytes on regeneration
-- [ ] T015 [US4] Implement src/hyperdime/reports/e0.py and `hyperdime report E0` in src/hyperdime/cli/report.py
-- [ ] T016 [US4] Extend tests/integration/test_f3_pipeline.py through evaluate and report
+- [X] T013 [US4] Add `hyperdime evaluate` in src/hyperdime/cli/evaluate.py (every method at ratios 0.1–1.0 on test and each evaluation set; k = 1024 equality recorded in `checks.json`)
+- [X] T014 [P] [US4] Tests in tests/unit/reports/test_e0.py: tables from synthetic result files, Holm-adjusted tests, G1 criteria values, identical bytes on regeneration
+- [X] T015 [US4] Implement src/hyperdime/reports/e0.py and `hyperdime report E0` in src/hyperdime/cli/report.py
+- [X] T016 [US4] Extend tests/integration/test_f3_pipeline.py through evaluate and report
 
 ## Phase 6: Polish
 

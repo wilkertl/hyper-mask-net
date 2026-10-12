@@ -28,7 +28,7 @@ def _importance(seed: int) -> torch.Tensor:
 def test_k_1024_equals_the_unmasked_rankings() -> None:
     evaluation = evaluate_methods(
         _set(), {"full": None, "random": _importance(0)}, [1024], DOCS.numpy(), DOC_IDS,
-        environment="toy", keep_rankings=True, chunk_size=7,
+        environment="toy", keep_k=(1024,), chunk_size=7,
     )  # fmt: skip
     _, expected = exact_search(QUERIES[:7], DOCS, 20)
     assert evaluation.rankings[("full", 1024)] == [

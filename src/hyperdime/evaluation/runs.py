@@ -60,13 +60,15 @@ def evaluate_methods(
     protocol: str = "in-domain",
     chunk_size: int = 1_000_000,
     device: str = "cpu",
-    keep_rankings: bool = False,
+    keep_k: Sequence[int] = (),
+    pairs: Sequence[tuple[str, int]] | None = None,
 ) -> Evaluation:
     """Mean and per-query metrics for every method at every k, from one streamed corpus pass.
 
     ``methods`` maps a method name to per-query importance scores ``(Q, D)`` aligned with
-    ``query_set.query_ids`` (``None`` for the unmasked query). Queries with no document at or
-    above the relevance threshold are excluded from the metrics and counted.
+    ``query_set.query_ids`` (``None`` for the unmasked query). ``pairs`` overrides the full
+    product of methods and ``ks``; rankings are kept for the budgets in ``keep_k``. Queries with no
+    document at or above the relevance threshold are excluded from the metrics and counted.
     """
     judged = [
         i
@@ -77,7 +79,8 @@ def evaluate_methods(
     ]
     query_ids = [query_set.query_ids[i] for i in judged]
     queries = query_set.vectors[judged].float()
-    pairs = [(name, k) for name in methods for k in ks]
+    if pairs is None:
+        pairs = [(name, k) for name in methods for k in ks]
     variants = []
     for name, k in pairs:
         importance = methods[name]
@@ -121,7 +124,7 @@ def evaluate_methods(
                 num_queries=len(per_query),
             )
         )
-        if keep_rankings:
+        if k in keep_k:
             rankings[(name, k)] = ranked
     return Evaluation(results, rankings, len(query_set.query_ids) - len(query_ids))
 

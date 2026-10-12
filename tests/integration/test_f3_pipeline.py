@@ -86,3 +86,35 @@ def test_selectors_never_see_test_judgments(
     second = _official(f2, capsys)
     a, b = load_selector(first, "official")[1], load_selector(second, "official")[1]
     assert all(torch.equal(a.state_dict()[k], b.state_dict()[k]) for k in a.state_dict())
+
+
+def test_evaluate_and_report_e0(
+    f2: tuple[Path, Path], tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    configs, out = f2
+    _official(f2, capsys)
+    assert _run(configs, out, "evaluate") == 0
+    directory = _stdout(capsys)
+    checks = json.loads((directory / "checks.json").read_text())
+    assert set(checks) == {"test", "evalset"}
+    assert all(all(v.values()) for v in (c["k1024_identical"] for c in checks.values()))
+    assert checks["evalset"]["relevance_threshold"] == 2
+    report_dir = tmp_path / "E0"
+    args = [
+        "report",
+        "E0",
+        "--artifacts",
+        str(out),
+        "--envs",
+        "toy",
+        "--report-dir",
+        str(report_dir),
+    ]
+    assert main(args) == 0
+    text = (report_dir / "README.md").read_text()
+    assert "## Gate G1 (research R7)" in text and "(d) the report regenerates" in text
+    assert "DIME format: evalset (toy), ap by budget" in text
+    assert (report_dir / "tables" / "l2s_style.csv").exists()
+    first = {p.name: p.read_bytes() for p in report_dir.rglob("*") if p.is_file()}
+    assert main(args) == 0
+    assert {p.name: p.read_bytes() for p in report_dir.rglob("*") if p.is_file()} == first
