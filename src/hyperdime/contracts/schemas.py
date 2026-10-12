@@ -9,7 +9,7 @@ from __future__ import annotations
 import math
 from collections.abc import Iterable
 from pathlib import Path, PurePosixPath
-from typing import Annotated, Literal, Self, TypeVar
+from typing import Annotated, Any, Literal, Self, TypeVar
 
 from pydantic import (
     AfterValidator,
@@ -210,6 +210,45 @@ class EvaluationResult(Record):
         for query_id, values in self.per_query.items():
             if set(values) != keys:
                 raise ValueError(f"per_query: {query_id} has metrics {sorted(values)}")
+        return self
+
+
+class DatasetManifest(Record):
+    """What a prepared environment contains and where it came from (F2 data model)."""
+
+    schema_version: Literal[1] = 1
+    environment: Id
+    spec: dict[str, Any]
+    num_documents: Annotated[int, Field(ge=1)]
+    dropped_documents: Annotated[int, Field(ge=0)]
+    num_queries: dict[str, Annotated[int, Field(ge=0)]]
+    num_qrels: dict[str, Annotated[int, Field(ge=0)]]
+    dropped_qrels: Annotated[int, Field(ge=0)]
+    excluded_queries: dict[str, Annotated[int, Field(ge=0)]]
+    split_seed: Annotated[int, Field(ge=0)]
+    validation_fraction: Annotated[float, Field(gt=0, lt=1)]
+    files: dict[str, Sha256]
+    fingerprint: Sha256
+
+
+class NegativePool(Record):
+    """Sampled hard negatives of one training or validation query (ADR-0002)."""
+
+    schema_version: Literal[1] = 1
+    query_id: Id
+    environment: Id
+    split: Literal["train", "validation"]
+    doc_ids: list[Id]
+    depth: Annotated[int, Field(ge=1)]
+    pool_size: Annotated[int, Field(ge=1)]
+    seed: Annotated[int, Field(ge=0)]
+
+    @model_validator(mode="after")
+    def _pool_size(self) -> Self:
+        if len(self.doc_ids) != self.pool_size:
+            raise ValueError(f"doc_ids: {len(self.doc_ids)} entries != pool_size {self.pool_size}")
+        if self.query_id in self.doc_ids:
+            raise ValueError("doc_ids: must not contain the query's own id")
         return self
 
 

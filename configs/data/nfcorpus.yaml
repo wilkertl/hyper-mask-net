@@ -1,0 +1,4 @@
+environment: nfcorpus
+source: BeIR/nfcorpus
+instruction: Given a question, retrieve relevant documents that best answer the question
+validation_fraction: 0.1
