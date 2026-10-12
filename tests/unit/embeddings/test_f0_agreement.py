@@ -4,6 +4,7 @@ import importlib.util
 from pathlib import Path
 
 import numpy as np
+import pytest
 
 from hyperdime.contracts.config import ModelConfig
 from hyperdime.contracts.manifests import ArtifactWriter, start_manifest
@@ -31,7 +32,9 @@ def _script():  # type: ignore[no-untyped-def]
     return module
 
 
-def test_identical_vectors_pass_and_different_ones_fail(tmp_path: Path) -> None:
+@pytest.fixture
+def caches(tmp_path: Path) -> tuple[Path, Path]:
+    """A spike-format cache and an F2 artifact holding the same vectors."""
     ids = ["a", "b", "c"]
     encoder = StubEncoder()
     for name in ("corpus", "queries"):
@@ -40,11 +43,14 @@ def test_identical_vectors_pass_and_different_ones_fail(tmp_path: Path) -> None:
     with ArtifactWriter(tmp_path, "embeddings/toy", start_manifest("embed", {}, seed=0)) as writer:
         publish_embeddings(writer, "documents", ids, parts, "documents", "toy", None, MODEL)
         publish_embeddings(writer, "queries", ids, parts, "queries", "toy", "x", MODEL)
-        published = writer.commit()
-    script = _script()
-    assert script.main([str(tmp_path / "spike"), str(published)]) == 0
-    np.save(
-        tmp_path / "spike" / "corpus" / "embeddings.npy",
-        -np.load(tmp_path / "spike" / "corpus" / "embeddings.npy"),
-    )
-    assert script.main([str(tmp_path / "spike"), str(published)]) == 1
+        return tmp_path / "spike", writer.commit()
+
+
+def test_identical_vectors_pass(caches: tuple[Path, Path]) -> None:
+    assert _script().main([str(caches[0]), str(caches[1])]) == 0
+
+
+def test_different_vectors_fail(caches: tuple[Path, Path]) -> None:
+    corpus = caches[0] / "corpus" / "embeddings.npy"
+    np.save(corpus, -np.load(corpus))
+    assert _script().main([str(caches[0]), str(caches[1])]) == 1

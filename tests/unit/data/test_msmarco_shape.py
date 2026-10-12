@@ -2,11 +2,14 @@
 
 from pathlib import Path
 
+import pytest
+
 from hyperdime.contracts.manifests import ArtifactWriter, start_manifest
+from hyperdime.contracts.schemas import DatasetManifest
 from hyperdime.data.environments import EnvironmentSpec, EvalQuerySet
 from hyperdime.data.prepare import load_environment, prepare_environment
 
-from conftest import FakeQuerySet, toy_data, toy_source
+from conftest import FakeQuerySet, FakeSource, toy_data, toy_source
 
 SETS = ("trec-dl-2019", "trec-dl-2020", "trec-dl-hard")
 
@@ -29,7 +32,8 @@ def _spec() -> EnvironmentSpec:
     )
 
 
-def test_marco_shaped_preparation(tmp_path: Path) -> None:
+@pytest.fixture(scope="module")
+def prepared(tmp_path_factory: pytest.TempPathFactory) -> tuple[FakeSource, DatasetManifest, Path]:
     source = toy_source()
     source.splits["dev"] = source.splits.pop("test")
     eval_sets = {
@@ -39,19 +43,30 @@ def test_marco_shaped_preparation(tmp_path: Path) -> None:
         )
         for name in SETS
     }
-    spec = _spec()
+    spec, root = _spec(), tmp_path_factory.mktemp("marco")
     with ArtifactWriter(
-        tmp_path, "datasets/marco", start_manifest("prepare-data", {}, seed=0)
+        root, "datasets/marco", start_manifest("prepare-data", {}, seed=0)
     ) as writer:
         manifest = prepare_environment(spec, toy_data(spec), writer, source, eval_sets)
-        directory = writer.commit()
-    assert source.corpus_reads == 1  # the corpus is streamed once, never materialized twice
+        return source, manifest, writer.commit()
+
+
+def test_the_corpus_is_streamed_once(prepared: tuple[FakeSource, DatasetManifest, Path]) -> None:
+    assert prepared[0].corpus_reads == 1
+
+
+def test_dev_is_the_test_split_and_training_is_capped(
+    prepared: tuple[FakeSource, DatasetManifest, Path],
+) -> None:
+    manifest = prepared[1]
     assert manifest.num_queries["train"] + manifest.num_queries["validation"] == 12
     assert manifest.num_queries["test"] == 10
-    for name in SETS:
-        assert manifest.num_queries[name] == 3
-        assert (directory / f"qrels-{name}.jsonl").exists()
-    bundle = load_environment(directory, include_test_qrels=True)
-    corpus = {f"d{i}" for i in range(12)}
-    for name in SETS:
-        assert {j.doc_id for j in bundle.qrels[name]} <= corpus
+
+
+@pytest.mark.parametrize("name", SETS)
+def test_each_evaluation_set_judges_corpus_documents(
+    prepared: tuple[FakeSource, DatasetManifest, Path], name: str
+) -> None:
+    bundle = load_environment(prepared[2], include_test_qrels=True)
+    assert prepared[1].num_queries[name] == 3
+    assert {j.doc_id for j in bundle.qrels[name]} <= {f"d{i}" for i in range(12)}

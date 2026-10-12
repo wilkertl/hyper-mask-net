@@ -3,6 +3,7 @@
 from pathlib import Path
 
 import numpy as np
+import pytest
 import torch
 from torch.nn import functional as F
 
@@ -51,16 +52,21 @@ def _pools(root: Path, *, count: int = 4, seed: int = 0):  # type: ignore[no-unt
     return bundle, pools
 
 
-def test_pools_cover_train_and_validation_only(tmp_path: Path) -> None:
-    bundle, pools = _pools(tmp_path)
+@pytest.fixture(scope="module")
+def built(tmp_path_factory: pytest.TempPathFactory):  # type: ignore[no-untyped-def]
+    return _pools(tmp_path_factory.mktemp("pools"))
+
+
+def test_pools_cover_train_and_validation_only(built) -> None:  # type: ignore[no-untyped-def]
+    bundle, pools = built
     assert {p.split for p in pools} == {"train", "validation"}
     assert {p.query_id for p in pools} == set(
         bundle.query_ids("train") + bundle.query_ids("validation")
     )
 
 
-def test_pools_exclude_positives_and_the_query_id(tmp_path: Path) -> None:
-    bundle, pools = _pools(tmp_path)
+def test_pools_exclude_positives_and_the_query_id(built) -> None:  # type: ignore[no-untyped-def]
+    bundle, pools = built
     positives = {**bundle.positives("train"), **bundle.positives("validation")}
     for pool in pools:
         assert len(pool.doc_ids) == 4 and pool.depth == 8 and pool.pool_size == 4

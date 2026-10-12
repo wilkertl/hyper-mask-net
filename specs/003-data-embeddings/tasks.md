@@ -67,8 +67,8 @@ sources and a stub encoder. Tests first in each story.
 
 ## Phase 7: Polish
 
-- [ ] T024 [P] Update docs/architecture.md components (data, embeddings, retrieval rows) and README.md (F2 commands)
-- [ ] T025 Run `ruff check . && ruff format --check . && mypy && pytest` and SCRAP; act on `HIGH` findings for new tests or explain them in the pull request
+- [X] T024 [P] Update docs/architecture.md components (data, embeddings, retrieval rows) and README.md (F2 commands)
+- [X] T025 Run `ruff check . && ruff format --check . && mypy && pytest` and SCRAP; act on `HIGH` findings for new tests or explain them in the pull request
 
 ## Phase 8: Runs on the RTX 4090 workstation
 

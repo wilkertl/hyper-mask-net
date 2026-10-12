@@ -102,16 +102,25 @@ def test_embed_publishes_documents_queries_and_each_eval_set(
     assert not list((out / ".work").rglob("part-*.npy"))  # work shards removed after publishing
 
 
-def test_embed_reuses_and_refuses(
+def _embedded(configs: Path, out: Path, capsys: pytest.CaptureFixture[str]) -> str:
+    _prepared(configs, out, capsys)
+    assert _run(configs, out, "embed") == 0
+    return capsys.readouterr().out.strip()
+
+
+def test_embed_reuses_an_embedding_with_the_same_settings(
     toy_configs: Path, tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    out = tmp_path / "out"
-    _prepared(toy_configs, out, capsys)
-    _run(toy_configs, out, "embed")
-    first = capsys.readouterr().out.strip()
-    assert _run(toy_configs, out, "embed") == 0
-    assert capsys.readouterr().out.strip() == first  # same settings: reused, nothing recomputed
-    assert _run(toy_configs, out, "embed", "model.max_length=256") == 1
+    first = _embedded(toy_configs, tmp_path / "out", capsys)
+    assert _run(toy_configs, tmp_path / "out", "embed") == 0
+    assert capsys.readouterr().out.strip() == first
+
+
+def test_embed_refuses_an_embedding_with_other_settings(
+    toy_configs: Path, tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    _embedded(toy_configs, tmp_path / "out", capsys)
+    assert _run(toy_configs, tmp_path / "out", "embed", "model.max_length=256") == 1
     assert "embedding settings differ (max_length)" in capsys.readouterr().err
 
 

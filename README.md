@@ -81,6 +81,21 @@ Extras for later milestones are locked too: `embed` (transformers), `data` (data
 ir-datasets), `science` (scipy, scikit-learn, ir-measures), and `deploy` (faiss-cpu).
 Datasets, embeddings, and checkpoints are never committed; they live under `artifacts/`.
 
+## Data and embeddings (F2)
+
+Each environment (`scifact`, `nfcorpus`, `msmarco`) is prepared, embedded, and given hard-negative
+pools once, on one GPU machine ([F2 quickstart](specs/003-data-embeddings/quickstart.md)):
+
+```bash
+uv sync --locked --extra cu128 --extra data --extra embed --extra dev
+uv run hyperdime prepare-data data=scifact     # pinned Hugging Face sources -> artifacts/datasets/
+uv run hyperdime embed data=scifact            # resumable shards -> artifacts/embeddings/
+uv run hyperdime mine-negatives data=scifact   # ADR-0002 pools -> artifacts/negatives/
+```
+
+Test judgments are written to their own files and are read only by evaluation. `embed` resumes
+after an interruption and reuses an existing embedding made with the same settings.
+
 ## Embedding service
 
 Qwen3-Embedding-0.6B is served by the same vLLM server as the `beir` project, through its

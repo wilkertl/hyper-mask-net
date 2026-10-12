@@ -45,8 +45,8 @@ flowchart LR
 | Component | Plan | Package | Implemented |
 |---|---|---|---|
 | Contracts, manifests, seeds | M0 | `hyperdime.contracts` | **implemented (F1)**: seven records in `schemas`, `manifests.RunManifest`, `manifests.ArtifactWriter`, `seeding.seed_everything`, `config.load_config`, `hashing.config_hash` / `file_sha256` / `tree_sha256`; `hyperdime diagnose` |
-| Loaders, splits, negatives | M1 | `hyperdime.data` | `loaders.download_beir`, `loaders.read_beir`, `loaders.beir_fingerprint`, `splits.split_ids`, `negatives.mine_hard_negatives` |
-| Frozen Qwen embeddings | M2 | `hyperdime.embeddings` | `qwen.format_query`, `qwen.last_token_pool`, `qwen.QwenEncoder` (local), `remote.VllmEncoder` (vLLM, shared with the `beir` project), `cache.embed_cached` |
+| Loaders, splits, negatives | M1 | `hyperdime.data` | **F2**: `environments.ENVIRONMENTS` (pinned sources), `sources.HuggingFaceSource` / `IrDatasetsQuerySet`, `prepare.prepare_environment` / `load_environment` (test judgments only on request), `negatives.build_negative_pools` (ADR-0002); spike: `loaders.download_beir`, `loaders.read_beir`, `splits.split_ids`, `negatives.sample_hard_negatives` |
+| Frozen Qwen embeddings | M2 | `hyperdime.embeddings` | `qwen.QwenEncoder` (local), `remote.VllmEncoder` (vLLM, shared with the `beir` project), **F2**: `encoders.encoder_settings` / `build_encoder`, `cache.embed_sharded` (resumable shards), `cache.publish_embeddings` / `load_embeddings`; spike: `cache.embed_cached` |
 | Oracle targets `softmax(e_q ⊙ (p − n) / τ)` | M3 | `hyperdime.oracle` | `importance.oracle_scores`, `importance.oracle_importance`, `targets.aggregate_targets`, `targets.aggregate_pairs` |
 | Learning-to-Select and other baselines | M3 | `hyperdime.baselines` | `learning_to_select.LinearSelector` |
 | Selector and meta-training | M3, M9 | `hyperdime.training` | `losses.selector_kl_loss`, `selector_trainer.train_selector` |
@@ -55,7 +55,7 @@ flowchart LR
 | Low-rank selector and Hyper Head | M7, M8 | `hyperdime.hypernet` | — |
 | Inference protocols P0–P2 | M10 | `hyperdime.cli`, `hyperdime.contracts` | — |
 | Selection policies | M11 | `hyperdime.selection` | `topk.resolve_k`, `topk.top_k_mask`, `topk.apply_mask` |
-| Retrieval | M12 | `hyperdime.retrieval` | `exact.exact_search`, `scoring.rank_documents` (BEIR identical-ID exclusion) |
+| Retrieval | M12 | `hyperdime.retrieval` | `exact.exact_search`, `exact.exact_search_streamed` (memory-mapped corpora, F2), `scoring.rank_documents` (BEIR identical-ID exclusion) |
 | Metrics and statistics | M12 | `hyperdime.evaluation` | `metrics.query_metrics`, `metrics.evaluate_run`, `statistics.paired_randomization_test`, `statistics.paired_bootstrap_ci`, `statistics.holm` |
 | F0 selector-shift spike (exploratory) | research R0 | `hyperdime.spike` | `python -m hyperdime.spike prepare\|train\|train-global\|analyze\|diagnose\|report\|all`; `diagnose` (research R20, not part of `all`) in `spike.diagnostics` |
 

@@ -44,12 +44,16 @@ def test_documents_keep_title_and_text(tmp_path: Path, source: FakeSource) -> No
     assert document_text(documents["d0"]) == "text of document 0"
 
 
-def test_splits_are_disjoint_and_seeded(tmp_path: Path, source: FakeSource) -> None:
-    directory, first = _prepare(tmp_path / "a", source)
+def test_splits_are_disjoint(tmp_path: Path, source: FakeSource) -> None:
+    directory, _ = _prepare(tmp_path, source)
     bundle = load_environment(directory)
     train, validation, test = (bundle.query_ids(s) for s in ("train", "validation", "test"))
     assert not (set(train) & set(validation)) and not (set(train + validation) & set(test))
     assert "q19" not in train + validation
+
+
+def test_preparing_twice_gives_the_same_fingerprint(tmp_path: Path) -> None:
+    _, first = _prepare(tmp_path / "a", toy_source())
     _, second = _prepare(tmp_path / "b", toy_source())
     assert first.fingerprint == second.fingerprint
 
