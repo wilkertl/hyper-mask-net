@@ -115,7 +115,7 @@ follows `DiagnosticsResult` in data-model.md; the CLI follows contracts/cli.md, 
 - [X] T064 [US0] Add scripts/slurm/f0-diagnose.sh and scripts/slurm/f0-diagnose.sbatch, copied from scripts/slurm/f0-spike.sh and .sbatch, running `$PY -m hyperdime.spike diagnose && $PY -m hyperdime.spike report` on CPU (keeps `--gres=gpu:1` because the partition allocates whole GPU nodes; `--time=03:00:00`); the full caches and selector weights live only on the cluster (the local artifacts/spike/ copy has no `embeddings.npy` or `seed-*.pt`). List the job in scripts/slurm/README.md
 - [X] T065 [US0] Run `diagnose` on the full F0 caches. Done locally on CPU instead of on the cluster (caches pulled from the DGX Spark over the VPN; every `embeddings.npy` matched its manifest's SHA-256; `analysis.json` byte-identical): 18.5 min at commit `7fdf1e5`, manifest `complete`, `git_dirty: false`
 - [X] T025 [US0] Commit the generated reports/F0/README.md (with its Diagnostics section) on the `exp/F0-selector-shift` branch; never edit its numbers by hand
-- [ ] T026 [US0] Accept or amend docs/decisions/ADR-0003-h1-spike-verdict.md (drafted as `proposed`: recommendation `continue_strengthen_selector`) (from docs/decisions/ADR-0000-template.md; ADR-0002 is the training recipe): the R0 verdict and its three criteria values, the per-environment headroom, the R20 values of O1, T, and S, the recommendation, and the decision (continue to US1 as planned, continue and strengthen the per-environment selector in F3, or stop / pivot to a universal selector). State that criteria 1 and 3 passed exactly at their thresholds and that ADR-0002 changed the recipe after a "not supported" run; tag the merge `f0-h1-verdict`
+- [X] T026 [US0] Record the H1 decision in docs/decisions/ADR-0003-h1-spike-verdict.md: accepted on 2026-10-11, `continue_strengthen_selector` (continue to US1; F3 adds sample-efficient per-environment selector candidates; F4 retests H1 with the selected one); tag the merge `f0-h1-verdict`
 
 **Checkpoint**: ADR-0003 states whether H1 is supported and what R20 found. Stop here if it is not.
 
@@ -133,7 +133,7 @@ research R7.
 - [ ] T029 [US1] Implement F1 (tickets M0.1–M0.4) with `/speckit-implement`: src/hyperdime/contracts/{schemas,validation,config,hashing,seeding,manifests}.py, `hyperdime diagnose`, uv.lock, .pre-commit-config.yaml; move the spike's manifests in src/hyperdime/spike/manifest.py onto `RunManifest`
 - [ ] T030 [US1] Specify, plan, and generate tasks for feature F2 `data-embeddings` (M1.1–M1.4, M2.1–M2.2; research R2, R5) with `/speckit-specify`, `/speckit-plan`, `/speckit-tasks`, reusing src/hyperdime/data/loaders.py, src/hyperdime/embeddings/remote.py, and src/hyperdime/embeddings/cache.py
 - [ ] T031 [US1] Implement F2, then embed SciFact, NFCorpus, and full MS MARCO through vLLM, with `ir_datasets` query sets `msmarco-passage/trec-dl-2019/judged`, `msmarco-passage/trec-dl-2020/judged`, and `dl-hard`
-- [ ] T032 [US1] Specify, plan, and implement feature F3 `l2s-baseline` (M12.1 with AP, M3.1–M3.3; research R4, R6), reusing src/hyperdime/oracle/targets.py and src/hyperdime/training/selector_trainer.py
+- [ ] T032 [US1] Specify, plan, and implement feature F3 `l2s-baseline` (M12.1 with AP, M3.1–M3.3; research R4, R6), reusing src/hyperdime/oracle/targets.py and src/hyperdime/training/selector_trainer.py. Per ADR-0003, F3's spec also includes sample-efficient per-environment selector candidates, chosen on validation only and in this order: regularization toward the global selector (research R12/R13 base), shorter or validation-stopped training, and a wider temperature-by-epoch grid; no higher-capacity selector unless an ablation shows the linear one underfits
 - [ ] T033 [US1] Run E0 on an `exp/E0-baseline-reproduction` branch, generate reports/E0/ (Learning-to-Select-style and DIME-style tables per contracts/reports-and-gates.md), and write docs/decisions/ADR-XXXX-g1-baseline.md; tag the merge `g1-baseline-valid`
 
 **Checkpoint**: G1 decided.
@@ -146,7 +146,7 @@ research R7.
 
 **Independent Test**: `reports/E1/` regenerates from result files and its ADR states G2.
 
-- [ ] T034 [US2] Specify, plan, and implement feature F4 `selector-shift` (M12.3, M4.1–M4.3), promoting src/hyperdime/evaluation/statistics.py and src/hyperdime/evaluation/selector_shift.py from the spike and adding `hyperdime transfer-matrix`
+- [ ] T034 [US2] Specify, plan, and implement feature F4 `selector-shift` (M12.3, M4.1–M4.3), retesting H1 with the per-environment selector F3 selected (ADR-0003), promoting src/hyperdime/evaluation/statistics.py and src/hyperdime/evaluation/selector_shift.py from the spike and adding `hyperdime transfer-matrix`
 - [ ] T035 [US2] Run E1 (3 seeds per environment) on `exp/E1-selector-shift`, generate reports/E1/, and write docs/decisions/ADR-XXXX-g2-selector-shift.md; tag `g2-selector-shift`. On No-Go, close later milestone issues as not planned
 
 **Checkpoint**: G2 decided. Stop on No-Go.

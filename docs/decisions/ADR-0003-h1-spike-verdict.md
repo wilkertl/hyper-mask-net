@@ -1,6 +1,6 @@
 # ADR-0003: H1 spike verdict and what F3 must change
 
-- **Status:** proposed (the researcher accepts or amends the decision below before merge)
+- **Status:** accepted
 - **Date:** 2026-10-11
 - **Issue:** F0 spike, tasks T025–T026 in `specs/002-hyperdime-roadmap/tasks.md`
 
@@ -16,7 +16,7 @@ any diagnostic ran, to separate weak selector shift from a selector that shows l
 
 ## Decision
 
-Proposed, following R20's table (O1 = yes, T = yes, recommendation
+Accepted by the researcher on 2026-10-11, as R20's table recommends (O1 = yes, T = yes,
 `continue_strengthen_selector`):
 
 1. **H1 is supported for continuing the roadmap**, as exploratory evidence. Start F1 (task T028).
