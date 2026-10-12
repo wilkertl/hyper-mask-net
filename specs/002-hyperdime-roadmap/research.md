@@ -367,7 +367,9 @@ feature's own `research.md` may refine these decisions but must not contradict t
   - (c) *Fit gap* (reported, no threshold): nDCG@10 on training queries against evaluation
     queries, and overlap@k between the selector's mask and the oracle's mask on each set.
   - (d) *Recovery* (reported, no threshold): Spearman between the selector's top-k selection
-    profile on `Q_e` and `f_e`, beside `ρ_within(e)` as its ceiling.
+    profile on `Q_e` and `f_e`, reported beside `ρ_within(e)`. *Correction (2026-10-11, after the
+    run; no rule uses (d))*: `ρ_within` compares half-sample profiles, so it is not a ceiling for
+    a full-sample comparison, and recovery exceeded it in every environment.
   - (e) *Grid edge*: where the chosen τ or epochs lies on the grid edge, seed 0 is trained one step
     further (τ ∈ {0.001, 0.002} below 0.005, τ ∈ {0.5, 1.0} above 0.2, 500 epochs above 200, 3
     epochs below 10), scored on **validation** only. Grid-limited when the best extended cell beats
