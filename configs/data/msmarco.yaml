@@ -1,0 +1,4 @@
+environment: msmarco
+source: BeIR/msmarco
+instruction: Given a web search query, retrieve relevant passages that answer the query
+validation_fraction: 0.1

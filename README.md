@@ -63,7 +63,7 @@ Dependencies are locked in `uv.lock` ([uv](https://docs.astral.sh/uv/)). Pick th
 with one extra, `cpu` or `cu128` (CUDA 12.8); they cannot be combined.
 
 ```bash
-uv sync --locked --extra cpu --extra dev      # CPU; tests need nothing more
+uv sync --locked --extra cpu --extra dev --extra data   # CPU; enough for every test
 uv sync --locked --extra cu128 --extra dev    # NVIDIA GPU
 uv run pre-commit install                     # run the checks below before each commit
 uv run hyperdime diagnose                     # smoke test: validates configs/, writes a manifest
@@ -80,6 +80,21 @@ PYTHONPATH=tools uv run python -m scrap tests   # test-code quality (ADR-0004)
 Extras for later milestones are locked too: `embed` (transformers), `data` (datasets,
 ir-datasets), `science` (scipy, scikit-learn, ir-measures), and `deploy` (faiss-cpu).
 Datasets, embeddings, and checkpoints are never committed; they live under `artifacts/`.
+
+## Data and embeddings (F2)
+
+Each environment (`scifact`, `nfcorpus`, `msmarco`) is prepared, embedded, and given hard-negative
+pools once, on one GPU machine ([F2 quickstart](specs/003-data-embeddings/quickstart.md)):
+
+```bash
+uv sync --locked --extra cu128 --extra data --extra embed --extra dev
+uv run hyperdime prepare-data data=scifact     # pinned Hugging Face sources -> artifacts/datasets/
+uv run hyperdime embed data=scifact            # resumable shards -> artifacts/embeddings/
+uv run hyperdime mine-negatives data=scifact   # ADR-0002 pools -> artifacts/negatives/
+```
+
+Test judgments are written to their own files and are read only by evaluation. `embed` resumes
+after an interruption and reuses an existing embedding made with the same settings.
 
 ## Embedding service
 

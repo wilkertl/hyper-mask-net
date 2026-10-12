@@ -7,9 +7,11 @@ from typing import Any
 import pytest
 
 from hyperdime.contracts.schemas import (
+    DatasetManifest,
     DocumentRecord,
     EmbeddingArtifact,
     EvaluationResult,
+    NegativePool,
     QrelsRecord,
     QueryRecord,
     Record,
@@ -83,6 +85,29 @@ VALID: dict[type[Record], dict[str, Any]] = {
         "metrics": {"ndcg@10": 0.5},
         "per_query": {"q1": {"ndcg@10": 0.4}, "q2": {"ndcg@10": 0.6}},
         "num_queries": 2,
+    },
+    DatasetManifest: {
+        "environment": "scifact",
+        "spec": {"source": "BeIR/scifact"},
+        "num_documents": 3,
+        "dropped_documents": 0,
+        "num_queries": {"train": 2, "validation": 1, "test": 1},
+        "num_qrels": {"qrels-train": 2},
+        "dropped_qrels": 1,
+        "excluded_queries": {"train": 0},
+        "split_seed": 0,
+        "validation_fraction": 0.1,
+        "files": {"documents.jsonl": SHA},
+        "fingerprint": SHA,
+    },
+    NegativePool: {
+        "query_id": "q1",
+        "environment": "scifact",
+        "split": "train",
+        "doc_ids": ["d1", "d2", "d2"],
+        "depth": 1000,
+        "pool_size": 3,
+        "seed": 0,
     },
 }
 RECORD_TYPES = list(VALID)
@@ -168,6 +193,11 @@ def test_json_lines_errors_name_the_line(tmp_path: Path) -> None:
         (EvaluationResult, {"num_queries": 3}, "num_queries"),
         (EvaluationResult, {"per_query": {"q1": {"mrr@10": 0.4}, "q2": {}}}, "per_query"),
         (EvaluationResult, {"scoring": "faiss"}, "scoring"),
+        (NegativePool, {"split": "test"}, "split"),
+        (NegativePool, {"doc_ids": ["d1"]}, "doc_ids"),
+        (NegativePool, {"doc_ids": ["d1", "q1", "d2"]}, "doc_ids"),
+        (DatasetManifest, {"fingerprint": "abc"}, "fingerprint"),
+        (DatasetManifest, {"num_documents": 0}, "num_documents"),
     ],
 )
 def test_field_rules(

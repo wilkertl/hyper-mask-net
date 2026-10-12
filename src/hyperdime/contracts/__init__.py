@@ -24,9 +24,11 @@ from hyperdime.contracts.manifests import (
     start_manifest,
 )
 from hyperdime.contracts.schemas import (
+    DatasetManifest,
     DocumentRecord,
     EmbeddingArtifact,
     EvaluationResult,
+    NegativePool,
     PayloadRef,
     QrelsRecord,
     QueryRecord,
@@ -45,6 +47,8 @@ __all__ = [
     "NO_DATASET",
     "ArtifactWriter",
     "DataConfig",
+    "DatasetManifest",
+    "NegativePool",
     "ModelConfig",
     "RunConfig",
     "RunSettings",

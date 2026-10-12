@@ -1,0 +1,9 @@
+# @package _global_
+# Prepare, embed, and mine negatives for one environment: `hyperdime <command> data=<env>`.
+defaults:
+  - /model: qwen3_0_6b
+  - /data: scifact
+  - /run: default
+  - _self_
+
+config_version: 1
