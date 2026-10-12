@@ -10,14 +10,14 @@ tests first in each story. Run tasks (T020+) execute on DataPolicy-4090.
 
 ## Phase 1: Setup
 
-- [ ] T001 Install the `science` extra in CI (.github/workflows/ci.yml) and README's test install, for `ir-measures`
+- [X] T001 Install the `science` extra in CI (.github/workflows/ci.yml) and README's test install, for `ir-measures`
 
 ## Phase 2: User Story 1 — trustworthy exact evaluation (P1)
 
-- [ ] T002 [P] [US1] Tests in tests/unit/evaluation/test_metrics_ap.py: AP by hand on a 5-document ranking; `relevance_threshold=2` makes grade-1 documents non-relevant for AP, MRR, and Recall but not for nDCG; defaults reproduce the previous values; agreement with `ir-measures` within 1e-6 on a random fixture (nDCG@10, RR@10, RR@100, R@100, AP)
-- [ ] T003 [P] [US1] Tests in tests/unit/evaluation/test_runs.py: `masked_rankings` with k = 1024 equals unmasked rankings; stacked evaluation of several (method, k) pairs equals evaluating each alone; queries without a relevant document are excluded and counted
-- [ ] T004 [US1] Add AP and `relevance_threshold` to `query_metrics` in src/hyperdime/evaluation/metrics.py
-- [ ] T005 [US1] Implement `masked_rankings` and `evaluate_methods` in src/hyperdime/evaluation/runs.py (one `exact_search_streamed` pass over all stacked masked queries; per-query metrics; `EvaluationResult` records)
+- [X] T002 [P] [US1] Tests in tests/unit/evaluation/test_metrics_ap.py: AP by hand on a 5-document ranking; `relevance_threshold=2` makes grade-1 documents non-relevant for AP, MRR, and Recall but not for nDCG; defaults reproduce the previous values; agreement with `ir-measures` within 1e-6 on a random fixture (nDCG@10, RR@10, RR@100, R@100, AP)
+- [X] T003 [P] [US1] Tests in tests/unit/evaluation/test_runs.py: `masked_rankings` with k = 1024 equals unmasked rankings; stacked evaluation of several (method, k) pairs equals evaluating each alone; queries without a relevant document are excluded and counted
+- [X] T004 [US1] Add AP and `relevance_threshold` to `query_metrics` in src/hyperdime/evaluation/metrics.py
+- [X] T005 [US1] Implement `masked_rankings` and `evaluate_methods` in src/hyperdime/evaluation/runs.py (one `exact_search_streamed` pass over all stacked masked queries; per-query metrics; `EvaluationResult` records)
 
 ## Phase 3: User Story 2 — a selector that learns its target (P1)
 

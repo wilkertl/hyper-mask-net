@@ -63,7 +63,7 @@ Dependencies are locked in `uv.lock` ([uv](https://docs.astral.sh/uv/)). Pick th
 with one extra, `cpu` or `cu128` (CUDA 12.8); they cannot be combined.
 
 ```bash
-uv sync --locked --extra cpu --extra dev --extra data   # CPU; enough for every test
+uv sync --locked --extra cpu --extra dev --extra data --extra science   # CPU; every test
 uv sync --locked --extra cu128 --extra dev    # NVIDIA GPU
 uv run pre-commit install                     # run the checks below before each commit
 uv run hyperdime diagnose                     # smoke test: validates configs/, writes a manifest

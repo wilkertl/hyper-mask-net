@@ -18,7 +18,7 @@ jobs:
           python-version: "3.12"
           enable-cache: true
       - name: Install from the lockfile
-        run: uv sync --locked --extra cpu --extra dev --extra data
+        run: uv sync --locked --extra cpu --extra dev --extra data --extra science
       - name: Lint
         run: uv run --no-sync ruff check --output-format=github .
       - name: Format
