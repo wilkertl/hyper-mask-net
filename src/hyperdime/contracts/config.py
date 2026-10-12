@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
-from typing import Annotated, Literal
+from collections.abc import Mapping, Sequence
+from pathlib import Path
+from typing import Annotated, Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, StringConstraints
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints, ValidationError
 
 from hyperdime.contracts.schemas import Dtype, Id
+from hyperdime.contracts.validation import ConfigError, format_config_error
 
 
 class _Config(BaseModel):
@@ -51,3 +54,35 @@ class RunConfig(_Config):
     data: DataConfig
     run: RunSettings
     config_version: Literal[1]
+
+
+def validate_config(raw: Mapping[str, Any]) -> RunConfig:
+    """Validate a composed config; every problem is reported by its dotted field path."""
+    try:
+        return RunConfig.model_validate(raw)
+    except ValidationError as error:
+        raise ConfigError(format_config_error(error)) from error
+
+
+def load_config(config_dir: Path, config_name: str, overrides: Sequence[str] = ()) -> RunConfig:
+    """Compose ``config_name`` from the Hydra groups in ``config_dir`` and validate it.
+
+    Uses Hydra's compose API, so the working directory is never changed and nothing is
+    written; Hydra's global state is cleared when composition ends.
+    """
+    from hydra import compose, initialize_config_dir
+    from hydra.errors import HydraException
+    from omegaconf import OmegaConf
+    from omegaconf.errors import OmegaConfBaseException
+
+    try:
+        with initialize_config_dir(
+            config_dir=str(Path(config_dir).resolve()), version_base=None, job_name="hyperdime"
+        ):
+            composed = compose(config_name=config_name, overrides=list(overrides))
+        raw = OmegaConf.to_container(composed, resolve=True)
+    except (HydraException, OmegaConfBaseException) as error:
+        raise ConfigError(f"{config_name}: {error}") from error
+    if not isinstance(raw, dict):
+        raise ConfigError(f"{config_name}: the composed config is not a mapping")
+    return validate_config({str(key): value for key, value in raw.items()})

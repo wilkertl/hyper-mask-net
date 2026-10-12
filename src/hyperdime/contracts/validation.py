@@ -2,7 +2,13 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
+from typing import TYPE_CHECKING, Any
+
 from pydantic import ValidationError
+
+if TYPE_CHECKING:
+    from hyperdime.contracts.config import RunConfig
 
 
 class ContractError(ValueError):
@@ -24,3 +30,21 @@ def format_validation_error(
         location = f"{model_name}.{field}" if field else model_name
         lines.append(f"{prefix}{location}: {item['msg']}")
     return "\n".join(lines)
+
+
+def format_config_error(error: ValidationError) -> str:
+    """One ``<dotted.field>: <message>`` line per error, with the offending value when scalar."""
+    lines = []
+    for item in error.errors():
+        field = ".".join(str(part) for part in item["loc"]) or "<root>"
+        value = item.get("input")
+        got = f" (got {value!r})" if isinstance(value, str | int | float | bool) else ""
+        lines.append(f"{field}: {item['msg']}{got}")
+    return "\n".join(lines)
+
+
+def validate_config(raw: Mapping[str, Any]) -> RunConfig:
+    """Validate a composed config into a ``RunConfig``; raises ``ConfigError``."""
+    from hyperdime.contracts.config import validate_config as validate
+
+    return validate(raw)

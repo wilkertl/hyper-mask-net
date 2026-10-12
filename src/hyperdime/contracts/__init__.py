@@ -1,5 +1,13 @@
 """M0: serializable schemas, run manifests, and validation shared by every module."""
 
+from hyperdime.contracts.config import (
+    DataConfig,
+    ModelConfig,
+    RunConfig,
+    RunSettings,
+    load_config,
+    validate_config,
+)
 from hyperdime.contracts.hashing import (
     NO_DATASET,
     canonical_json,
@@ -36,6 +44,12 @@ from hyperdime.contracts.validation import ConfigError, ContractError
 __all__ = [
     "NO_DATASET",
     "ArtifactWriter",
+    "DataConfig",
+    "ModelConfig",
+    "RunConfig",
+    "RunSettings",
+    "load_config",
+    "validate_config",
     "RunManifest",
     "finish_manifest",
     "read_manifest",
