@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 
+import numpy as np
 import torch
 from torch import Tensor
 
@@ -48,3 +49,46 @@ def aggregate_pairs(
         aggregated_p[row] = gains @ documents[rows].float() / gains.sum()
         aggregated_n[row] = documents[torch.tensor(list(pool))].float().mean(dim=0)
     return aggregated_p, aggregated_n
+
+
+def oracle_pairs(
+    query_ids: Sequence[str],
+    query_vectors: np.ndarray,
+    query_rows: Mapping[str, int],
+    documents: np.ndarray,
+    doc_rows: Mapping[str, int],
+    positives: Mapping[str, Mapping[str, int]],
+    pools: Mapping[str, Sequence[str]],
+) -> tuple[Tensor, Tensor, Tensor]:
+    """``(queries, p, n)`` for ``query_ids``, gathering only the needed rows of the (possibly
+    memory-mapped) document matrix. ``positives`` maps a query to its graded judgments (only
+    grades > 0 are used) and ``pools`` to its sampled negatives (repeats kept)."""
+    needed: set[int] = set()
+    for qid in query_ids:
+        needed.update(doc_rows[d] for d, g in positives[qid].items() if g > 0 and d in doc_rows)
+        needed.update(doc_rows[d] for d in pools[qid])
+    ordered = sorted(needed)
+    local = {row: i for i, row in enumerate(ordered)}
+    gathered = torch.from_numpy(np.asarray(documents[ordered], dtype=np.float32))
+    queries = torch.from_numpy(
+        np.asarray(query_vectors[[query_rows[qid] for qid in query_ids]], dtype=np.float32)
+    )
+    local_positives = [
+        {local[doc_rows[d]]: g for d, g in positives[qid].items() if g > 0 and d in doc_rows}
+        for qid in query_ids
+    ]
+    local_pools = [[local[doc_rows[d]] for d in pools[qid]] for qid in query_ids]
+    p, n = aggregate_pairs(queries, gathered, local_positives, local_pools)
+    return queries, p, n
+
+
+def targets_at(queries: Tensor, p: Tensor, n: Tensor, temperature: float) -> Tensor:
+    """``softmax(e_q * (p - n) / tau)``: one temperature over precomputed pairs (research R4)."""
+    return oracle_importance(queries, p, n, temperature)
+
+
+def uniform_kl(targets: Tensor) -> float:
+    """Mean KL(target || uniform): the loss of a predictor that ignores the query (G1 (a))."""
+    dim = targets.shape[1]
+    safe = targets.clamp_min(1e-30)
+    return float((targets * (safe * dim).log()).sum(dim=1).mean())

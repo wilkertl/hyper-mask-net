@@ -6,7 +6,14 @@ import argparse
 import sys
 from collections.abc import Sequence
 
-from hyperdime.cli import diagnose, embed, mine_negatives, prepare_data
+from hyperdime.cli import (
+    diagnose,
+    embed,
+    mine_negatives,
+    prepare_data,
+    train_global,
+    train_selector,
+)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -16,6 +23,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     prepare_data.register(commands)
     embed.register(commands)
     mine_negatives.register(commands)
+    train_selector.register(commands)
+    train_global.register(commands)
     args = parser.parse_args(argv)
     code: int = args.handler(args)
     return code
