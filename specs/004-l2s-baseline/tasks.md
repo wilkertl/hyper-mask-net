@@ -41,8 +41,8 @@ tests first in each story. Run tasks (T020+) execute on DataPolicy-4090.
 
 ## Phase 6: Polish
 
-- [ ] T017 [P] Update docs/architecture.md and README.md with the F3 commands
-- [ ] T018 Run ruff, format, mypy, pytest, and SCRAP; act on `HIGH` findings for new tests or explain them
+- [X] T017 [P] Update docs/architecture.md and README.md with the F3 commands
+- [X] T018 Run ruff, format, mypy, pytest, and SCRAP; act on `HIGH` findings for new tests or explain them
 
 ## Phase 7: Runs on DataPolicy-4090
 

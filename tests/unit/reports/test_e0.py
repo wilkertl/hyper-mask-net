@@ -1,5 +1,7 @@
 """G1 criteria and significance from hand-built results (F3 US4)."""
 
+import pytest
+
 from hyperdime.contracts.schemas import EvaluationResult
 from hyperdime.reports.e0 import EnvironmentResults, g1, render, significance
 
@@ -33,13 +35,24 @@ def test_g1_passes_when_every_criterion_holds() -> None:
     assert [c["met"] for c in g1([_env()], True)] == [True, True, True, True]
 
 
-def test_g1_fails_on_each_criterion() -> None:
-    assert not g1([_env(kl=3.0)], True)[0]["met"]
+def _identity_broken() -> EnvironmentResults:
     broken = _env()
     broken.checks["test"]["k1024_identical"]["l2s"] = False
-    assert not g1([broken], True)[1]["met"]
-    assert not g1([_env(selector=0.2)], True)[2]["met"]
-    assert not g1([_env()], False)[3]["met"]
+    return broken
+
+
+@pytest.mark.parametrize(
+    ("make", "regenerates", "criterion"),
+    [
+        (lambda: _env(kl=3.0), True, 0),
+        (_identity_broken, True, 1),
+        (lambda: _env(selector=0.2), True, 2),
+        (_env, False, 3),
+    ],
+    ids=["a-kl", "b-identity", "c-ordering", "d-regeneration"],
+)
+def test_g1_fails_on_each_criterion(make, regenerates: bool, criterion: int) -> None:  # type: ignore[no-untyped-def]
+    assert not g1([make()], regenerates)[criterion]["met"]
 
 
 def test_significance_is_holm_adjusted_and_signed() -> None:
