@@ -15,7 +15,7 @@ uv run pre-commit run --all-files             # ruff lint, ruff format, mypy
 uv run pytest                                 # all tests, CPU only
 ```
 
-**Expected**: every command exits 0; the 27 pre-existing unit tests still pass (SC-007); no file
+**Expected**: every command exits 0; every test that existed at `5f49b89` (118) still passes (SC-007); no file
 under `.specify/` or `.agents/` is linted.
 
 ## 2. Diagnostic run (User Story 3)

@@ -76,19 +76,30 @@ def test_manifest_accepts_a_plain_config_mapping_with_an_explicit_seed() -> None
         start_manifest("spike", {"env": "scifact"})
 
 
-def test_git_state_clean_dirty_and_untracked(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+@pytest.fixture
+def git_repo(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+    """A temporary checkout with one committed file, as the working directory."""
     _git(tmp_path, "init", "-q")
     (tmp_path / "tracked.txt").write_text("a")
     _git(tmp_path, "add", "tracked.txt")
     _git(tmp_path, "-c", "user.name=t", "-c", "user.email=t@t", "commit", "-qm", "init")
     monkeypatch.chdir(tmp_path)
-    clean = start_manifest("diagnose", _config())
-    assert re.fullmatch(r"[0-9a-f]{40}", clean.git_commit) and clean.git_dirty is False
-    (tmp_path / "untracked.txt").write_text("b")
+    return tmp_path
+
+
+def test_a_clean_checkout_records_its_commit(git_repo: Path) -> None:
+    manifest = start_manifest("diagnose", _config())
+    assert re.fullmatch(r"[0-9a-f]{40}", manifest.git_commit)
+    assert manifest.git_dirty is False
+
+
+def test_untracked_files_do_not_make_the_tree_dirty(git_repo: Path) -> None:
+    (git_repo / "untracked.txt").write_text("b")
     assert start_manifest("diagnose", _config()).git_dirty is False
-    (tmp_path / "tracked.txt").write_text("changed")
+
+
+def test_a_changed_tracked_file_makes_the_tree_dirty(git_repo: Path) -> None:
+    (git_repo / "tracked.txt").write_text("changed")
     assert start_manifest("diagnose", _config()).git_dirty is True
 
 
@@ -101,11 +112,15 @@ def test_git_unavailable_is_recorded_not_omitted(monkeypatch: pytest.MonkeyPatch
     assert manifest.git_commit == "unknown" and manifest.git_dirty is None
 
 
-def test_finish_manifest_and_round_trip(tmp_path: Path) -> None:
+def test_finish_manifest_sets_the_end_time_and_files() -> None:
     started = start_manifest("diagnose", _config())
     finished = finish_manifest(started, [("queries.json", "ab" * 32)])
     assert finished.finished_at is not None and finished.finished_at >= finished.started_at
     assert [(a.name, a.sha256) for a in finished.artifacts] == [("queries.json", "ab" * 32)]
+
+
+def test_manifest_round_trips(tmp_path: Path) -> None:
+    finished = finish_manifest(start_manifest("diagnose", _config()), [])
     dump_record(finished, tmp_path / "manifest.json")
     assert load_record(RunManifest, tmp_path / "manifest.json") == finished
 
@@ -116,11 +131,16 @@ def test_writer_refuses_to_run_without_a_manifest(tmp_path: Path) -> None:
     assert not (tmp_path / "queries").exists()
 
 
+def test_nothing_is_visible_before_commit(tmp_path: Path) -> None:
+    writer = ArtifactWriter(tmp_path, "queries", start_manifest("embed", _config()))
+    writer.write_record("queries.json", QUERY)
+    assert _visible(tmp_path / "queries") == []
+
+
 def test_writer_publishes_payloads_with_their_hashes(tmp_path: Path) -> None:
     writer = ArtifactWriter(tmp_path, "queries", start_manifest("embed", _config()))
     writer.write_record("queries.json", QUERY)
     writer.path("vectors.bin").write_bytes(b"hi")
-    assert _visible(tmp_path / "queries") == []
     published = writer.commit()
     assert published.parent == tmp_path / "queries"
     assert _visible(published) == ["manifest.json", "queries.json", "vectors.bin"]

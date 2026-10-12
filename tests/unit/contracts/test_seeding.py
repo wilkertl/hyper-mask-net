@@ -28,6 +28,11 @@ def test_same_seed_gives_identical_draws_from_every_source() -> None:
     first = _draws()
     seed_everything(7)
     assert _draws() == first
+
+
+def test_different_seeds_give_different_draws() -> None:
+    seed_everything(7)
+    first = _draws()
     seed_everything(8)
     assert _draws() != first
 

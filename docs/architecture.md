@@ -44,7 +44,7 @@ flowchart LR
 
 | Component | Plan | Package | Implemented |
 |---|---|---|---|
-| Contracts, manifests, seeds | M0 | `hyperdime.contracts` | `hashing.file_sha256`, `hashing.tree_sha256` |
+| Contracts, manifests, seeds | M0 | `hyperdime.contracts` | **implemented (F1)**: seven records in `schemas`, `manifests.RunManifest`, `manifests.ArtifactWriter`, `seeding.seed_everything`, `config.load_config`, `hashing.config_hash` / `file_sha256` / `tree_sha256`; `hyperdime diagnose` |
 | Loaders, splits, negatives | M1 | `hyperdime.data` | `loaders.download_beir`, `loaders.read_beir`, `loaders.beir_fingerprint`, `splits.split_ids`, `negatives.mine_hard_negatives` |
 | Frozen Qwen embeddings | M2 | `hyperdime.embeddings` | `qwen.format_query`, `qwen.last_token_pool`, `qwen.QwenEncoder` (local), `remote.VllmEncoder` (vLLM, shared with the `beir` project), `cache.embed_cached` |
 | Oracle targets `softmax(e_q ⊙ (p − n) / τ)` | M3 | `hyperdime.oracle` | `importance.oracle_scores`, `importance.oracle_importance`, `targets.aggregate_targets`, `targets.aggregate_pairs` |
@@ -60,6 +60,32 @@ flowchart LR
 | F0 selector-shift spike (exploratory) | research R0 | `hyperdime.spike` | `python -m hyperdime.spike prepare\|train\|train-global\|analyze\|diagnose\|report\|all`; `diagnose` (research R20, not part of `all`) in `spike.diagnostics` |
 
 File names inside each package follow plan §4.
+
+## Contracts (F1)
+
+Every module exchanges data through the records in `hyperdime.contracts` and writes artifacts
+through one writer ([001 data model](../specs/001-m0-foundation/data-model.md)).
+
+| Record | Version | Describes |
+|---|---|---|
+| `QueryRecord`, `DocumentRecord`, `QrelsRecord` | 1 | one query, document, or relevance judgment, with its environment and split |
+| `EmbeddingArtifact` | 1 | a stored embedding matrix: row ids, width 1024, dtype, model revision, payload |
+| `SpaceDescriptor` | 0, provisional until M5.5 | per-dimension statistics of an environment under a protocol |
+| `SelectorCheckpoint` | 0, provisional until M7 | a trained or generated selector and its training manifest |
+| `EvaluationResult` | 1 | exact-scoring metrics with per-query values |
+| `RunManifest` | 1 | provenance: commit and dirty flag, config hash, dataset hash, model revision, seed, device, dtype, versions, UTC start and end, published files with SHA-256 |
+
+- Records are frozen, reject unknown fields, and fail to load with a `ContractError` naming the
+  record type and field; large arrays are `PayloadRef`s (relative path, SHA-256, `npy` or
+  `safetensors`).
+- An artifact is `artifacts/<kind>/<run_id>/`. `ArtifactWriter` refuses to run without a
+  `RunManifest`, stages files in a hidden directory, writes `manifest.json` last, and publishes
+  with one rename, so no visible artifact ever lacks its manifest and none is overwritten.
+- Runs are described by Hydra config groups under `configs/`, validated into `RunConfig`, which
+  enforces the frozen model, width 1024, and a pinned revision; `hyperdime diagnose` exercises the
+  whole chain without loading the model.
+- The F0 spike writes `RunManifest`s into its in-place directories without `ArtifactWriter`
+  ([ADR-0005](decisions/ADR-0005-spike-manifests-without-artifact-writer.md)).
 
 ## Invariants
 

@@ -115,11 +115,19 @@ def test_records_round_trip_through_json_lines(cls: type[Record], tmp_path: Path
 
 
 @pytest.mark.parametrize("cls", RECORD_TYPES, ids=lambda c: c.__name__)
-def test_missing_wrong_and_unknown_fields_are_named(cls: type[Record], tmp_path: Path) -> None:
+def test_a_missing_field_is_named(cls: type[Record], tmp_path: Path) -> None:
     first_field = next(iter(VALID[cls]))
     missing = {k: v for k, v in VALID[cls].items() if k != first_field}
     _reject(tmp_path, cls, missing, first_field)
+
+
+@pytest.mark.parametrize("cls", RECORD_TYPES, ids=lambda c: c.__name__)
+def test_a_wrong_type_is_named(cls: type[Record], tmp_path: Path) -> None:
     _reject(tmp_path, cls, {**VALID[cls], "environment": ["not", "a", "string"]}, "environment")
+
+
+@pytest.mark.parametrize("cls", RECORD_TYPES, ids=lambda c: c.__name__)
+def test_an_unknown_field_is_named(cls: type[Record], tmp_path: Path) -> None:
     _reject(tmp_path, cls, {**VALID[cls], "unexpected": 1}, "unexpected")
 
 

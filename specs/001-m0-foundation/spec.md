@@ -218,7 +218,7 @@ on all files, and confirm CI passes on the same lockfile.
   5 seconds on a laptop CPU, with no network access.
 - **SC-006**: A fresh clone reaches a passing local check run (lint, format, types, tests) by
   following only the README.
-- **SC-007**: The existing 27 unit tests keep passing.
+- **SC-007**: Every test that existed at `5f49b89` (118, after the F0 spike and the SCRAP tooling) keeps passing.
 
 ## Assumptions
 
