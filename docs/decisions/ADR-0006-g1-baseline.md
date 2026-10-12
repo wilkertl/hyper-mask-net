@@ -57,8 +57,10 @@ should reproduce. Its numbers are cited here for comparison only; they are not E
   in E0), so the evaluation setups are not the same: E0 uses the sampled corpus of
   `docs/protocols.md`, and the paper does not fully specify its MS MARCO corpus. The absolute
   numbers are therefore not comparable, but the sign of the selector's effect against its own full
-  baseline is reversed.
-  Criterion (a) is met on MS MARCO, so G1 as written does not catch this.
+  baseline is reversed. Criterion (a) is met on MS MARCO, so G1 as written does not catch this.
+  Temperature does not explain it: the official grid includes τ = 0.01 and validation chose
+  τ = 0.005, and the wide grid (τ from 0.001 to 1.0) scores 0.3239 on validation against the
+  official 0.3238.
 
 ## Decision
 
@@ -72,7 +74,11 @@ environments with NFCorpus's selector-shift results interpreted with that caveat
 
 The MS MARCO non-reproduction is recorded as a known deviation from the paper, not as a G1
 failure: G1's criteria (b) and (c) show the pipeline is correct there, and the selector still beats
-prefix, random, and global importance.
+prefix, random, and global importance. MS MARCO is carried into F4 with the deviation stated
+wherever its results appear. F4 compares selectors with each other at a fixed k (in-domain against
+transferred), not against full 1024, so a selector that beats the masking baselines is a usable
+in-domain reference. Reproducing the paper's MS MARCO setup is not attempted, because the paper
+does not specify it well enough to know when it is reproduced.
 
 This amends how research R7's criterion (a) is applied after seeing the results, so the change
 carries the `protocol-change` label.
@@ -91,9 +97,12 @@ Options considered and not taken:
 - Later gates do not use a KL-against-uniform threshold. A selector's fit to its target is tested
   as a ranking, e.g. top-k overlap with the oracle mask against the global-importance baseline;
   the exact rule is fixed in F4's research before any F4 run.
-- Before F4 uses MS MARCO as an in-domain reference, the researcher decides whether to explain the
-  deviation first (rerun the official selector at τ ≈ 0.01, or reproduce the paper's MS MARCO
-  setup) or to carry MS MARCO into F4 with the deviation stated wherever its results appear.
+- Before F4 runs, one time-boxed check (about an hour) reads the authors' public code
+  (`github.com/wzy2001wzy/learning2select`) for how it builds the MS MARCO corpus and queries. If it
+  shows a concrete difference from E0's setup, the deviation note names it; if not, the note stays
+  "setups differ", and the check is not extended.
+- F4 reports and the paper state the MS MARCO deviation wherever MS MARCO results appear, and do
+  not claim that E0 reproduces Learning-to-Select on MS MARCO.
 - F4's transfer matrix (M4.2) includes a baseline that transfers one environment's fixed dimension
   subset to the others. Pasin et al. report that such a subset transfers across collections
   without loss, so selector shift has to beat it, not only full 1024. A global-adapter comparison
