@@ -7,6 +7,14 @@ from hyperdime.contracts.hashing import (
     file_sha256,
     tree_sha256,
 )
+from hyperdime.contracts.manifests import (
+    ArtifactWriter,
+    RunManifest,
+    finish_manifest,
+    read_manifest,
+    resolve_device,
+    start_manifest,
+)
 from hyperdime.contracts.schemas import (
     DocumentRecord,
     EmbeddingArtifact,
@@ -22,10 +30,18 @@ from hyperdime.contracts.schemas import (
     load_record,
     load_records,
 )
+from hyperdime.contracts.seeding import seed_everything
 from hyperdime.contracts.validation import ConfigError, ContractError
 
 __all__ = [
     "NO_DATASET",
+    "ArtifactWriter",
+    "RunManifest",
+    "finish_manifest",
+    "read_manifest",
+    "resolve_device",
+    "seed_everything",
+    "start_manifest",
     "ConfigError",
     "ContractError",
     "DocumentRecord",
