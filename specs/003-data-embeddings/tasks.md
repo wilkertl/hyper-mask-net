@@ -55,15 +55,15 @@ sources and a stub encoder. Tests first in each story.
 
 ## Phase 5: User Story 3 — MS MARCO and the TREC DL sets (P2)
 
-- [ ] T018 [P] [US3] Tests: a fake MS MARCO-shaped source with a `dev` test split and three evaluation query sets prepares into `qrels-test.jsonl` plus `qrels-trec-dl-2019.jsonl`, `qrels-trec-dl-2020.jsonl`, `qrels-trec-dl-hard.jsonl` whose judgments all refer to corpus ids; `embed` writes one artifact per evaluation set and the documents once; documents are streamed (prepare and embed never build the full corpus list — checked by a generator source that fails if materialized twice)
-- [ ] T019 [US3] Make `prepare_environment` and `embed` stream documents end to end (parquet batches → `documents.jsonl` → shard texts) and support evaluation query sets through `IrDatasetsQuerySet`
+- [X] T018 [P] [US3] Tests: a fake MS MARCO-shaped source with a `dev` test split and three evaluation query sets prepares into `qrels-test.jsonl` plus `qrels-trec-dl-2019.jsonl`, `qrels-trec-dl-2020.jsonl`, `qrels-trec-dl-hard.jsonl` whose judgments all refer to corpus ids; `embed` writes one artifact per evaluation set and the documents once; documents are streamed (prepare and embed never build the full corpus list — checked by a generator source that fails if materialized twice)
+- [X] T019 [US3] Make `prepare_environment` and `embed` stream documents end to end (parquet batches → `documents.jsonl` → shard texts) and support evaluation query sets through `IrDatasetsQuerySet`
 
 ## Phase 6: User Story 4 — hard-negative pools (P2)
 
-- [ ] T020 [P] [US4] Tests in tests/unit/retrieval/test_streamed.py: `exact_search_streamed` equals `exact_search` on a random 300 × 16 corpus for several chunk sizes, including a chunk smaller than `depth`
-- [ ] T021 [P] [US4] Tests in tests/unit/data/test_negative_pools.py: pools have 64 entries, none judged relevant or the query's own id, identical for the same seed, built for train and validation only; `build_negative_pools` never receives test judgments (a bundle loaded without them is enough); `sample_from_rankings` matches the spike's `sample_hard_negatives` on the same inputs
-- [ ] T022 [US4] Implement `exact_search_streamed` in src/hyperdime/retrieval/exact.py, split `sample_from_rankings` out of `sample_hard_negatives`, and add `build_negative_pools` in src/hyperdime/data/negatives.py
-- [ ] T023 [US4] Add `hyperdime mine-negatives` in src/hyperdime/cli/mine_negatives.py publishing `negatives.jsonl`; integration test in tests/integration/test_f2_pipeline.py including the leakage check (corrupted test judgments leave pools unchanged)
+- [X] T020 [P] [US4] Tests in tests/unit/retrieval/test_streamed.py: `exact_search_streamed` equals `exact_search` on a random 300 × 16 corpus for several chunk sizes, including a chunk smaller than `depth`
+- [X] T021 [P] [US4] Tests in tests/unit/data/test_negative_pools.py: pools have 64 entries, none judged relevant or the query's own id, identical for the same seed, built for train and validation only; `build_negative_pools` never receives test judgments (a bundle loaded without them is enough); `sample_from_rankings` matches the spike's `sample_hard_negatives` on the same inputs
+- [X] T022 [US4] Implement `exact_search_streamed` in src/hyperdime/retrieval/exact.py, split `sample_from_rankings` out of `sample_hard_negatives`, and add `build_negative_pools` in src/hyperdime/data/negatives.py
+- [X] T023 [US4] Add `hyperdime mine-negatives` in src/hyperdime/cli/mine_negatives.py publishing `negatives.jsonl`; integration test in tests/integration/test_f2_pipeline.py including the leakage check (corrupted test judgments leave pools unchanged)
 
 ## Phase 7: Polish
 

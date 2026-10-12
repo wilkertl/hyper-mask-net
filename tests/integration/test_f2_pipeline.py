@@ -133,3 +133,23 @@ def test_an_interrupted_embed_resumes(
     monkeypatch.setattr(embed, "ENCODER_FACTORY", lambda *args: resumed)
     assert _run(toy_configs, out, "embed", "--shard-size", "5") == 0
     assert len(resumed.encoded) == 12 - 5 + 29 + 2  # the first document shard was kept
+
+
+def test_mine_negatives_never_reads_test_judgments(
+    toy_configs: Path, tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    out = tmp_path / "out"
+    dataset = _prepared(toy_configs, out, capsys)
+    _run(toy_configs, out, "embed")
+    capsys.readouterr()
+    options = ("--depth", "8", "--count", "4")
+    assert _run(toy_configs, out, "mine-negatives", *options) == 0
+    first = Path(capsys.readouterr().out.strip())
+    pools = [json.loads(line) for line in (first / "negatives.jsonl").read_text().splitlines()]
+    assert {p["split"] for p in pools} == {"train", "validation"} and len(pools) == 19
+    assert all(len(p["doc_ids"]) == 4 for p in pools)
+    (dataset / "qrels-test.jsonl").unlink()
+    (dataset / "qrels-evalset.jsonl").unlink()
+    assert _run(toy_configs, out, "mine-negatives", *options) == 0
+    second = Path(capsys.readouterr().out.strip())
+    assert (second / "negatives.jsonl").read_bytes() == (first / "negatives.jsonl").read_bytes()
