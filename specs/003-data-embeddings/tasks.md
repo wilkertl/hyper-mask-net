@@ -72,10 +72,10 @@ sources and a stub encoder. Tests first in each story.
 
 ## Phase 8: Runs on the RTX 4090 workstation
 
-- [ ] T026 Sync the locked environment (`--extra cu128 --extra data --extra embed --extra dev`) on the workstation and run `hyperdime diagnose`
-- [ ] T027 Prepare, embed, and mine negatives for SciFact and NFCorpus; check SC-001 counts in `dataset.json`
-- [ ] T028 Run scripts/checks/f0_agreement.py for SciFact against the F0 caches (SC-004)
-- [ ] T029 Prepare MS MARCO; check SC-001 counts; measure embedding throughput on one shard and replace SC-006's 12-hour ceiling in the spec with the measured estimate
+- [X] T026 Sync the locked environment (`--extra cu128 --extra data --extra embed --extra dev`) on the workstation and run `hyperdime diagnose` — done on DataPolicy-4090 (`ceia40901`): uv 0.13, Python 3.12, torch 2.11.0+cu128; `diagnose` clean at `0f047ee` on `cuda:0`
+- [X] T027 Prepare, embed, and mine negatives for SciFact and NFCorpus; check SC-001 counts in `dataset.json` — done: SciFact 5,183 docs / 728 train / 81 validation / 300 test; NFCorpus 3,633 / 2,331 / 259 / 323; 809 and 2,590 pools of 64; about 2 minutes in total
+- [X] T028 Run scripts/checks/f0_agreement.py for SciFact against the F0 caches (SC-004) — done: SC-004 passes, minimum cosine 0.99972 (documents) and 0.99967 (queries)
+- [X] T029 Prepare MS MARCO; check SC-001 counts; measure embedding throughput on one shard and replace SC-006's 12-hour ceiling in the spec with the measured estimate — done: MS MARCO 8,841,823 passages, 6,980 test, DL19/20/HARD 43/54/50, prepared in 85 s; 154 s per 65,536-passage shard, so about 6 hours in total
 - [ ] T030 Embed MS MARCO (resumable) and mine its negatives; record wall time and peak GPU memory in the pull request
 
 ## Dependencies

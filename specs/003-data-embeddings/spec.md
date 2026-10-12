@@ -249,16 +249,17 @@ command refuses test queries.
   the same model revision: cosine similarity at least 0.999 for every document and query.
 - **SC-005**: An embedding job interrupted at any point loses at most one shard of work when
   restarted.
-- **SC-006**: The full MS MARCO corpus embeds on the single 24 GB GPU workstation in under 12 hours
-  of wall time, in one or more sessions.
+- **SC-006**: The full MS MARCO corpus embeds on the single 24 GB GPU workstation in about 6 hours
+  of wall time, in one or more sessions (measured on 2026-10-12: 154 s per 65,536-passage shard,
+  about 425 passages/s, 135 shards, 16.8 GB of GPU memory; the earlier ceiling was 12 hours).
 - **SC-007**: F3 can load each of the three environments' records, splits, vectors, and negative
   pools through the shared contracts alone, without reading any F2 internal file directly.
 
 ## Assumptions
 
-- All F2 embeddings are made on one machine, the RTX 4090 workstation, so every F2 vector comes
-  from the same hardware; the DGX Spark is used only if the 4090 is unavailable, and then for all
-  three environments.
+- All F2 embeddings are made on one machine, the DataPolicy RTX 4090 workstation (`ceia40901`,
+  reached over Tailscale), so every F2 vector comes from the same hardware. The other 4090
+  (Corejur, `ceia40902`) was serving a vLLM engine at full load and was not used.
 - Sources follow research R2: BEIR datasets and MS MARCO from the Hugging Face Hub pinned by
   revision, and the TREC DL 2019, DL 2020, and DL-HARD query sets and judgments from `ir_datasets`.
   The spike's UKP BEIR archives may serve SciFact and NFCorpus if their content is identical, which
