@@ -1,0 +1,5 @@
+criterion,value,met
+(a) validation KL of the selector below the uniform predictor's,scifact 0.015677 vs 0.018894; nfcorpus 0.000015 vs 0.000010; msmarco 0.011892 vs 0.012261,no
+(b) k = 1024 gives the unmasked rankings for every method and query set,6/6 query sets,yes
+(c) nDCG@10 at k = 256: oracle >= selector >= random,scifact 0.9984 >= 0.8031 >= 0.6531; nfcorpus 0.7746 >= 0.3596 >= 0.3120; msmarco 0.9707 >= 0.3543 >= 0.3325,yes
+(d) the report regenerates byte-identically from result files,two renders from freshly loaded files compared,yes
