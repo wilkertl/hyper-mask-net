@@ -129,7 +129,7 @@ follows `DiagnosticsResult` in data-model.md; the CLI follows contracts/cli.md, 
 **Independent Test**: The E0 report regenerates byte-identically and shows the G1 criteria of
 research R7.
 
-- [ ] T028 [US1] Generate tasks for feature F1 by pointing .specify/feature.json at `specs/001-m0-foundation` and running `/speckit-tasks`, which writes specs/001-m0-foundation/tasks.md
+- [X] T028 [US1] Generate tasks for feature F1 by pointing .specify/feature.json at `specs/001-m0-foundation` and running `/speckit-tasks`, which writes specs/001-m0-foundation/tasks.md
 - [ ] T029 [US1] Implement F1 (tickets M0.1–M0.4) with `/speckit-implement`: src/hyperdime/contracts/{schemas,validation,config,hashing,seeding,manifests}.py, `hyperdime diagnose`, uv.lock, .pre-commit-config.yaml; move the spike's manifests in src/hyperdime/spike/manifest.py onto `RunManifest`
 - [ ] T030 [US1] Specify, plan, and generate tasks for feature F2 `data-embeddings` (M1.1–M1.4, M2.1–M2.2; research R2, R5) with `/speckit-specify`, `/speckit-plan`, `/speckit-tasks`, reusing src/hyperdime/data/loaders.py, src/hyperdime/embeddings/remote.py, and src/hyperdime/embeddings/cache.py
 - [ ] T031 [US1] Implement F2, then embed SciFact, NFCorpus, and full MS MARCO through vLLM, with `ir_datasets` query sets `msmarco-passage/trec-dl-2019/judged`, `msmarco-passage/trec-dl-2020/judged`, and `dl-hard`
