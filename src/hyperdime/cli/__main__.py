@@ -6,7 +6,7 @@ import argparse
 import sys
 from collections.abc import Sequence
 
-from hyperdime.cli import diagnose, prepare_data
+from hyperdime.cli import diagnose, embed, prepare_data
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -14,6 +14,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     commands = parser.add_subparsers(dest="command", required=True)
     diagnose.register(commands)
     prepare_data.register(commands)
+    embed.register(commands)
     args = parser.parse_args(argv)
     code: int = args.handler(args)
     return code

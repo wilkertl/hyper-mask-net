@@ -1,9 +1,11 @@
 """Shared fakes: an in-memory BEIR-shaped source and evaluation query set (no network)."""
 
-from collections.abc import Iterator
+from collections.abc import Iterator, Sequence
 from dataclasses import dataclass, field
 
 import pytest
+import torch
+from torch.nn import functional as F
 
 from hyperdime.contracts.config import DataConfig
 from hyperdime.data.environments import EnvironmentSpec, EvalQuerySet
@@ -96,3 +98,26 @@ def toy_eval_sets() -> dict[str, FakeQuerySet]:
 @pytest.fixture
 def source() -> FakeSource:
     return toy_source()
+
+
+class StubEncoder:
+    """Deterministic unit vectors from text, standing in for Qwen3-Embedding (no model, no GPU)."""
+
+    def __init__(self, fail_after: int | None = None) -> None:
+        self.calls = 0
+        self.fail_after = fail_after
+        self.encoded: list[str] = []
+
+    def encode(self, texts: Sequence[str], progress: str = "") -> torch.Tensor:
+        if self.fail_after is not None and self.calls >= self.fail_after:
+            raise RuntimeError("interrupted")
+        self.calls += 1
+        self.encoded += list(texts)
+        rows = []
+        for text in texts:
+            generator = torch.Generator().manual_seed(sum(map(ord, text)) * 31 + len(text))
+            rows.append(torch.randn(1024, generator=generator))
+        return F.normalize(torch.stack(rows), dim=-1) if rows else torch.empty(0, 1024)
+
+    def encode_queries(self, texts: Sequence[str], instruction: str | None) -> torch.Tensor:
+        return self.encode([f"{instruction}: {t}" for t in texts])
