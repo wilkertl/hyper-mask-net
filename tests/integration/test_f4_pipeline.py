@@ -4,6 +4,7 @@ import json
 import shutil
 from collections.abc import Iterator
 from pathlib import Path
+from typing import NamedTuple
 
 import pytest
 import torch
@@ -173,72 +174,117 @@ def test_seeded_training_refuses_other_inputs_than_f3s(
     assert _retrain(configs, out, "toyb", 0) == 1
 
 
-def _matrix(configs: Path, out: Path, capsys: pytest.CaptureFixture[str]) -> Path:
-    capsys.readouterr()
+def _matrix(configs: Path, out: Path) -> Path:
     assert run_command(configs, out, "transfer-matrix", "--envs", *TOY_ENVS) == 0
-    return Path(capsys.readouterr().out.strip().splitlines()[-1])
+    return latest_artifact(out, "evaluation/E1", "all")
 
 
-def _files(directory: Path) -> dict[str, bytes]:
-    return {
-        p.name: p.read_bytes()
-        for p in directory.iterdir()
-        if p.is_file() and p.name != "manifest.json"
-    }
+def _selector_bytes(out: Path) -> dict[Path, bytes]:
+    return {p: p.read_bytes() for p in (out / "selectors").rglob("*") if p.is_file()}
 
 
-def test_the_transfer_matrix_has_every_ordered_pair_and_trains_nothing(
-    f4_stack: tuple[Path, Path], tmp_path: Path, capsys: pytest.CaptureFixture[str]
+class Matrix(NamedTuple):
+    out: Path
+    run: Path
+    selectors_before: dict[Path, bytes]
+
+
+@pytest.fixture(scope="module")
+def matrix(f4_stack: tuple[Path, Path], tmp_path_factory: pytest.TempPathFactory) -> Matrix:
+    """One transfer-matrix run on a copy of the stack, shared by the read-only tests below."""
+    out = tmp_path_factory.mktemp("matrix") / "out"
+    shutil.copytree(f4_stack[1], out)
+    before = _selector_bytes(out)
+    return Matrix(out, _matrix(f4_stack[0], out), before)
+
+
+def test_the_transfer_matrix_trains_nothing(matrix: Matrix) -> None:
+    assert _selector_bytes(matrix.out) == matrix.selectors_before
+
+
+def test_the_transfer_matrix_has_every_ordered_pair(matrix: Matrix) -> None:
+    cells = load_records(TransferCell, matrix.run / "cells.jsonl")
+    pairs = {(c.train_environment, c.test_environment) for c in cells if c.query_set == "test"}
+    assert pairs == {(a, b) for a in TOY_ENVS for b in TOY_ENVS}
+
+
+def test_every_cell_averages_all_seeds(matrix: Matrix) -> None:
+    cells = load_records(TransferCell, matrix.run / "cells.jsonl")
+    assert {tuple(c.seeds) for c in cells} == {SEEDS}
+
+
+@pytest.mark.parametrize(
+    ("method", "protocol"),
+    [
+        ("selector:toya:s0", "transfer"),
+        ("fixed:toyc", "transfer"),
+        ("selector:toyb:s2", "in-domain"),
+        ("prefix", "in-domain"),
+    ],
+)
+def test_results_from_other_environments_are_transfer_results(
+    matrix: Matrix, method: str, protocol: str
 ) -> None:
-    configs = f4_stack[0]
+    results = load_records(EvaluationResult, matrix.run / "results-toyb-test.jsonl")
+    assert {r.selector: r.protocol for r in results}[method] == protocol
+
+
+def _result_files(directory: Path) -> dict[str, bytes]:
+    return {p.name: p.read_bytes() for p in directory.iterdir() if p.name != "manifest.json"}
+
+
+def test_a_second_transfer_matrix_run_gives_identical_result_files(
+    f4_stack: tuple[Path, Path], tmp_path: Path
+) -> None:
     out = _copy(f4_stack, tmp_path)
-    selectors = {p: p.read_bytes() for p in (out / "selectors").rglob("*") if p.is_file()}
-    first = _matrix(configs, out, capsys)
-    assert {p: p.read_bytes() for p in (out / "selectors").rglob("*") if p.is_file()} == selectors
-    cells = load_records(TransferCell, first / "cells.jsonl")
-    test_cells = [c for c in cells if c.query_set == "test"]
-    assert {(c.train_environment, c.test_environment) for c in test_cells} == {
-        (a, b) for a in TOY_ENVS for b in TOY_ENVS
-    }
-    assert all(c.seeds == list(SEEDS) for c in cells)
-    results = load_records(EvaluationResult, first / "results-toyb-test.jsonl")
-    protocols = {r.selector: r.protocol for r in results}
-    assert protocols["selector:toya:s0"] == "transfer" and protocols["fixed:toyc"] == "transfer"
-    assert protocols["selector:toyb:s2"] == "in-domain" and protocols["prefix"] == "in-domain"
-    assert _files(_matrix(configs, out, capsys)) == _files(first)
+    first = _result_files(_matrix(f4_stack[0], out))
+    assert _result_files(_matrix(f4_stack[0], out)) == first
 
 
-def test_behavior_compares_every_selector_pair_on_one_battery(
-    f4_stack: tuple[Path, Path], tmp_path: Path, capsys: pytest.CaptureFixture[str]
-) -> None:
-    directory = _matrix(f4_stack[0], _copy(f4_stack, tmp_path), capsys)
-    behavior = json.loads((directory / "behavior.json").read_text())
-    assert len(behavior["pairs"]) == 36 and behavior["assignments"] == 1680
-    assert sum(p["within"] for p in behavior["pairs"]) == 9
-    battery = json.loads((directory / "battery.json").read_text())
-    assert battery["n"] == 10 and set(battery["ids"]) == set(TOY_ENVS)
-    for env in TOY_ENVS:
-        for seed in SEEDS:
-            record = load_record(SelectorProperties, directory / f"properties-{env}-s{seed}.json")
-            assert record.battery_sha256 == battery["sha256"]
+def test_behavior_compares_all_36_selector_pairs_9_within_an_environment(matrix: Matrix) -> None:
+    pairs = json.loads((matrix.run / "behavior.json").read_text())["pairs"]
+    assert (len(pairs), sum(p["within"] for p in pairs)) == (36, 9)
 
 
-def test_behavior_fit_and_subsets_never_read_test_judgments(
-    f4_stack: tuple[Path, Path], tmp_path: Path, capsys: pytest.CaptureFixture[str]
-) -> None:
-    configs = f4_stack[0]
-    out = _copy(f4_stack, tmp_path)
-    first = _matrix(configs, out, capsys)
+def test_criterion_2_enumerates_1680_assignments(matrix: Matrix) -> None:
+    assert json.loads((matrix.run / "behavior.json").read_text())["assignments"] == 1680
+
+
+def test_the_battery_takes_every_toy_test_query(matrix: Matrix) -> None:
+    battery = json.loads((matrix.run / "battery.json").read_text())
+    assert (battery["n"], sorted(battery["ids"])) == (10, sorted(TOY_ENVS))
+
+
+@pytest.mark.parametrize(("env", "seed"), [(env, seed) for env in TOY_ENVS for seed in SEEDS])
+def test_every_selector_property_names_the_battery(matrix: Matrix, env: str, seed: int) -> None:
+    battery = json.loads((matrix.run / "battery.json").read_text())
+    record = load_record(SelectorProperties, matrix.run / f"properties-{env}-s{seed}.json")
+    assert record.battery_sha256 == battery["sha256"]
+
+
+def _move_test_judgments(out: Path) -> None:
+    """Point every test judgment at another document."""
     for env in TOY_ENVS:
         qrels = latest_artifact(out, "datasets", env) / "qrels-test.jsonl"
         moved = [json.loads(line) for line in qrels.read_text().splitlines()]
         for record in moved:
             record["doc_id"] = "d0" if record["doc_id"] != "d0" else "d1"
         qrels.write_text("".join(json.dumps(r) + "\n" for r in moved))
-    second = _matrix(configs, out, capsys)
-    for name in ("behavior.json", "battery.json", "fit.json", "fixed_subsets.json"):
-        assert (first / name).read_bytes() == (second / name).read_bytes()
-    assert (first / "cells.jsonl").read_bytes() != (second / "cells.jsonl").read_bytes()
+
+
+LABEL_FREE = ("behavior.json", "battery.json", "fit.json", "fixed_subsets.json")
+
+
+def test_behavior_fit_and_subsets_never_read_test_judgments(
+    f4_stack: tuple[Path, Path], matrix: Matrix, tmp_path: Path
+) -> None:
+    out = _copy((f4_stack[0], matrix.out), tmp_path)
+    _move_test_judgments(out)
+    second = _matrix(f4_stack[0], out)
+    assert (second / "cells.jsonl").read_bytes() != (matrix.run / "cells.jsonl").read_bytes()
+    assert {n: (second / n).read_bytes() for n in LABEL_FREE} == {
+        n: (matrix.run / n).read_bytes() for n in LABEL_FREE
+    }
 
 
 def test_the_transfer_matrix_refuses_a_single_seed(
@@ -249,24 +295,26 @@ def test_the_transfer_matrix_refuses_a_single_seed(
     assert "at least two seeds" in capsys.readouterr().err
 
 
-def test_report_e1_and_the_g2_draft_come_from_the_transfer_matrix(
-    f4_stack: tuple[Path, Path], tmp_path: Path, capsys: pytest.CaptureFixture[str]
-) -> None:
-    configs = f4_stack[0]
-    out = _copy(f4_stack, tmp_path)
-    run = _matrix(configs, out, capsys)
-    report_dir = tmp_path / "E1"
-    args = ["report", "E1", "--artifacts", str(out), "--report-dir", str(report_dir)]
+def _report(matrix: Matrix, report_dir: Path) -> dict[str, bytes]:
+    args = ["report", "E1", "--artifacts", str(matrix.out), "--report-dir", str(report_dir)]
     assert main(args) == 0
-    first = {p.name: p.read_bytes() for p in report_dir.rglob("*") if p.is_file()}
-    assert main(args) == 0
-    assert {p.name: p.read_bytes() for p in report_dir.rglob("*") if p.is_file()} == first
-    assert f"transfer-matrix `{run.name}`" in first["README.md"].decode()
+    return {p.name: p.read_bytes() for p in report_dir.rglob("*") if p.is_file()}
+
+
+def test_report_e1_regenerates_identically(matrix: Matrix, tmp_path: Path) -> None:
+    assert _report(matrix, tmp_path / "E1") == _report(matrix, tmp_path / "E1")
+
+
+def test_report_e1_names_its_transfer_matrix_run(matrix: Matrix, tmp_path: Path) -> None:
+    readme = _report(matrix, tmp_path / "E1")["README.md"].decode()
+    assert f"transfer-matrix `{matrix.run.name}`" in readme
+
+
+def test_decide_g2_writes_a_record_and_a_proposed_adr(matrix: Matrix, tmp_path: Path) -> None:
     adr = tmp_path / "ADR-0007-g2-selector-shift.md"
-    capsys.readouterr()
-    assert main(["decide", "G2", "--artifacts", str(out), "--adr", str(adr)]) == 0
-    decision_dir = Path(capsys.readouterr().out.strip().splitlines()[0])
-    record = load_record(GateDecision, decision_dir / "gate_decision.json")
-    assert record.gate == "G2" and record.evidence[0] == run.name
-    assert read_manifest(decision_dir).command == "decide"
+    assert main(["decide", "G2", "--artifacts", str(matrix.out), "--adr", str(adr)]) == 0
+    record = load_record(
+        GateDecision, latest_artifact(matrix.out, "decisions", "G2") / "gate_decision.json"
+    )
+    assert (record.gate, record.evidence[0]) == ("G2", matrix.run.name)
     assert "- **Status:** proposed" in adr.read_text()

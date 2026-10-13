@@ -112,6 +112,20 @@ uv run hyperdime report E0                        # reports/E0 with the G1 crite
 Selectors are chosen on validation queries only; `evaluate` is the only step that reads test
 judgments.
 
+## Selector shift and gate G2 (F4)
+
+```bash
+for env in scifact nfcorpus msmarco; do
+  for seed in 0 1 2; do uv run hyperdime train-selector --recipe seeded data=$env run.seed=$seed; done
+done
+uv run hyperdime transfer-matrix                  # every selector on every environment, k = 307
+uv run hyperdime report E1                        # reports/E1 with both G2 criteria
+uv run hyperdime decide G2                        # GateDecision and a proposed ADR-0007
+```
+
+`transfer-matrix` trains nothing; test judgments only score rankings, and the behavior battery
+reads query embeddings only. Rules are fixed in `specs/005-selector-shift/research.md`.
+
 ## Embedding service
 
 Qwen3-Embedding-0.6B is served by the same vLLM server as the `beir` project, through its

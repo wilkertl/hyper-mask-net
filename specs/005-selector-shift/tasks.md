@@ -63,8 +63,8 @@ synthetic result files regenerate byte-identically and give the expected criteri
 
 ## Phase 6: Polish
 
-- [ ] T023 [P] Update docs/architecture.md (components: seeded selectors, transfer matrix, behavior, E1 report, decide) and README.md (F4 commands), and docs/experiment_registry.md (E1 `running` when runs start)
-- [ ] T024 Run `ruff check . && ruff format --check . && mypy && pytest` and `PYTHONPATH=tools python -m scrap tests`; act on `HIGH` findings for new tests or explain them in the pull request
+- [X] T023 [P] Update docs/architecture.md (components: seeded selectors, transfer matrix, behavior, E1 report, decide) and README.md (F4 commands); docs/experiment_registry.md moves E1 to `running` with T025, when runs start
+- [X] T024 Run `ruff check . && ruff format --check . && mypy && pytest` and `PYTHONPATH=tools python -m scrap tests`; act on `HIGH` findings for new tests or explain them in the pull request
 
 ## Phase 7: Runs on DataPolicy-4090
 

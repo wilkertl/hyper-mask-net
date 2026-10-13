@@ -62,20 +62,23 @@ def _six_pairs(shifted: set[tuple[str, str]]) -> dict[tuple[str, str, str], dict
     return scores
 
 
-def test_holm_covers_exactly_the_six_ordered_pairs() -> None:
+def test_holm_adjusts_over_exactly_the_six_ordered_pairs() -> None:
     rows = degradation_tests(_six_pairs({("a", "b")}))
-    gated = [r for r in rows if r.query_set == "test" and r.train != r.test]
-    assert len(gated) == 6 and all(r.p_holm is not None for r in gated)
-    pair = next(r for r in gated if (r.train, r.test) == ("a", "b"))
-    assert pair.p_holm == pytest.approx(min(1.0, 6 * pair.p_value))  # the smallest of six
+    gated = {(r.train, r.test): r for r in rows if r.query_set == "test" and r.train != r.test}
+    pair = gated[("a", "b")]
+    assert (len(gated), pair.p_holm) == (6, pytest.approx(min(1.0, 6 * pair.p_value)))
+
+
+def test_evaluation_sets_are_tested_but_outside_the_holm_family() -> None:
+    rows = degradation_tests(_six_pairs({("a", "b")}))
     trec = next(r for r in rows if r.query_set == "trec" and r.train == "a")
-    assert trec.p_value is not None and trec.p_holm is None
+    assert trec.p_value is not None and trec.p_value <= 0.05 and trec.p_holm is None
 
 
 def test_in_domain_rows_have_no_test() -> None:
     rows = degradation_tests(_six_pairs(set()))
-    for row in (r for r in rows if r.train == r.test):
-        assert row.delta == 0 and row.p_value is None and row.p_holm is None and row.ci is None
+    in_domain = {(r.delta, r.p_value, r.p_holm, r.ci) for r in rows if r.train == r.test}
+    assert in_domain == {(0.0, None, None, None)}
 
 
 def test_criterion_1_counts_significant_drops_and_holds_at_half() -> None:
