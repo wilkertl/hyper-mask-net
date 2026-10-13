@@ -60,3 +60,54 @@ def test_the_report_refuses_fewer_than_three_seeds(tmp_path: Path) -> None:
     build(tmp_path, seeds=(0, 1))
     with pytest.raises(ValueError, match="at least 3 seeds"):
         e1.load(tmp_path)
+
+
+def _table(report: dict[str, bytes], name: str) -> list[list[str]]:
+    import csv
+
+    return list(csv.reader(report[f"tables/{name}.csv"].decode().splitlines()))
+
+
+def test_the_trec_table_carries_seed_averaged_ap(tmp_path: Path) -> None:
+    build(tmp_path / "artifacts")
+    results = e1.load(tmp_path / "artifacts")
+    header, *rows = _table(_report(tmp_path / "artifacts", tmp_path / "E1"), "trec")
+    cell = next(
+        c for c in results.cells if c.query_set != "test" and c.train_environment == "scifact"
+    )
+    row = dict(zip(header, next(r for r in rows if r[0] == "scifact"), strict=True))
+    assert row["selector AP"] == f"{cell.metrics['ap']:.4f}"
+
+
+@pytest.mark.parametrize(
+    ("table", "column", "value", "note"),
+    [
+        ("transfer", "train", "msmarco", "see note: msmarco, nfcorpus"),  # msmarco -> nfcorpus
+        ("fit", "environment", "scifact", "—"),
+        ("fit", "environment", "nfcorpus", "see note: nfcorpus"),
+        ("seeds", "environment", "msmarco", "see note: msmarco"),
+    ],
+)
+def test_rows_of_noted_environments_reference_their_note(
+    tmp_path: Path, table: str, column: str, value: str, note: str
+) -> None:
+    build(tmp_path / "artifacts")
+    header, *rows = _table(_report(tmp_path / "artifacts", tmp_path / "E1"), table)
+    notes = {r[header.index("note")] for r in rows if r[header.index(column)] == value}
+    assert note in notes
+
+
+def test_the_nfcorpus_caveat_sits_beside_the_fit_table(tmp_path: Path) -> None:
+    build(tmp_path / "artifacts")
+    text = _report(tmp_path / "artifacts", tmp_path / "E1")["README.md"].decode()
+    fit = text.split("## Selector fit as a ranking")[1].split("## Payoff")[0]
+    assert e1.NOTES["nfcorpus"] in fit
+
+
+def test_the_global_selector_is_stated_to_use_every_environments_training_labels(
+    tmp_path: Path,
+) -> None:
+    build(tmp_path / "artifacts")
+    text = _report(tmp_path / "artifacts", tmp_path / "E1")["README.md"].decode()
+    for section in ("## Payoff", "## Every method"):
+        assert e1.GLOBAL_NOTE in text.split(section)[1]

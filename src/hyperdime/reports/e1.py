@@ -35,6 +35,16 @@ NOTES = {
         "(ADR-0006); read its shift with its ranking-fit result (F4 research D2)."
     ),
 }
+GLOBAL_NOTE = (
+    "`global-selector` is F3's single selector trained on the training labels of all "
+    "environments together (never on a test label), so it is not an in-domain baseline."
+)
+
+
+def note(*environments: str) -> str:
+    """The note reference of a row that involves an environment with a note (FR-016)."""
+    noted = sorted({env for env in environments if env in NOTES})
+    return "see note: " + ", ".join(noted) if noted else "—"
 
 
 @dataclass
@@ -191,16 +201,20 @@ def render(e1: E1Results) -> tuple[str, dict[str, str]]:
         ["criterion", "value", "threshold", "met"],
         *[[c["name"], c["shown"], c["threshold"], _yes(c["met"])] for c in g2],
     ]
+    cells = {(c.train_environment, c.test_environment, c.query_set): c for c in e1.cells}
     for name, gated in (("transfer", True), ("trec", False)):
+        ap = [] if gated else ["selector AP", "in-domain AP"]
         rows = [[
             "train", "test", "query set", "protocol", "selector nDCG@10", "in-domain nDCG@10",
             "full nDCG@10", "prefix nDCG@10", "degradation", "ci_low", "ci_high", "p", "p_holm",
-            "overlap@k",
+            "overlap@k", *ap, "note",
         ]]  # fmt: skip
         for c in e1.cells:
             if (c.query_set == "test") != gated:
                 continue
             methods = e1.results[(c.test_environment, c.query_set)]
+            own = cells[(c.test_environment, c.test_environment, c.query_set)]
+            ap_values = [] if gated else [_fmt(c.metrics["ap"]), _fmt(own.metrics["ap"])]
             rows.append([
                 c.train_environment, c.test_environment, c.query_set,
                 "in-domain" if c.train_environment == c.test_environment else "transfer",
@@ -208,7 +222,8 @@ def render(e1: E1Results) -> tuple[str, dict[str, str]]:
                 _fmt(methods["full"].metrics["ndcg@10"]),
                 _fmt(methods["prefix"].metrics["ndcg@10"]),
                 _fmt(c.degradation, "+"), _opt(c.ci_low, "+"), _opt(c.ci_high, "+"),
-                _opt(c.p_value), _opt(c.p_holm), _fmt(c.overlap_at_k),
+                _opt(c.p_value), _opt(c.p_holm), _fmt(c.overlap_at_k), *ap_values,
+                note(c.train_environment, c.test_environment),
             ])  # fmt: skip
         tables[name] = rows
     method_rows = [["test", "query set", "method", "k", "nDCG@10", "AP"]]
@@ -219,14 +234,14 @@ def render(e1: E1Results) -> tuple[str, dict[str, str]]:
             method_rows.append([test, query_set, method, str(r.k), _fmt(r.metrics["ndcg@10"]),
                                 _fmt(r.metrics["ap"])])  # fmt: skip
     tables["methods"] = method_rows
-    seed_rows = [["environment", "seed", "cell", "validation nDCG@10", "test nDCG@10"]]
+    seed_rows = [["environment", "seed", "cell", "validation nDCG@10", "test nDCG@10", "note"]]
     for env in e1.environments:
         for seed in e1.seeds:
             record = e1.seeded[env][seed]
             result = e1.results[(env, "test")][f"selector:{env}:s{seed}"]
             seed_rows.append([env, str(seed), record["source"]["cell"],
                               _fmt(record["validation_ndcg@10"]),
-                              _fmt(result.metrics["ndcg@10"])])  # fmt: skip
+                              _fmt(result.metrics["ndcg@10"]), note(env)])  # fmt: skip
     tables["seeds"] = seed_rows
     behavior = e1.behavior
     tables["behavior"] = [
@@ -250,18 +265,20 @@ def render(e1: E1Results) -> tuple[str, dict[str, str]]:
         env_pairs.append([pair.replace("|", " / "), _fmt(values["cross"]), each])
     tables["environment_pairs"] = env_pairs
     tables["fit"] = [
-        ["environment", "mean gain over global importance", "queries", "p", "p_holm", "fits"],
+        ["environment", "mean gain over global importance", "queries", "p", "p_holm", "fits",
+         "note"],
         *[[env, _fmt(r["mean_gain"], "+"), str(r["num_queries"]), _fmt(r["p_value"]),
-           _fmt(r["p_holm"]), _yes(r["fits"])] for env, r in sorted(e1.fit.items())],
+           _fmt(r["p_holm"]), _yes(r["fits"]), note(env)] for env, r in sorted(e1.fit.items())],
     ]  # fmt: skip
     for name, rows_ in (("payoff", payoff(e1)), ("fixed_subset", fixed_subset_rows(e1))):
         tables[name] = [
             ["test", "method", "full", "prefix", "in-domain", "method nDCG@10", "diff", "ci_low",
-             "ci_high", "p", "p_holm"],
+             "ci_high", "p", "p_holm", "note"],
             *[[r["test"], r["method"], _fmt(r["full"]), _fmt(r["prefix"]),
                _fmt(r["in_domain"]), _fmt(r["other"]),
                _fmt(r["diff"], "+"), _fmt(r["ci_low"], "+"), _fmt(r["ci_high"], "+"),
-               _fmt(r["p"]), _fmt(r["p_holm"])] for r in rows_],
+               _fmt(r["p"]), _fmt(r["p_holm"]),
+               note(r["test"], r["method"].removeprefix("fixed:"))] for r in rows_],
         ]  # fmt: skip
     passed = all(c["met"] for c in g2)
     notes = [f"- **{env}**: {NOTES[env]}" for env in e1.environments if env in NOTES]
@@ -323,8 +340,11 @@ def render(e1: E1Results) -> tuple[str, dict[str, str]]:
         "## Selector fit as a ranking (validation queries, F4 research D2)",
         "",
         *_markdown(tables["fit"]),
+        *(["", f"NFCorpus: {NOTES['nfcorpus']}"] if "nfcorpus" in e1.environments else []),
         "",
         "## Payoff of in-domain selectors over the global selector (context)",
+        "",
+        GLOBAL_NOTE,
         "",
         *_markdown(tables["payoff"]),
         "",
@@ -337,6 +357,8 @@ def render(e1: E1Results) -> tuple[str, dict[str, str]]:
         *_markdown(tables["seeds"]),
         "",
         "## Every method on every query set",
+        "",
+        GLOBAL_NOTE,
         "",
         *_markdown(tables["methods"]),
         "",

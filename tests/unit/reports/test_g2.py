@@ -58,3 +58,8 @@ def test_an_adr_that_is_no_longer_proposed_is_not_overwritten(tmp_path: Path) ->
     with pytest.raises(ValueError, match="no longer proposed"):
         g2.write_adr(results, g2.decision(results, ADR), path)
     assert "accepted" in path.read_text()
+
+
+def test_the_g2_context_states_how_the_global_selector_was_trained(tmp_path: Path) -> None:
+    build(tmp_path)
+    assert g2.decision(e1.load(tmp_path), ADR).context["global_selector"] == e1.GLOBAL_NOTE
