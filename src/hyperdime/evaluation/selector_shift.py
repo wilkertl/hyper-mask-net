@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+import itertools
+from collections import Counter
+from collections.abc import Iterator, Sequence
+
 import torch
 from torch import Tensor
 
@@ -83,6 +87,62 @@ def profile_permutation_test(a: Tensor, b: Tensor, k: int, n: int, seed: int) ->
         for _ in range(n)
     )
     return (hits + 1) / (n + 1)
+
+
+def kl_divergence(p: Tensor, q: Tensor) -> float:
+    """KL divergence ``KL(p || q)`` in nats between two distributions over dimensions."""
+    return float(_kl(p.double() / p.sum(), q.double() / q.sum()))
+
+
+def pair_measures(a: Tensor, b: Tensor, k: int) -> dict[str, float]:
+    """How two selectors' log-importances on the same queries differ (F4 research D7)."""
+    mean_a, mean_b = mean_importance(a), mean_importance(b)
+    return {
+        "overlap": float(overlap_at_k(top_k_mask(a, k), top_k_mask(b, k)).mean()),
+        "js": js_divergence(mean_a, mean_b),
+        "kl_ab": kl_divergence(mean_a, mean_b),
+        "kl_ba": kl_divergence(mean_b, mean_a),
+        "spearman_importance": spearman(mean_a, mean_b),
+        "spearman_frequency": spearman(selection_frequency(a, k), selection_frequency(b, k)),
+    }
+
+
+def group_permutation_test(overlaps: Tensor, groups: Sequence[int]) -> tuple[float, float, int]:
+    """Exact test that selectors of one environment agree more than selectors across environments.
+
+    ``overlaps`` is the symmetric selector-by-selector overlap matrix and ``groups`` each
+    selector's environment. The statistic is the mean overlap within groups minus the mean across
+    groups; every distinct assignment of the group labels (group sizes kept) is enumerated.
+    Returns (statistic, p, number of assignments), ``p = #{T_perm >= T_obs} / assignments``.
+    """
+    n = len(groups)
+    if overlaps.shape != (n, n):
+        raise ValueError("overlaps must be a square matrix over the grouped selectors.")
+    first, second = torch.triu_indices(n, n, offset=1)
+    values = overlaps.double()[first, second]
+
+    def statistic(labels: Sequence[int]) -> float:
+        tensor = torch.tensor(labels)
+        same = tensor[first] == tensor[second]
+        return float(values[same].mean() - values[~same].mean())
+
+    observed = statistic(groups)
+    assignments = list(_assignments(list(range(n)), sorted(Counter(groups).items())))
+    hits = sum(statistic(labels) >= observed - 1e-12 for labels in assignments)
+    return observed, hits / len(assignments), len(assignments)
+
+
+def _assignments(free: list[int], sizes: list[tuple[int, int]]) -> Iterator[list[int]]:
+    """Every way to give ``free`` positions the labels in ``sizes`` (label, count)."""
+    if not sizes:
+        yield []
+        return
+    (label, count), rest = sizes[0], sizes[1:]
+    for chosen in itertools.combinations(free, count):
+        remaining = [i for i in free if i not in chosen]
+        for tail in _assignments(remaining, rest):
+            labels = dict(zip(remaining, tail, strict=True)) | dict.fromkeys(chosen, label)
+            yield [labels[i] for i in sorted(labels)]
 
 
 def _kl(p: Tensor, q: Tensor) -> Tensor:
