@@ -143,8 +143,9 @@ result files and that the G2 criteria are computed, not typed.
 
 ### Edge Cases
 
-- A selector's top-k on a battery query ties at the k-th score: ties break by dimension index, so
-  masks are deterministic.
+- Ties at the k-th score: the fixed subset and other rank-valued methods are built without ties
+  (rank scores, ties broken by lower dimension index), so their masks are deterministic; selector
+  outputs are continuous, and a repeated run gives the same masks.
 - Different test-set sizes (MS MARCO dev is far larger than SciFact or NFCorpus test): paired tests
   are per test environment, on that environment's queries, so sizes never mix within a test.
 - An environment contributes more battery queries than the others: the battery samples the same
