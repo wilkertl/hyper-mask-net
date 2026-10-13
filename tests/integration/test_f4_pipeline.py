@@ -8,10 +8,13 @@ from typing import NamedTuple
 
 import pytest
 import torch
+from safetensors.torch import save_file
 
 from hyperdime.artifacts import latest_artifact
 from hyperdime.baselines.methods import selector_importance
+from hyperdime.cli import train_selector
 from hyperdime.cli.__main__ import main
+from hyperdime.contracts.hashing import file_sha256
 from hyperdime.contracts.manifests import read_manifest
 from hyperdime.contracts.schemas import (
     EvaluationResult,
@@ -318,3 +321,55 @@ def test_decide_g2_writes_a_record_and_a_proposed_adr(matrix: Matrix, tmp_path: 
     )
     assert (record.gate, record.evidence[0]) == ("G2", matrix.run.name)
     assert "- **Status:** proposed" in adr.read_text()
+
+
+def test_the_transfer_matrix_refuses_a_seed_that_was_not_trained(
+    f4_stack: tuple[Path, Path], capsys: pytest.CaptureFixture[str]
+) -> None:
+    configs, out = f4_stack
+    seeds = ("--seeds", "0", "1", "2", "3")
+    assert run_command(configs, out, "transfer-matrix", "--envs", *TOY_ENVS, *seeds) == 1
+    assert "seed-3" in capsys.readouterr().err
+
+
+def test_the_transfer_matrix_refuses_a_selector_that_differs_from_its_record(
+    f4_stack: tuple[Path, Path], tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    out = _copy(f4_stack, tmp_path)
+    payload = _seeded(out, "toyc", 2) / "selector.safetensors"
+    data = bytearray(payload.read_bytes())
+    data[-1] ^= 0xFF  # one weight byte; the file still parses
+    payload.write_bytes(bytes(data))
+    assert run_command(f4_stack[0], out, "transfer-matrix", "--envs", *TOY_ENVS) == 1
+    assert "does not match its record" in capsys.readouterr().err
+
+
+def test_the_transfer_matrix_stops_on_non_finite_selector_scores(
+    f4_stack: tuple[Path, Path], tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    out = _copy(f4_stack, tmp_path)
+    directory = _seeded(out, "toya", 1)
+    _, model = load_selector(directory, "selector")
+    weights = {k: torch.full_like(v, float("nan")) for k, v in model.state_dict().items()}
+    save_file(weights, str(directory / "selector.safetensors"))
+    record = json.loads((directory / "selector.json").read_text())
+    record["payload"]["sha256"] = file_sha256(directory / "selector.safetensors")
+    (directory / "selector.json").write_text(json.dumps(record))
+    assert run_command(f4_stack[0], out, "transfer-matrix", "--envs", *TOY_ENVS) == 1
+    assert "selector:toya:s1 gives non-finite scores" in capsys.readouterr().err
+
+
+def test_seeded_training_stops_on_a_non_finite_validation_result(
+    f4_stack: tuple[Path, Path],
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    def nan_scores(trained: list[selection.Trained], *args: object, **kwargs: object) -> None:
+        for t in trained:
+            t.score = float("nan")
+
+    monkeypatch.setattr(train_selector, "score_on_validation", nan_scores)
+    out = _copy(f4_stack, tmp_path)
+    assert _retrain(f4_stack[0], out, "toyb", 1) == 1
+    assert "non-finite validation result" in capsys.readouterr().err
