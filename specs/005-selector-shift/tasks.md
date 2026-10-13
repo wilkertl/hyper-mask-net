@@ -55,11 +55,11 @@ p ≤ 0.05; two copies of one environment do not.
 **Goal**: `reports/E1/` and a proposed G2 ADR from result files only. **Independent test**:
 synthetic result files regenerate byte-identically and give the expected criteria.
 
-- [ ] T018 [P] [US4] Tests in tests/unit/reports/test_e1.py: tables from synthetic result files (`transfer.csv`, `trec.csv`, `seeds.csv`, `behavior.csv`, `noise_floor.csv`, `fit.csv`, `fixed_subset.csv`, `payoff.csv`, `g2.csv`); full-1024 and prefix rows in every comparison table; protocol and scoring stated; MS MARCO rows carry the D9 note and NFCorpus rows the ADR-0006 caveat; the wide-grid departure is stated with both validation scores; identical bytes on regeneration; refuses with fewer than three seeds per environment
-- [ ] T019 [P] [US4] Tests in tests/unit/reports/test_g2.py: `GateDecision` outcome "pass" only when both criteria are met; context entries (fit, fixed subset, global-selector payoff, notes) never change the outcome; the proposed ADR has status "proposed", names every evidence run, and an existing ADR whose status is not "proposed" is not overwritten
-- [ ] T020 [US4] Implement src/hyperdime/reports/e1.py and `hyperdime report E1` in src/hyperdime/cli/report.py (payoff over the global selector: paired test, Holm over environments; fixed-subset comparisons: Holm over nine; D8)
-- [ ] T021 [US4] Implement src/hyperdime/reports/g2.py and `hyperdime decide G2 [--adr]` in src/hyperdime/cli/decide.py, registered in src/hyperdime/cli/__main__.py; writes `decisions/G2/<run_id>/gate_decision.json` with a manifest and the proposed ADR
-- [ ] T022 [US4] Extend tests/integration/test_f4_pipeline.py through `report E1` (generated twice, identical) and `decide G2`
+- [X] T018 [P] [US4] Tests in tests/unit/reports/test_e1.py: tables from synthetic result files (`transfer.csv`, `trec.csv`, `seeds.csv`, `behavior.csv`, `noise_floor.csv`, `fit.csv`, `fixed_subset.csv`, `payoff.csv`, `g2.csv`); full-1024 and prefix rows in every comparison table; protocol and scoring stated; MS MARCO rows carry the D9 note and NFCorpus rows the ADR-0006 caveat; the wide-grid departure is stated with both validation scores; identical bytes on regeneration; refuses with fewer than three seeds per environment
+- [X] T019 [P] [US4] Tests in tests/unit/reports/test_g2.py: `GateDecision` outcome "pass" only when both criteria are met; context entries (fit, fixed subset, global-selector payoff, notes) never change the outcome; the proposed ADR has status "proposed", names every evidence run, and an existing ADR whose status is not "proposed" is not overwritten
+- [X] T020 [US4] Implement src/hyperdime/reports/e1.py and `hyperdime report E1` in src/hyperdime/cli/report.py (payoff over the global selector: paired test, Holm over environments; fixed-subset comparisons: Holm over nine; D8)
+- [X] T021 [US4] Implement src/hyperdime/reports/g2.py and `hyperdime decide G2 [--adr]` in src/hyperdime/cli/decide.py, registered in src/hyperdime/cli/__main__.py; writes `decisions/G2/<run_id>/gate_decision.json` with a manifest and the proposed ADR
+- [X] T022 [US4] Extend tests/integration/test_f4_pipeline.py through `report E1` (generated twice, identical) and `decide G2`
 
 ## Phase 6: Polish
 

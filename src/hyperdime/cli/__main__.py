@@ -7,6 +7,7 @@ import sys
 from collections.abc import Sequence
 
 from hyperdime.cli import (
+    decide,
     diagnose,
     embed,
     evaluate,
@@ -31,6 +32,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     evaluate.register(commands)
     transfer_matrix.register(commands)
     report.register(commands)
+    decide.register(commands)
     args = parser.parse_args(argv)
     code: int = args.handler(args)
     return code

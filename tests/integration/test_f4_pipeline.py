@@ -14,6 +14,7 @@ from hyperdime.cli.__main__ import main
 from hyperdime.contracts.manifests import read_manifest
 from hyperdime.contracts.schemas import (
     EvaluationResult,
+    GateDecision,
     SelectorProperties,
     TransferCell,
     load_record,
@@ -246,3 +247,26 @@ def test_the_transfer_matrix_refuses_a_single_seed(
     configs, out = f4_stack
     assert run_command(configs, out, "transfer-matrix", "--envs", *TOY_ENVS, "--seeds", "0") == 1
     assert "at least two seeds" in capsys.readouterr().err
+
+
+def test_report_e1_and_the_g2_draft_come_from_the_transfer_matrix(
+    f4_stack: tuple[Path, Path], tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    configs = f4_stack[0]
+    out = _copy(f4_stack, tmp_path)
+    run = _matrix(configs, out, capsys)
+    report_dir = tmp_path / "E1"
+    args = ["report", "E1", "--artifacts", str(out), "--report-dir", str(report_dir)]
+    assert main(args) == 0
+    first = {p.name: p.read_bytes() for p in report_dir.rglob("*") if p.is_file()}
+    assert main(args) == 0
+    assert {p.name: p.read_bytes() for p in report_dir.rglob("*") if p.is_file()} == first
+    assert f"transfer-matrix `{run.name}`" in first["README.md"].decode()
+    adr = tmp_path / "ADR-0007-g2-selector-shift.md"
+    capsys.readouterr()
+    assert main(["decide", "G2", "--artifacts", str(out), "--adr", str(adr)]) == 0
+    decision_dir = Path(capsys.readouterr().out.strip().splitlines()[0])
+    record = load_record(GateDecision, decision_dir / "gate_decision.json")
+    assert record.gate == "G2" and record.evidence[0] == run.name
+    assert read_manifest(decision_dir).command == "decide"
+    assert "- **Status:** proposed" in adr.read_text()
