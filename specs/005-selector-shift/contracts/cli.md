@@ -4,7 +4,7 @@ Conventions of [the 001 CLI contract](../../001-m0-foundation/contracts/cli.md):
 overrides, exit code 2 for invalid configs, artifacts only through `ArtifactWriter`, the artifact
 directory printed on stdout.
 
-## `hyperdime train-selector data=<env> --recipe seeded run.seed=<n>`
+## `hyperdime train-selector --recipe seeded data=<env> run.seed=<n>`
 
 - Reads: the latest `selectors/candidates/<env>` (its `wide-grid` best cell and inputs), and the
   F2 inputs it names; refuses (exit 1) if the inputs differ from the F3 run's.

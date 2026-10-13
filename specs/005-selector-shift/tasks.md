@@ -11,8 +11,8 @@ DataPolicy-4090. Rules referenced as D1–D10 are in research.md.
 
 ## Phase 1: Foundational — records (blocks every story)
 
-- [ ] T001 [P] Tests in tests/unit/contracts/test_f4_records.py: JSON round-trip of `SelectorProperties`, `TransferCell`, and `GateDecision`; an `EvaluationResult` with `protocol="transfer"` validates; `TransferCell` rejects `overlap_at_k` outside [0, 1] and `p_value`/`p_holm` outside [0, 1]; `GateDecision.outcome` must be `"pass"` or `"fail"` and `gate` one of `"G1" … "G5"`; `SelectorProperties.k_values` entries outside [1, 1024] are rejected
-- [ ] T002 Add `"transfer"` to `Protocol` and the records `SelectorProperties`, `TransferCell`, `GateDecision` (with `Criterion`: `name`, `value: Finite`, `threshold: str`, `met: bool`) exactly as in data-model.md to src/hyperdime/contracts/schemas.py; export them from src/hyperdime/contracts/__init__.py
+- [X] T001 [P] Tests in tests/unit/contracts/test_f4_records.py: JSON round-trip of `SelectorProperties`, `TransferCell`, and `GateDecision`; an `EvaluationResult` with `protocol="transfer"` validates; `TransferCell` rejects `overlap_at_k` outside [0, 1] and `p_value`/`p_holm` outside [0, 1]; `GateDecision.outcome` must be `"pass"` or `"fail"` and `gate` one of `"G1" … "G5"`; `SelectorProperties.k_values` entries outside [1, 1024] are rejected
+- [X] T002 Add `"transfer"` to `Protocol` and the records `SelectorProperties`, `TransferCell`, `GateDecision` (with `Criterion`: `name`, `value: Finite`, `threshold: str`, `met: bool`) exactly as in data-model.md to src/hyperdime/contracts/schemas.py; export them from src/hyperdime/contracts/__init__.py
 
 ## Phase 2: User Story 1 — seeded selectors and their fit (P1)
 
@@ -20,10 +20,10 @@ DataPolicy-4090. Rules referenced as D1–D10 are in research.md.
 ranking-fit test of D2. **Independent test**: the toy pipeline trains three seeds, reloads them
 identically, and gives identical checkpoints with test judgments deleted.
 
-- [ ] T003 [P] [US1] Tests in tests/unit/evaluation/test_fit.py: `fit_gain` by hand — 2 queries, D = 6, k = 2: selector masks {0,1},{2,3}, global {0,5}, oracle {0,1},{2,4} give per-query gains (1 − 0.5, 0.5 − 0) = (0.5, 0.5); seed averaging of selector overlaps is a per-query mean; the rule `fits = mean_gain > 0 and p_holm <= 0.05`
-- [ ] T004 [US1] Implement `fit_gain(selector_scores: Sequence[Tensor], global_scores: Tensor, oracle_scores: Tensor, k: int) -> Tensor` (per-query gain, D2) in src/hyperdime/evaluation/transfer.py, reusing `overlap_at_k` and `top_k_mask`
-- [ ] T005 [US1] Add `--recipe seeded` to src/hyperdime/cli/train_selector.py: read the latest `selectors/candidates/<env>` `selection.json`, refuse if its `inputs` differ from the current F2 inputs, take `family_best["wide-grid"]`'s `Cell`, train it once with `run.seed`, write `selectors/seeded/<env>/seed-<n>/<run_id>/` with `selector.safetensors`, `selector.json` (`kind="per_domain"`), and `selection.json` (cell, seed, validation nDCG@10, validation KL, source F3 run, inputs) (D1)
-- [ ] T006 [US1] Extend tests/integration/test_f3_pipeline.py's toy setup into tests/integration/test_f4_pipeline.py (shared fixture in tests/integration/conftest.py if both need it): train candidates, then `--recipe seeded` for seeds 0, 1, 2; each artifact's manifest records its seed; a reloaded seed gives identical outputs; deleting test judgments gives identical checkpoints; changed inputs make `--recipe seeded` exit 1
+- [X] T003 [P] [US1] Tests in tests/unit/evaluation/test_fit.py: `fit_gain` by hand — 2 queries, D = 6, k = 2: selector masks {0,1},{2,3}, global {0,5}, oracle {0,1},{2,4} give per-query gains (1 − 0.5, 0.5 − 0) = (0.5, 0.5); seed averaging of selector overlaps is a per-query mean; the rule `fits = mean_gain > 0 and p_holm <= 0.05`
+- [X] T004 [US1] Implement `fit_gain(selector_scores: Sequence[Tensor], global_scores: Tensor, oracle_scores: Tensor, k: int) -> Tensor` (per-query gain, D2) in src/hyperdime/evaluation/transfer.py, reusing `overlap_at_k` and `top_k_mask`
+- [X] T005 [US1] Add `--recipe seeded` to src/hyperdime/cli/train_selector.py: read the latest `selectors/candidates/<env>` `selection.json`, refuse if its `inputs` differ from the current F2 inputs, take `family_best["wide-grid"]`'s `Cell`, train it once with `run.seed`, write `selectors/seeded/<env>/seed-<n>/<run_id>/` with `selector.safetensors`, `selector.json` (`kind="per_domain"`), and `selection.json` (cell, seed, validation nDCG@10, validation KL, source F3 run, inputs) (D1)
+- [X] T006 [US1] Build a module-scoped three-environment toy stack in tests/integration/test_f4_pipeline.py (a second conftest.py would clash with tests/conftest.py's module name): train candidates, then `--recipe seeded` for seeds 0, 1, 2; each artifact's manifest records its seed; a reloaded seed gives identical outputs; deleting test judgments gives identical checkpoints; changed inputs make `--recipe seeded` exit 1
 
 ## Phase 3: User Story 2 — the transfer matrix (P1)
 

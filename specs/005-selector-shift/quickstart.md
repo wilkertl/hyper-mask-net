@@ -19,7 +19,7 @@ seeded selectors identical, and `transfer-matrix` changes no checkpoint (SC-003)
 uv sync --locked --extra cu128 --extra dev
 for env in scifact nfcorpus msmarco; do
   for seed in 0 1 2; do
-    uv run hyperdime train-selector data=$env --recipe seeded run.seed=$seed
+    uv run hyperdime train-selector --recipe seeded data=$env run.seed=$seed
   done
 done
 ```

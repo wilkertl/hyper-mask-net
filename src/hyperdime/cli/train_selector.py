@@ -1,13 +1,16 @@
 """``hyperdime train-selector``: per-environment selectors (F3 US2/US3, research D4).
 
 ``--recipe official`` tunes the ADR-0002 recipe on validation; ``--recipe candidates`` trains
-the ADR-0003 families and records the validation-best selector of all as ``selected``.
+the ADR-0003 families and records the validation-best selector of all as ``selected``;
+``--recipe seeded`` retrains F3's ``wide-grid`` cell with ``run.seed`` (F4 research D1), one
+artifact per seed under ``selectors/seeded/<env>/seed-<n>/``.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
@@ -38,7 +41,7 @@ COMMAND = "train-selector"
 def register(commands: Any) -> None:
     parser = commands.add_parser(COMMAND, help="train per-environment selectors on validation")
     add_config_arguments(parser)
-    parser.add_argument("--recipe", choices=["official", "candidates"], required=True)
+    parser.add_argument("--recipe", choices=["official", "candidates", "seeded"], required=True)
     parser.add_argument("--chunk-size", type=int, default=1_000_000)
     parser.set_defaults(handler=run)
 
@@ -68,10 +71,16 @@ def _train(config: RunConfig, output: Path, args: argparse.Namespace) -> Path:
         "embeddings": inputs.embeddings_dir.name,
         "negatives": inputs.negatives_dir.name,
     }
-    with ArtifactWriter(output, f"selectors/{args.recipe}/{environment}", manifest) as writer:
+    kind = f"selectors/{args.recipe}/{environment}"
+    if args.recipe == "seeded":
+        kind += f"/seed-{config.run.seed}"
+    with ArtifactWriter(output, kind, manifest) as writer:
         if args.recipe == "official":
             record = _official(inputs, config, device, args.chunk_size)
             models = {"official": record["model"]}
+        elif args.recipe == "seeded":
+            record = _seeded(inputs, output, config, device, args.chunk_size, sources)
+            models = {"selector": record["model"]}
         else:
             record = _candidates(inputs, output, config, device, args.chunk_size, sources)
             models = record["models"]
@@ -159,4 +168,42 @@ def _candidates(
         "family_scores": scores,
         "selected": selected,
         "models": models,
+    }
+
+
+SEEDED_FAMILY = "wide-grid"
+
+
+def _seeded(
+    inputs: EnvironmentInputs,
+    output: Path,
+    config: RunConfig,
+    device: str,
+    chunk_size: int,
+    sources: dict[str, str],
+) -> dict[str, Any]:
+    """F3's validation-chosen ``wide-grid`` cell, trained once with ``run.seed``."""
+    candidates_dir = latest_artifact(output, "selectors/candidates", inputs.environment)
+    candidates = json.loads((candidates_dir / "selection.json").read_text(encoding="utf-8"))
+    if candidates["inputs"] != sources:
+        raise ValueError(f"{candidates_dir} was trained on other inputs; rerun F3 first")
+    key = candidates["family_best"][SEEDED_FAMILY]
+    cell = Cell(**candidates["cells"][key]["cell"])
+    (trained,) = _scored([cell], inputs, config, device, chunk_size)
+    return {
+        "recipe": "seeded",
+        "family": SEEDED_FAMILY,
+        "cell": asdict(cell),
+        "seed": config.run.seed,
+        "validation_ndcg@10": trained.score,
+        "val_kl": trained.val_kl,
+        "uniform_kl": trained.uniform_kl,
+        "source": {
+            "run": candidates_dir.name,
+            "cell": key,
+            "validation_ndcg@10": candidates["cells"][key]["validation_ndcg@10"],
+            "selected": candidates["selected"],
+            "family_scores": candidates["family_scores"],
+        },
+        "model": trained.model,
     }

@@ -9,7 +9,7 @@ each family named below.
 
 - **Decision**: For each environment, read F3's latest `selectors/candidates/<env>` selection, take
   the `wide-grid` family's best cell (`family_best["wide-grid"]`, chosen on validation), and train
-  it with seeds 0, 1, and 2: `hyperdime train-selector data=<env> --recipe seeded run.seed=<n>`,
+  it with seeds 0, 1, and 2: `hyperdime train-selector --recipe seeded data=<env> run.seed=<n>`,
   one run per seed, so each seed has its own manifest (`run.seed` recorded). Each run writes
   `selectors/seeded/<env>/seed-<n>/<run_id>/` with `selector.safetensors`, its
   `SelectorCheckpoint` (`kind = "per_domain"`), and `selection.json` (cell, seed, validation
@@ -27,7 +27,7 @@ each family named below.
   oracle score `e_q ⊙ (p − n)`, using training-split labels and the F2 validation negatives (the
   same pairs F3 trains on). For each validation query,
   `gain(q) = mean over seeds of overlap@k(selector_s, oracle) − overlap@k(global-importance, oracle)`,
-  where global importance is e's mean training target at the cell's τ (as in E0). **The selector
+  where global importance is e's mean training target at F3's official τ (as in E0 and D3). **The selector
   fits its target as a ranking** when `mean gain > 0` and its Holm-adjusted p ≤ 0.05 (family: the
   three environments).
 - **Rationale**: The selector is used as a ranking, so its fit is judged as one; global importance
@@ -140,7 +140,7 @@ each family named below.
 
 | Command | Writes |
 |---|---|
-| `hyperdime train-selector data=<env> --recipe seeded run.seed=<n>` | `selectors/seeded/<env>/seed-<n>/<run_id>/` |
+| `hyperdime train-selector --recipe seeded data=<env> run.seed=<n>` | `selectors/seeded/<env>/seed-<n>/<run_id>/` |
 | `hyperdime transfer-matrix` | `evaluation/E1/all/<run_id>/`: `results-<env>-<set>.jsonl` (`EvaluationResult`), `cells.jsonl` (`TransferCell`), `properties-<env>-s<n>.json` (`SelectorProperties`) with `.npy` payloads, `battery.json`, `behavior.json` (36 pairs, T, p), `fixed_subsets.json`, `fit.json`, `inputs.json` |
 | `hyperdime report E1` | `reports/E1/README.md`, `reports/E1/tables/*.csv` |
 | `hyperdime decide G2` | `decisions/G2/<run_id>/gate_decision.json` (`GateDecision`) and a proposed ADR at `--adr` |
