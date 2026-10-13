@@ -6,9 +6,11 @@ them with tests wherever possible.
 ## Environments
 
 An environment is `T = (corpus, query distribution, instruction, frozen Qwen3-Embedding-0.6B)`.
-The initial environments are BEIR SciFact, BEIR NFCorpus, and MS MARCO with a reproducibly sampled
-corpus. Extra environments may come from subdomains, instructions, or semantically coherent shards;
-reports must state that shards of one dataset are not unseen domains.
+The initial environments are BEIR SciFact, BEIR NFCorpus, and MS MARCO over its full passage
+corpus (about 8.8M passages), with training queries capped at a fixed-seed sample of 50,000
+(`specs/003-data-embeddings`, FR-004 and research D3). Extra environments may come from
+subdomains, instructions, or semantically coherent shards; reports must state that shards of one
+dataset are not unseen domains.
 
 ## Splits
 

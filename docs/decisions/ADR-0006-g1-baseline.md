@@ -54,10 +54,10 @@ should reproduce. Its numbers are cited here for comparison only; they are not E
 - **MS MARCO does not reproduce.** The paper reports +0.039 over full at 30% (0.562 to 0.601); E0's
   official selector is Holm-significantly below full (−0.0207) on MS MARCO dev, and below full at
   k = 307 on DL 2019, DL 2020, and DL-HARD. The full baselines differ (0.562 in the paper, 0.3800
-  in E0), so the evaluation setups are not the same: E0 uses the sampled corpus of
-  `docs/protocols.md`, and the paper does not fully specify its MS MARCO corpus. The absolute
-  numbers are therefore not comparable, but the sign of the selector's effect against its own full
-  baseline is reversed. Criterion (a) is met on MS MARCO, so G1 as written does not catch this.
+  in E0), so the evaluation setups are not the same: E0 scores the dev queries against the full
+  MS MARCO passage corpus (about 8.8M passages; F2, `specs/003-data-embeddings` FR-004), and the
+  paper does not fully specify its MS MARCO corpus. The absolute numbers are therefore not
+  comparable, but the sign of the selector's effect against its own full baseline is reversed. Criterion (a) is met on MS MARCO, so G1 as written does not catch this.
   Temperature does not explain it: the official grid includes τ = 0.01 and validation chose
   τ = 0.005, and the wide grid (τ from 0.001 to 1.0) scores 0.3239 on validation against the
   official 0.3238.
@@ -108,3 +108,11 @@ Options considered and not taken:
   without loss, so selector shift has to beat it, not only full 1024. A global-adapter comparison
   (Yoon et al. 2024) is noted for later: the Learning-to-Select paper finds an adapter makes the
   important dimensions of SciFact queries more alike, which could absorb per-query selection gains.
+
+## Corrections
+
+- **2026-10-12:** the MS MARCO evidence said E0 used "the sampled corpus of `docs/protocols.md`".
+  E0 used the full passage corpus, as F2 specified (FR-004): `configs/data/msmarco.yaml` has no
+  sampling, and the E0 report scores "over the full corpus". Only training queries are sampled, to a
+  fixed-seed 50,000 (F2 research D3). The sentence is corrected above, and `docs/protocols.md` now
+  describes the full corpus. The decision and its options are unchanged.
