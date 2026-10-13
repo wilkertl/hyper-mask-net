@@ -34,6 +34,7 @@ Each hypothesis has a Go/No-Go gate; see [docs/architecture.md](docs/architectur
 | [Workflow](docs/workflow.md) | Branches, issues, labels, milestones, pull requests, wiki |
 | [Backlog](docs/backlog/issues.md) | Initial GitHub issues, published by `scripts/github/create_issues.py` |
 | [Experiment registry](docs/experiment_registry.md) | Experiments E0–E6 and links to their reports |
+| [Research references](docs/references.md) | Bibliography and links for the project's source papers |
 | [Decisions](docs/decisions/) | Architecture decision records and gate decisions |
 | [AGENTS.md](AGENTS.md) | Mandatory rules for coding agents |
 | [Wiki](https://github.com/wilkertl/hyper-mask-net/wiki) | Navigable overview, generated from `docs/wiki/` |

@@ -844,6 +844,9 @@ This order reduces the risk of building a complex architecture before proving th
 
 # 17. Core references
 
+The [reference catalog](../references.md) lists the other consulted papers and public links.
+The source PDFs are not versioned in this repository.
+
 - Wu, Z.; Zhang, R.; Nie, Z. **Learning to Select: Query-Aware Adaptive Dimension Selection for Dense Retrieval.** ACL 2026.
 - Killingback, J.; Zeng, H.; Zamani, H. **Hypencoder: Hypernetworks for Information Retrieval.** SIGIR 2025.
 - Eichholtz, A. et al. **Hypencoder Revisited: Reproducibility and Analysis of Non-Linear Scoring for First-Stage Retrieval.** SIGIR 2026.
