@@ -12,6 +12,13 @@ from hyperdime.artifacts import latest_artifact
 from hyperdime.baselines.methods import selector_importance
 from hyperdime.cli.__main__ import main
 from hyperdime.contracts.manifests import read_manifest
+from hyperdime.contracts.schemas import (
+    EvaluationResult,
+    SelectorProperties,
+    TransferCell,
+    load_record,
+    load_records,
+)
 from hyperdime.training import selection
 from hyperdime.training.selection import load_selector
 
@@ -163,3 +170,79 @@ def test_seeded_training_refuses_other_inputs_than_f3s(
     record["inputs"]["negatives"] = "another-run"
     selection_file.write_text(json.dumps(record))
     assert _retrain(configs, out, "toyb", 0) == 1
+
+
+def _matrix(configs: Path, out: Path, capsys: pytest.CaptureFixture[str]) -> Path:
+    capsys.readouterr()
+    assert run_command(configs, out, "transfer-matrix", "--envs", *TOY_ENVS) == 0
+    return Path(capsys.readouterr().out.strip().splitlines()[-1])
+
+
+def _files(directory: Path) -> dict[str, bytes]:
+    return {
+        p.name: p.read_bytes()
+        for p in directory.iterdir()
+        if p.is_file() and p.name != "manifest.json"
+    }
+
+
+def test_the_transfer_matrix_has_every_ordered_pair_and_trains_nothing(
+    f4_stack: tuple[Path, Path], tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    configs = f4_stack[0]
+    out = _copy(f4_stack, tmp_path)
+    selectors = {p: p.read_bytes() for p in (out / "selectors").rglob("*") if p.is_file()}
+    first = _matrix(configs, out, capsys)
+    assert {p: p.read_bytes() for p in (out / "selectors").rglob("*") if p.is_file()} == selectors
+    cells = load_records(TransferCell, first / "cells.jsonl")
+    test_cells = [c for c in cells if c.query_set == "test"]
+    assert {(c.train_environment, c.test_environment) for c in test_cells} == {
+        (a, b) for a in TOY_ENVS for b in TOY_ENVS
+    }
+    assert all(c.seeds == list(SEEDS) for c in cells)
+    results = load_records(EvaluationResult, first / "results-toyb-test.jsonl")
+    protocols = {r.selector: r.protocol for r in results}
+    assert protocols["selector:toya:s0"] == "transfer" and protocols["fixed:toyc"] == "transfer"
+    assert protocols["selector:toyb:s2"] == "in-domain" and protocols["prefix"] == "in-domain"
+    assert _files(_matrix(configs, out, capsys)) == _files(first)
+
+
+def test_behavior_compares_every_selector_pair_on_one_battery(
+    f4_stack: tuple[Path, Path], tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    directory = _matrix(f4_stack[0], _copy(f4_stack, tmp_path), capsys)
+    behavior = json.loads((directory / "behavior.json").read_text())
+    assert len(behavior["pairs"]) == 36 and behavior["assignments"] == 1680
+    assert sum(p["within"] for p in behavior["pairs"]) == 9
+    battery = json.loads((directory / "battery.json").read_text())
+    assert battery["n"] == 10 and set(battery["ids"]) == set(TOY_ENVS)
+    for env in TOY_ENVS:
+        for seed in SEEDS:
+            record = load_record(SelectorProperties, directory / f"properties-{env}-s{seed}.json")
+            assert record.battery_sha256 == battery["sha256"]
+
+
+def test_behavior_fit_and_subsets_never_read_test_judgments(
+    f4_stack: tuple[Path, Path], tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    configs = f4_stack[0]
+    out = _copy(f4_stack, tmp_path)
+    first = _matrix(configs, out, capsys)
+    for env in TOY_ENVS:
+        qrels = latest_artifact(out, "datasets", env) / "qrels-test.jsonl"
+        moved = [json.loads(line) for line in qrels.read_text().splitlines()]
+        for record in moved:
+            record["doc_id"] = "d0" if record["doc_id"] != "d0" else "d1"
+        qrels.write_text("".join(json.dumps(r) + "\n" for r in moved))
+    second = _matrix(configs, out, capsys)
+    for name in ("behavior.json", "battery.json", "fit.json", "fixed_subsets.json"):
+        assert (first / name).read_bytes() == (second / name).read_bytes()
+    assert (first / "cells.jsonl").read_bytes() != (second / "cells.jsonl").read_bytes()
+
+
+def test_the_transfer_matrix_refuses_a_single_seed(
+    f4_stack: tuple[Path, Path], capsys: pytest.CaptureFixture[str]
+) -> None:
+    configs, out = f4_stack
+    assert run_command(configs, out, "transfer-matrix", "--envs", *TOY_ENVS, "--seeds", "0") == 1
+    assert "at least two seeds" in capsys.readouterr().err
