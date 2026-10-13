@@ -5,6 +5,8 @@ Each method maps query embeddings ``(Q, D)`` to importance scores ``(Q, D)``; hi
 
 from __future__ import annotations
 
+from collections.abc import Sequence
+
 import torch
 from torch import Tensor
 
@@ -37,3 +39,23 @@ def oracle_scores(queries: Tensor, positive: Tensor, negative: Tensor) -> Tensor
     """Raw oracle ``e_q * (p - n)`` from the evaluated queries' own labels; its top-k does not
     depend on the temperature. Non-deployable: an upper bound, never a training input."""
     return queries.float() * (positive - negative)
+
+
+def fixed_subset(frequencies: Sequence[Tensor], k: int) -> Tensor:
+    """The ``k`` dimensions an environment's selectors pick most often (F4 research D6).
+
+    Selection frequencies (one ``(D,)`` vector per seed, on that environment's training queries)
+    are averaged over seeds; ties go to the lower dimension index. Returns indices in rank order.
+    """
+    mean = torch.stack([f.double() for f in frequencies]).mean(dim=0)
+    order = sorted(range(mean.numel()), key=lambda i: (-float(mean[i]), i))
+    return torch.tensor(order[:k], dtype=torch.long)
+
+
+def rank_importance(subset: Tensor, queries: Tensor) -> Tensor:
+    """The same subset for every query: importance ``D - rank`` on it, 0 elsewhere, so the top
+    ``len(subset)`` dimensions are exactly the subset whatever ``topk``'s tie order."""
+    dim = queries.shape[1]
+    scores = torch.zeros(dim)
+    scores[subset] = torch.arange(dim, dim - len(subset), -1, dtype=torch.float32)
+    return scores.expand(queries.shape[0], -1).clone()

@@ -52,10 +52,12 @@ Id = Annotated[
     AfterValidator(_no_control_characters),
 ]
 Split = Literal["train", "validation", "test"]
-Protocol = Literal["P0", "P1", "P2", "in-domain"]
+Protocol = Literal["P0", "P1", "P2", "in-domain", "transfer"]
 Sha256 = Annotated[str, StringConstraints(pattern=r"^[0-9a-f]{64}$")]
 Dtype = Literal["float16", "bfloat16", "float32"]
 Finite = Annotated[float, Field(allow_inf_nan=False), AfterValidator(_finite)]
+Probability = Annotated[float, Field(ge=0, le=1)]
+Budget = Annotated[int, Field(ge=1, le=EMBEDDING_DIM)]
 DescriptorGroup = Literal["A", "B", "C", "D", "E"]
 
 # Descriptor groups each protocol may use (research R11); P0 sees documents only.
@@ -211,6 +213,63 @@ class EvaluationResult(Record):
             if set(values) != keys:
                 raise ValueError(f"per_query: {query_id} has metrics {sorted(values)}")
         return self
+
+
+class SelectorProperties(Record):
+    """How one seeded selector weights and selects dimensions on the shared query battery (F4)."""
+
+    schema_version: Literal[0] = 0
+    environment: Id
+    seed: Annotated[int, Field(ge=0)]
+    selector_sha256: Sha256
+    battery_sha256: Sha256
+    k_values: Annotated[list[Budget], Field(min_length=1)]
+    mean_importance: PayloadRef
+    selection_frequency: PayloadRef
+
+
+class TransferCell(Record):
+    """One ordered (train, test) environment pair on one query set, seeds averaged (F4 D4)."""
+
+    schema_version: Literal[0] = 0
+    train_environment: Id
+    test_environment: Id
+    query_set: Annotated[str, StringConstraints(min_length=1)]
+    seeds: Annotated[list[Annotated[int, Field(ge=0)]], Field(min_length=1)]
+    k: Budget
+    metrics: dict[str, Finite]
+    in_domain_ndcg10: Finite
+    degradation: Finite
+    p_value: Probability | None
+    p_holm: Probability | None
+    ci_low: Finite | None
+    ci_high: Finite | None
+    overlap_at_k: Probability
+    results: Annotated[list[str], Field(min_length=1)]
+
+
+class Criterion(BaseModel):
+    """One gate criterion with its computed value and whether it holds."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    name: Annotated[str, StringConstraints(min_length=1)]
+    value: Finite
+    threshold: Annotated[str, StringConstraints(min_length=1)]
+    met: bool
+
+
+class GateDecision(Record):
+    """A drafted gate outcome from result files; the researcher decides in the ADR."""
+
+    schema_version: Literal[0] = 0
+    gate: Literal["G1", "G2", "G3", "G4", "G5"]
+    outcome: Literal["pass", "fail"]
+    criteria: Annotated[list[Criterion], Field(min_length=1)]
+    context: dict[str, str]
+    evidence: Annotated[list[str], Field(min_length=1)]
+    adr: Annotated[str, StringConstraints(min_length=1)]
+    tag: Annotated[str, StringConstraints(min_length=1)]
 
 
 class DatasetManifest(Record):
