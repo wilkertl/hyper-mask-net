@@ -1,8 +1,8 @@
 # ADR-0006: Gate G1 — baseline reproduction
 
-- **Status:** proposed (the researcher decides the outcome below before merge)
+- **Status:** accepted (option 2, by the researcher, 2026-10-12)
 - **Date:** 2026-10-12
-- **Issue:** F3 (`specs/004-l2s-baseline`), experiment E0
+- **Issue:** #15, F3 (`specs/004-l2s-baseline`), experiment E0
 
 ## Context
 
@@ -32,24 +32,79 @@ tests", "Selector selection", and the DIME tables).
   all three. The ADR-0003 candidates gained significantly over the official selector only on
   SciFact. Oracle headroom is large everywhere.
 
+### Comparison with the Learning-to-Select paper
+
+The paper (Wu, Zhang, and Nie 2026, Table 1, Qwen3-Embedding-0.6B) is the reference for what E0
+should reproduce. Its numbers are cited here for comparison only; they are not E0 results.
+
+- **SciFact reproduces.** The paper reports full 0.702 and 0.839 at 30%; E0 gives full 0.7000 and
+  the selected selector 0.8366 at k = 307.
+- **NFCorpus is a weak-signal environment in the paper too.** The paper's gain at 30% is +0.011
+  (0.377 to 0.388), the smallest of its three datasets for this encoder, and its NFCorpus gains are
+  small for every encoder it tests; its synthetic-query predictors gain almost nothing on NFCorpus
+  (its Table 5). E0's official selector differs from full by −0.0008, and the 95% interval,
+  [−0.0148, +0.0130], includes the paper's gain.
+- **Criterion (a) is uninformative at the temperature NFCorpus selected.** The official NFCorpus
+  cell chose τ = 0.1, where the selector's and the uniform predictor's validation KL are both of
+  order 1e-5 (0.000015 and 0.000010): the target is close to uniform, so beating uniform measures
+  little. The paper finds τ ≈ 0.01 best, uses validation KL only to pick checkpoints, and reports
+  that the selector is "more reliable for ranking dimensions than for producing well-calibrated
+  continuous weights" (its §6.3). A KL threshold tests calibration; the selector is used as a
+  ranking.
+- **MS MARCO does not reproduce.** The paper reports +0.039 over full at 30% (0.562 to 0.601); E0's
+  official selector is Holm-significantly below full (−0.0207) on MS MARCO dev, and below full at
+  k = 307 on DL 2019, DL 2020, and DL-HARD. The full baselines differ (0.562 in the paper, 0.3800
+  in E0), so the evaluation setups are not the same: E0 uses the sampled corpus of
+  `docs/protocols.md`, and the paper does not fully specify its MS MARCO corpus. The absolute
+  numbers are therefore not comparable, but the sign of the selector's effect against its own full
+  baseline is reversed. Criterion (a) is met on MS MARCO, so G1 as written does not catch this.
+  Temperature does not explain it: the official grid includes τ = 0.01 and validation chose
+  τ = 0.005, and the wide grid (τ from 0.001 to 1.0) scores 0.3239 on validation against the
+  official 0.3238.
+
 ## Decision
 
-To be chosen by the researcher. Options:
+Option 2 of the proposal: **G1 passes with NFCorpus flagged.**
 
-1. **G1 fails as written** (criterion (a) on NFCorpus). Record the evidence, tag
-   `g1-baseline-valid` is not applied, and stop before F4 (constitution IV: a failed gate is not
-   answered by adding complexity).
-2. **G1 passes with NFCorpus flagged.** Read (a) as intended — the selector learns something its
-   target asks for — and accept retrieval evidence for NFCorpus, recording that its linear selector
-   does not fit the oracle distribution. F4 proceeds on all three environments with NFCorpus's
-   selector-shift results interpreted with that caveat.
-3. **G1 passes on SciFact and MS MARCO only.** F4 proceeds without NFCorpus as an in-domain
-   reference, and NFCorpus returns only as a later environment.
+Criterion (a) is read as intended — the selector learns something its target asks for. For
+NFCorpus, retrieval evidence stands in for the KL test: validation nDCG@10 rises with training,
+and on test the selector matches full 1024 and beats prefix and random significantly. NFCorpus's
+linear selector is recorded as not fitting the oracle distribution, and F4 proceeds on all three
+environments with NFCorpus's selector-shift results interpreted with that caveat.
 
-Options 2 and 3 amend how research R7's criterion (a) is applied after seeing the results, so the
-amendment is recorded here and carries the `protocol-change` label.
+The MS MARCO non-reproduction is recorded as a known deviation from the paper, not as a G1
+failure: G1's criteria (b) and (c) show the pipeline is correct there, and the selector still beats
+prefix, random, and global importance. MS MARCO is carried into F4 with the deviation stated
+wherever its results appear. F4 compares selectors with each other at a fixed k (in-domain against
+transferred), not against full 1024, so a selector that beats the masking baselines is a usable
+in-domain reference. Reproducing the paper's MS MARCO setup is not attempted, because the paper
+does not specify it well enough to know when it is reproduced.
+
+This amends how research R7's criterion (a) is applied after seeing the results, so the change
+carries the `protocol-change` label.
+
+Options considered and not taken:
+
+1. **G1 fails as written** (criterion (a) on NFCorpus) and the project stops before F4. Rejected:
+   the failure is in a test that is uninformative at the selected temperature, in the environment
+   where the paper itself reports the smallest effect.
+3. **G1 passes on SciFact and MS MARCO only.** Rejected: dropping NFCorpus leaves F4 with MS MARCO,
+   the environment that does not reproduce, as one of two in-domain references.
 
 ## Consequences
 
-- Options 2 and 3 require tagging the merge `g1-baseline-valid` and starting F4.
-- Option 1 closes later milestones as not planned, with this evidence kept.
+- The merge of this ADR is tagged `g1-baseline-valid`, and F4 starts.
+- Later gates do not use a KL-against-uniform threshold. A selector's fit to its target is tested
+  as a ranking, e.g. top-k overlap with the oracle mask against the global-importance baseline;
+  the exact rule is fixed in F4's research before any F4 run.
+- Before F4 runs, one time-boxed check (about an hour) reads the authors' public code
+  (`github.com/wzy2001wzy/learning2select`) for how it builds the MS MARCO corpus and queries. If it
+  shows a concrete difference from E0's setup, the deviation note names it; if not, the note stays
+  "setups differ", and the check is not extended.
+- F4 reports and the paper state the MS MARCO deviation wherever MS MARCO results appear, and do
+  not claim that E0 reproduces Learning-to-Select on MS MARCO.
+- F4's transfer matrix (M4.2) includes a baseline that transfers one environment's fixed dimension
+  subset to the others. Pasin et al. report that such a subset transfers across collections
+  without loss, so selector shift has to beat it, not only full 1024. A global-adapter comparison
+  (Yoon et al. 2024) is noted for later: the Learning-to-Select paper finds an adapter makes the
+  important dimensions of SciFact queries more alike, which could absorb per-query selection gains.
