@@ -28,8 +28,10 @@ directory printed on stdout.
 
 - Reads: the latest complete `evaluation/E1/all` run and the seeded selectors' `selection.json`.
 - Writes: `reports/E1/README.md` and `reports/E1/tables/` (`transfer.csv`, `trec.csv`,
-  `seeds.csv`, `behavior.csv`, `noise_floor.csv`, `fit.csv`, `fixed_subset.csv`, `payoff.csv`,
-  `g2.csv`); identical bytes when run twice.
+  `methods.csv` (every method on every query set, FR-007), `seeds.csv`, `behavior.csv`,
+  `noise_floor.csv`, `environment_pairs.csv` (cross against within overlap per environment pair,
+  FR-011), `fit.csv`, `fixed_subset.csv`, `payoff.csv`, `g2.csv`); identical bytes when run
+  twice.
 
 ## `hyperdime decide G2 [--adr docs/decisions/ADR-0007-g2-selector-shift.md]`
 

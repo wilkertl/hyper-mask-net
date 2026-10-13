@@ -92,3 +92,13 @@ order); US4 needs US2 and US3. Tests first within each story.
 MVP is Phase 1 + US1 + US2: seeded selectors and the transfer matrix give G2 criterion 1. US3 adds
 criterion 2; US4 turns both into the report and the proposed ADR. No run starts before T024 passes
 on the branch, so every number comes from one committed version.
+
+## Phase 8: Convergence
+
+- [X] T029 CRITICAL: add integration tests in tests/integration/test_f4_pipeline.py that `hyperdime transfer-matrix` exits 1 when an environment lacks a requested seed (`--seeds 0 1 2 3`) and when a seeded `selector.safetensors` no longer matches its record's SHA-256 per Constitution VI (partial)
+- [X] T030 Add seed-averaged AP of each cell and of the in-domain selectors to the `trec` table in src/hyperdime/reports/e1.py (from `TransferCell.metrics["ap"]`), with a test in tests/unit/reports/test_e1.py per US2/AC4 (partial)
+- [X] T031 Mark every MS MARCO and NFCorpus row of the E1 tables with a note reference to the Notes section, and place the NFCorpus caveat beside the fit table, in src/hyperdime/reports/e1.py, with a test per FR-016 (partial)
+- [X] T032 Refuse non-finite selector outputs: `train-selector --recipe seeded` fails on a non-finite validation score or KL, and `transfer-matrix` fails when a seeded selector's importance on any query set or the battery is non-finite; tests in tests/integration/test_f4_pipeline.py per spec edge case "a seed … produces a non-finite output" (missing)
+- [X] T033 State in the E1 report (payoff and methods sections) and in the G2 context that `global-selector` is trained on all three environments' training labels, never test labels, in src/hyperdime/reports/e1.py and src/hyperdime/reports/g2.py per spec edge case "global selector … recorded wherever it appears" (missing)
+- [X] T034 Remove `criterion_1.json` from src/hyperdime/cli/transfer_matrix.py (the report recomputes criterion 1 from `cells.jsonl`) — removed, per contracts/cli.md (unrequested)
+- [X] T035 List `methods.csv` and `environment_pairs.csv` among the `report E1` tables in specs/005-selector-shift/contracts/cli.md per contracts/cli.md (unrequested)
