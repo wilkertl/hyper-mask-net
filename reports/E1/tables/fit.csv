@@ -1,0 +1,4 @@
+environment,mean gain over global importance,queries,p,p_holm,fits,note
+msmarco,+0.0320,5000,0.0001,0.0003,yes,see note: msmarco
+nfcorpus,+0.0278,259,0.0001,0.0003,yes,see note: nfcorpus
+scifact,+0.1401,81,0.0001,0.0003,yes,—

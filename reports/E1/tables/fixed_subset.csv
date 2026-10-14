@@ -1,0 +1,10 @@
+test,method,full,prefix,in-domain,method nDCG@10,diff,ci_low,ci_high,p,p_holm,note
+msmarco,fixed:msmarco,0.3800,0.3385,0.3572,0.3514,+0.0058,+0.0010,+0.0105,0.0180,0.0180,see note: msmarco
+msmarco,fixed:nfcorpus,0.3800,0.3385,0.3572,0.3475,+0.0097,+0.0046,+0.0147,0.0002,0.0010,"see note: msmarco, nfcorpus"
+msmarco,fixed:scifact,0.3800,0.3385,0.3572,0.3489,+0.0083,+0.0033,+0.0131,0.0011,0.0033,see note: msmarco
+nfcorpus,fixed:msmarco,0.3619,0.3263,0.3607,0.3281,+0.0327,+0.0177,+0.0475,0.0001,0.0009,"see note: msmarco, nfcorpus"
+nfcorpus,fixed:nfcorpus,0.3619,0.3263,0.3607,0.3389,+0.0218,+0.0073,+0.0367,0.0028,0.0056,see note: nfcorpus
+nfcorpus,fixed:scifact,0.3619,0.3263,0.3607,0.3334,+0.0273,+0.0123,+0.0422,0.0004,0.0016,see note: nfcorpus
+scifact,fixed:msmarco,0.7000,0.6640,0.8353,0.6759,+0.1595,+0.1233,+0.1973,0.0001,0.0009,see note: msmarco
+scifact,fixed:nfcorpus,0.7000,0.6640,0.8353,0.6738,+0.1615,+0.1248,+0.1992,0.0001,0.0009,see note: nfcorpus
+scifact,fixed:scifact,0.7000,0.6640,0.8353,0.6784,+0.1569,+0.1222,+0.1938,0.0001,0.0009,—

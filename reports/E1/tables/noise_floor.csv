@@ -1,0 +1,7 @@
+measure,within environments (seed noise floor),across environments
+overlap,0.7445,0.3295
+js,0.0000,0.0000
+kl_ab,0.0000,0.0000
+kl_ba,0.0000,0.0000
+spearman_importance,0.6071,0.1756
+spearman_frequency,0.7155,0.4166
