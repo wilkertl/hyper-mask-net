@@ -6,7 +6,7 @@ numbers are never typed into this file.
 | ID | Question | Protocol | Gate | Issues | Status | Report |
 |---|---|---|---|---|---|---|
 | E0 | Do the embeddings, oracle, and Learning-to-Select baseline reproduce the paper's trend? | in-domain | G1 | E0 | reported | [reports/E0](../reports/E0/README.md), [ADR-0006](decisions/ADR-0006-g1-baseline.md) |
-| E1 | Does a selector trained on environment A degrade on B, and do its masks change systematically? | in-domain, transfer | G2 | M4.1, M4.2, M4.3, G2 | planned | — |
+| E1 | Does a selector trained on environment A degrade on B, and do its masks change systematically? | in-domain, transfer | G2 | M4.1, M4.2, M4.3, G2 | reported | [reports/E1](../reports/E1/README.md), [ADR-0007](decisions/ADR-0007-g2-selector-shift.md) |
 | E2 | Do environment descriptors predict properties of specialized selectors? | P0, P1 descriptors | G3 | M5.4 | planned | — |
 | E3 | Does HyperDIME narrow the global vs per-domain gap on unseen environments? | P0, P1 | G4 | E3 | planned | — |
 | E4 | Which descriptor groups and design choices matter? | P0, P1 | — | E4/E5 | planned | — |

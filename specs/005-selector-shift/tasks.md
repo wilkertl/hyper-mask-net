@@ -68,9 +68,9 @@ synthetic result files regenerate byte-identically and give the expected criteri
 
 ## Phase 7: Runs on DataPolicy-4090
 
-- [ ] T025 Sync the branch to DataPolicy-4090; train `--recipe seeded` for seeds 0, 1, 2 in scifact, nfcorpus, msmarco; record wall times and whether seed 0 matches F3's `wide-grid` checkpoint
-- [ ] T026 Run `hyperdime transfer-matrix`; record wall time against SC-006
-- [ ] T027 Generate reports/E1 twice on the host (identical bytes), copy it back, and commit it on `exp/E1-selector-shift`
+- [X] T025 Sync the branch to DataPolicy-4090; train `--recipe seeded` for seeds 0, 1, 2 in scifact, nfcorpus, msmarco; record wall times and whether seed 0 matches F3's `wide-grid` checkpoint — done on DataPolicy-4090 at `8f2d939`: 6 s / 15 s / 2.4 min per seed; seed 0 is tensor-identical to F3's `wide-grid` checkpoint in all three environments
+- [X] T026 Run `hyperdime transfer-matrix`; record wall time against SC-006 — done: 2.1 min (SC-006: 30 min)
+- [X] T027 Generate reports/E1 twice on the host (identical bytes), copy it back, and commit it on `exp/E1-selector-shift` — done: generated twice on the host, byte-identical
 - [ ] T028 Run `hyperdime decide G2 --adr docs/decisions/ADR-0007-g2-selector-shift.md` and open it as proposed for the researcher's decision; on acceptance, tag the merge `g2-selector-shift` (issue #20)
 
 ## Dependencies
