@@ -1,6 +1,6 @@
 # ADR-0009: Experiment S1 — a selector trained for retrieval
 
-- **Status:** proposed
+- **Status:** accepted (by the researcher, 2026-10-15)
 - **Date:** 2026-10-15
 - **Issue:** F5 (`specs/006-selector-objective`), experiment S1
 
@@ -29,8 +29,9 @@ Context, not decisive:
 
 ## Decision
 
-The S1 criteria read **pass**. The decision is the researcher's: accept
-this reading, or amend it here with the reasons.
+The S1 criteria read **pass**. Accepted by the researcher on 2026-10-15. The gain holds on
+MS MARCO and SciFact; on NFCorpus the selected selector is the L2S selector itself (the
+`unchanged_nfcorpus` note above), so its zero difference is by construction, not a tie.
 
 ## Consequences
 

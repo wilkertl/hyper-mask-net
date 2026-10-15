@@ -1,6 +1,6 @@
 # ADR-0008: The per-environment selector is the contribution; the hypernetwork waits
 
-- **Status:** proposed
+- **Status:** accepted (by the researcher, 2026-10-15)
 - **Date:** 2026-10-14
 - **Issue:** F5 (`specs/006-selector-objective`), experiment S1
 

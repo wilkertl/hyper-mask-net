@@ -20,6 +20,10 @@ The project tests a causal chain, one link at a time:
 | **G4** H3 supported | The hypernetwork narrows the global vs per-domain gap on unseen environments | `[E3]` | `g4-hypernetwork` |
 | **G5** Acceptable cost | Offline adaptation is amortizable; online overhead keeps the dimension-reduction benefit | `[M12.2]` | `g5-cost` |
 
+Between G2 and G3, the selector track (ADR-0008) runs S-experiments, each decided by its own
+ADR rather than a gate: S1 (ADR-0009) trains the selector for retrieval, S2 (ADR-0010) starts it
+from the corpus's geometric prior.
+
 Every gate decision is an ADR in `docs/decisions/`. A failed gate is recorded as evidence, and work
 does not continue by adding complexity.
 
