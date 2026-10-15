@@ -17,7 +17,7 @@ import numpy as np
 import torch
 from torch import Tensor
 
-from hyperdime.baselines.learning_to_select import LinearSelector
+from hyperdime.baselines.learning_to_select import GeometricSelector, LinearSelector
 from hyperdime.contracts.hashing import file_sha256
 from hyperdime.contracts.manifests import ArtifactWriter
 from hyperdime.contracts.schemas import PayloadRef, SelectorCheckpoint, load_record
@@ -213,6 +213,7 @@ def load_selector(artifact_dir: Path, name: str) -> tuple[SelectorCheckpoint, Li
     from safetensors.torch import load_file
 
     record = load_record(SelectorCheckpoint, artifact_dir / f"{name}.json")
-    model = LinearSelector()
-    model.load_state_dict(load_file(str(artifact_dir / record.payload.path)))
+    state = load_file(str(artifact_dir / record.payload.path))
+    model = GeometricSelector(state["variance"]) if "variance" in state else LinearSelector()
+    model.load_state_dict(state)
     return record, model.eval()
