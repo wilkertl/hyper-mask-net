@@ -33,8 +33,7 @@ Built from a `Supervision`-like loader that never receives test or evaluation-se
 
 `selectors/retrieval-grid/<env>/<run_id>/`
 
-- `<cell key>/selector.safetensors`, `<cell key>/selector.json` (`SelectorCheckpoint`,
-  `kind="per_domain"`).
+- `<cell key>.safetensors`, `<cell key>.json` (`SelectorCheckpoint`, `kind="per_domain"`).
 - `history.json`: per cell, every 1,000 steps: training loss, validation pool-rerank nDCG@10
   (mean over budgets), soft-mask mass.
 - `selection.json`: `objective: "retrieval"`, inputs (dataset, embeddings, negatives, E1 seeded
