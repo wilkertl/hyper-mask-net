@@ -10,5 +10,5 @@
 - [X] T006 [P] Tests in tests/unit/reports/test_p1.py with synthetic P1 and S1 files: paired comparisons with Holm per comparison, the S2-promise reading, the dimensionality table, full and prefix rows, byte-identical regeneration
 - [X] T007 Implement src/hyperdime/reports/p1.py and `hyperdime report P1` in src/hyperdime/cli/report.py
 - [X] T008 Integration in tests/integration/test_f5_pipeline.py: `probe-geometry` and `report P1` on the S1 toy comparison
-- [ ] T009 Run on DataPolicy-4090; commit `reports/P1/`; add P1 to docs/experiment_registry.md, the command to README.md and docs/architecture.md
-- [ ] T010 Run ruff, format, mypy, pytest, and SCRAP
+- [X] T009 Run on DataPolicy-4090 (probe-geometry `20261015T150050Z-8401cd55`, 99 s); commit `reports/P1/`; add P1 to docs/experiment_registry.md, the command to README.md and docs/architecture.md
+- [X] T010 Run ruff, format, mypy, pytest, and SCRAP

@@ -142,6 +142,13 @@ The selector is the same linear map as Learning-to-Select, trained on masked ret
 relaxed top-k mask; evaluation keeps the hard top-k mask. Rules are fixed in
 `specs/006-selector-objective/research.md`; ADR-0008 explains why S1 comes before G3.
 
+## Corpus geometry probe, experiment P1 (F6)
+
+```bash
+uv run hyperdime probe-geometry                  # corpus moments, covariance spectrum, q²·Var(x) at k = 10%…90%
+uv run hyperdime report P1                       # reports/P1, paired with the latest S1 run
+```
+
 ## Embedding service
 
 Qwen3-Embedding-0.6B is served by the same vLLM server as the `beir` project, through its
