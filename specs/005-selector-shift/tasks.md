@@ -106,4 +106,4 @@ on the branch, so every number comes from one committed version.
 ## Phase 9: Budget progression
 
 - [X] T036 Score every masked method at every 10% budget in `hyperdime transfer-matrix` (fixed subsets rebuilt per budget; `evaluate_methods` takes per-budget importance), keep cells and G2 at k = 307, and add `progression.csv` and its section to the E1 report, with tests in tests/unit/evaluation/test_runs.py, tests/unit/reports/test_e1.py, and tests/integration/test_f4_pipeline.py per FR-019
-- [ ] T037 Rerun `hyperdime transfer-matrix` and `report E1` on DataPolicy-4090; record wall time against SC-006 and confirm the k = 307 cells and G2 are unchanged
+- [X] T037 Rerun `hyperdime transfer-matrix` and `report E1` on DataPolicy-4090; record wall time against SC-006 and confirm the k = 307 cells and G2 are unchanged (run `20261015T004735Z-4e76ec6e`, commit `26e903e`: 717 s, under 30 minutes; every k = 307 table and G2 byte-identical to run `20261014T021651Z-08a6e7d9`)
