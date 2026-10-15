@@ -102,3 +102,8 @@ on the branch, so every number comes from one committed version.
 - [X] T033 State in the E1 report (payoff and methods sections) and in the G2 context that `global-selector` is trained on all three environments' training labels, never test labels, in src/hyperdime/reports/e1.py and src/hyperdime/reports/g2.py per spec edge case "global selector … recorded wherever it appears" (missing)
 - [X] T034 Remove `criterion_1.json` from src/hyperdime/cli/transfer_matrix.py (the report recomputes criterion 1 from `cells.jsonl`) — removed, per contracts/cli.md (unrequested)
 - [X] T035 List `methods.csv` and `environment_pairs.csv` among the `report E1` tables in specs/005-selector-shift/contracts/cli.md per contracts/cli.md (unrequested)
+
+## Phase 9: Budget progression
+
+- [X] T036 Score every masked method at every 10% budget in `hyperdime transfer-matrix` (fixed subsets rebuilt per budget; `evaluate_methods` takes per-budget importance), keep cells and G2 at k = 307, and add `progression.csv` and its section to the E1 report, with tests in tests/unit/evaluation/test_runs.py, tests/unit/reports/test_e1.py, and tests/integration/test_f4_pipeline.py per FR-019
+- [ ] T037 Rerun `hyperdime transfer-matrix` and `report E1` on DataPolicy-4090; record wall time against SC-006 and confirm the k = 307 cells and G2 are unchanged

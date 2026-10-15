@@ -118,7 +118,7 @@ judgments.
 for env in scifact nfcorpus msmarco; do
   for seed in 0 1 2; do uv run hyperdime train-selector --recipe seeded data=$env run.seed=$seed; done
 done
-uv run hyperdime transfer-matrix                  # every selector on every environment, k = 307
+uv run hyperdime transfer-matrix                  # every selector on every environment, k = 10%…100%
 uv run hyperdime report E1                        # reports/E1 with both G2 criteria
 uv run hyperdime decide G2                        # GateDecision and a proposed ADR-0007
 ```

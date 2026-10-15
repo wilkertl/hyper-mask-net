@@ -227,6 +227,10 @@ result files and that the G2 criteria are computed, not typed.
 - **FR-017**: One command MUST draft the G2 ADR and decision record from the result files for the
   researcher's review; the tag `g2-selector-shift` is applied to the merge of the accepted ADR.
 - **FR-018**: All tests MUST run on CPU without network access.
+- **FR-019**: The transfer matrix MUST also score every masked method at every 10% budget
+  (k = 102, 204, …, 921; k = 1,024 is full-1024), with each fixed subset rebuilt at its budget, and
+  the E1 report MUST show nDCG@10 against the budget for every method and query set. This is
+  reported context: transfer cells, the fit test, the behavior battery, and G2 stay at k = 307.
 
 ### Key Entities
 

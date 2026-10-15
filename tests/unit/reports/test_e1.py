@@ -9,7 +9,7 @@ from hyperdime.reports import e1
 
 TABLES = {
     "g2", "transfer", "trec", "methods", "seeds", "behavior", "noise_floor",
-    "environment_pairs", "fit", "payoff", "fixed_subset",
+    "environment_pairs", "fit", "payoff", "fixed_subset", "progression",
 }  # fmt: skip
 
 
@@ -111,3 +111,36 @@ def test_the_global_selector_is_stated_to_use_every_environments_training_labels
     text = _report(tmp_path / "artifacts", tmp_path / "E1")["README.md"].decode()
     for section in ("## Payoff", "## Every method"):
         assert e1.GLOBAL_NOTE in text.split(section)[1]
+
+
+def test_the_progression_table_has_every_budget_and_ends_at_full(tmp_path: Path) -> None:
+    build(tmp_path / "artifacts")
+    results = e1.load(tmp_path / "artifacts")
+    header, *rows = _table(_report(tmp_path / "artifacts", tmp_path / "E1"), "progression")
+    assert header[4:-1] == ["10% (k=102)", "30% (k=307)", "50% (k=512)", "100% (k=1024)"]
+    row = dict(zip(header, rows[0], strict=True))
+    assert (row["test"], row["query set"], row["method"]) == ("msmarco", "test", "full")
+    full = results.results[("msmarco", "test")]["full"].metrics["ndcg@10"]
+    assert {row[h] for h in header[4:-1]} == {f"{full:.4f}"}
+
+
+def test_the_progression_averages_seeds_and_matches_the_cell_at_307(tmp_path: Path) -> None:
+    build(tmp_path / "artifacts")
+    results = e1.load(tmp_path / "artifacts")
+    header, *rows = _table(_report(tmp_path / "artifacts", tmp_path / "E1"), "progression")
+    cell = next(
+        c
+        for c in results.cells
+        if (c.train_environment, c.test_environment, c.query_set) == ("scifact", "nfcorpus", "test")
+    )
+    found = next(r for r in rows if r[:3] == ["nfcorpus", "test", "selector:scifact"])
+    row = dict(zip(header, found, strict=True))
+    assert row["30% (k=307)"] == f"{cell.metrics['ndcg@10']:.4f}"
+    assert row["protocol"] == "transfer"
+    assert float(row["10% (k=102)"]) < float(row["30% (k=307)"]) < float(row["50% (k=512)"])
+
+
+def test_the_headline_tables_ignore_other_budgets(tmp_path: Path) -> None:
+    build(tmp_path / "artifacts")
+    header, *rows = _table(_report(tmp_path / "artifacts", tmp_path / "E1"), "methods")
+    assert {r[header.index("k")] for r in rows} == {"307", "1024"}

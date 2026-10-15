@@ -232,6 +232,30 @@ def test_results_from_other_environments_are_transfer_results(
     assert {r.selector: r.protocol for r in results}[method] == protocol
 
 
+BUDGETS = [102, 204, 307, 409, 512, 614, 716, 819, 921]
+
+
+@pytest.mark.parametrize("method", ["selector:toya:s1", "fixed:toyb", "random", "global-selector"])
+def test_every_masked_method_is_scored_at_every_10_percent_budget(
+    matrix: Matrix, method: str
+) -> None:
+    results = load_records(EvaluationResult, matrix.run / "results-toyc-test.jsonl")
+    assert sorted(r.k for r in results if r.selector == method) == BUDGETS
+    assert [r.k for r in results if r.selector == "full"] == [1024]
+
+
+def test_each_budget_has_its_own_fixed_subset_of_k_dimensions(matrix: Matrix) -> None:
+    subsets = json.loads((matrix.run / "fixed_subsets.json").read_text())
+    assert {env: sorted(int(k) for k in by_k) for env, by_k in subsets.items()} == {
+        env: BUDGETS for env in TOY_ENVS
+    }
+    assert all(len(s) == int(k) for by_k in subsets.values() for k, s in by_k.items())
+
+
+def test_cells_stay_at_the_headline_budget(matrix: Matrix) -> None:
+    assert {c.k for c in load_records(TransferCell, matrix.run / "cells.jsonl")} == {307}
+
+
 def _result_files(directory: Path) -> dict[str, bytes]:
     return {p.name: p.read_bytes() for p in directory.iterdir() if p.name != "manifest.json"}
 

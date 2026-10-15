@@ -22,6 +22,9 @@ from hyperdime.selection.topk import apply_mask, top_k_mask
 DIM = 1024
 METRICS = ("ndcg@10", "mrr@10", "mrr@100", "recall@100", "ap")
 
+# Per-query importance (Q, D); a mapping gives each budget its own scores; None is unmasked.
+Importance = Tensor | Mapping[int, Tensor] | None
+
 
 @dataclass(frozen=True)
 class QuerySet:
@@ -51,7 +54,7 @@ def masked_queries(queries: Tensor, importance: Tensor | None, k: int) -> Tensor
 
 def evaluate_methods(
     query_set: QuerySet,
-    methods: Mapping[str, Tensor | None],
+    methods: Mapping[str, Importance],
     ks: Sequence[int],
     documents: np.ndarray,
     doc_ids: Sequence[str],
@@ -66,9 +69,10 @@ def evaluate_methods(
     """Mean and per-query metrics for every method at every k, from one streamed corpus pass.
 
     ``methods`` maps a method name to per-query importance scores ``(Q, D)`` aligned with
-    ``query_set.query_ids`` (``None`` for the unmasked query). ``pairs`` overrides the full
-    product of methods and ``ks``; rankings are kept for the budgets in ``keep_k``. Queries with no
-    document at or above the relevance threshold are excluded from the metrics and counted.
+    ``query_set.query_ids`` (``None`` for the unmasked query), or to one such tensor per budget
+    when the method's scores depend on k. ``pairs`` overrides the full product of methods and
+    ``ks``; rankings are kept for the budgets in ``keep_k``. Queries with no document at or above
+    the relevance threshold are excluded from the metrics and counted.
     """
     judged = [
         i
@@ -84,6 +88,8 @@ def evaluate_methods(
     variants = []
     for name, k in pairs:
         importance = methods[name]
+        if isinstance(importance, Mapping):
+            importance = importance[k]
         variants.append(
             masked_queries(queries, None if importance is None else importance[judged], k)
         )

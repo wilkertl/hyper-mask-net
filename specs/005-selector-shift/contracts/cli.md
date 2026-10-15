@@ -30,7 +30,8 @@ directory printed on stdout.
 - Writes: `reports/E1/README.md` and `reports/E1/tables/` (`transfer.csv`, `trec.csv`,
   `methods.csv` (every method on every query set, FR-007), `seeds.csv`, `behavior.csv`,
   `noise_floor.csv`, `environment_pairs.csv` (cross against within overlap per environment pair,
-  FR-011), `fit.csv`, `fixed_subset.csv`, `payoff.csv`, `g2.csv`); identical bytes when run
+  FR-011), `fit.csv`, `fixed_subset.csv`, `payoff.csv`, `g2.csv`, `progression.csv` (nDCG@10 of every
+  method at every 10% budget, FR-019)); identical bytes when run
   twice.
 
 ## `hyperdime decide G2 [--adr docs/decisions/ADR-0007-g2-selector-shift.md]`
