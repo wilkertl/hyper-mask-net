@@ -1,0 +1,4 @@
+environment,documents,participation ratio,share of 1024,energy in mean,best budget L2S,best budget S1,best budget variance
+msmarco,8841823,223.9,0.2187,0.1635,1024,1024,614
+nfcorpus,3633,90.9,0.0887,0.3081,819,819,716
+scifact,5183,98.8,0.0965,0.2847,409,409,819

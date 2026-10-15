@@ -1,0 +1,3 @@
+reading,value,rule,holds
+SC-001 variance recovers >= half of L2S's gain over global importance,2 of 3 environments,>= 2 of 3,yes
+SC-002 participation ratio orders L2S's best budget,nfcorpus 90.9 (819) < scifact 98.8 (409) < msmarco 223.9 (1024),"same order (descriptive, three environments)",no
