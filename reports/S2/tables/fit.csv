@@ -1,0 +1,10 @@
+environment,selector,mean gain over global importance,p,p_holm,fits
+msmarco,l2s,+0.0320,0.0001,0.0003,yes
+msmarco,retrieval,+0.0423,0.0001,0.0003,yes
+msmarco,geometric,+0.2070,0.0001,0.0003,yes
+nfcorpus,l2s,+0.0278,0.0001,0.0003,yes
+nfcorpus,retrieval,+0.0278,0.0001,0.0003,yes
+nfcorpus,geometric,+0.1068,0.0001,0.0003,yes
+scifact,l2s,+0.1401,0.0001,0.0003,yes
+scifact,retrieval,+0.1032,0.0001,0.0003,yes
+scifact,geometric,+0.2564,0.0001,0.0003,yes
