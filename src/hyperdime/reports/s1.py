@@ -1,4 +1,4 @@
-"""The E2 report and its drafted decision, generated from result files only (F5 research D7–D9).
+"""The S1 report and its drafted decision, generated from result files only (F5 research D7–D9).
 
 Nothing numeric is typed here: every value comes from the latest `compare-selectors` run, the
 retrieval grid, and the seeded selectors it names. Protocol: in-domain. Scoring: exact.
@@ -26,13 +26,13 @@ DIM = 1024
 MIN_SEEDS = 3
 BASELINES = ("prefix", "random", "global-importance", "global-selector")
 SUMMARIES = ("mean 10%-90%", f"k = {HEADLINE_K}")
-TAG = "e2-selector-objective"
-DEFAULT_ADR = Path("docs/decisions/ADR-0009-e2-selector-objective.md")
+TAG = "s1-selector-objective"
+DEFAULT_ADR = Path("docs/decisions/ADR-0009-s1-selector-objective.md")
 _STATUS = re.compile(r"^- \*\*Status:\*\* (\w+)", re.MULTILINE)
 
 
 @dataclass
-class E2Results:
+class S1Results:
     run: str
     commit: str
     finished: str
@@ -50,8 +50,8 @@ class E2Results:
         return sorted({k for found in self.results.values() for _, k in found if k < DIM})
 
 
-def load(root: Path) -> E2Results:
-    directory = latest_artifact(root, "evaluation/E2", "all")
+def load(root: Path) -> S1Results:
+    directory = latest_artifact(root, "evaluation/S1", "all")
     manifest = read_manifest(directory)
     sources = _json(directory / "inputs.json")
     environments = sorted(e for e in sources if e != "global")
@@ -64,7 +64,7 @@ def load(root: Path) -> E2Results:
         }
     seeds = sorted(int(s.removeprefix("seed-")) for s in sources[environments[0]]["retrieval"])
     if len(seeds) < MIN_SEEDS:
-        raise ValueError(f"E2 needs at least {MIN_SEEDS} seeds per environment; found {seeds}")
+        raise ValueError(f"S1 needs at least {MIN_SEEDS} seeds per environment; found {seeds}")
     selectors = root / "selectors"
     grids = {
         env: _json(selectors / "retrieval-grid" / env / sources[env]["grid"] / "selection.json")
@@ -88,7 +88,7 @@ def load(root: Path) -> E2Results:
         }
         for env in environments
     }
-    return E2Results(
+    return S1Results(
         directory.name,
         manifest.git_commit,
         f"{manifest.finished_at:%Y-%m-%d}" if manifest.finished_at else "",
@@ -104,35 +104,35 @@ def load(root: Path) -> E2Results:
 
 
 def per_query(
-    e2: E2Results, key: tuple[str, str], method: str, k: int, metric: str = "ndcg@10"
+    s1: S1Results, key: tuple[str, str], method: str, k: int, metric: str = "ndcg@10"
 ) -> dict[str, float]:
     """Per-query metric of ``method`` at budget ``k``; ``l2s:<env>`` and ``retrieval:<env>`` are
     averaged over seeds per query (as in E1)."""
     names = [method]
     if method.split(":")[0] in ("l2s", "retrieval"):
-        names = [f"{method}:s{s}" for s in e2.seeds]
-    found = e2.results[key]
+        names = [f"{method}:s{s}" for s in s1.seeds]
+    found = s1.results[key]
     queries = found[(names[0], k)].per_query
     return {q: sum(found[(n, k)].per_query[q][metric] for n in names) / len(names) for q in queries}
 
 
 def summary(
-    e2: E2Results, key: tuple[str, str], method: str, which: str, metric: str = "ndcg@10"
+    s1: S1Results, key: tuple[str, str], method: str, which: str, metric: str = "ndcg@10"
 ) -> dict[str, float]:
     """Per query: the mean over the 10%-90% budgets, or the value at the headline budget."""
     if which == SUMMARIES[1]:
-        return per_query(e2, key, method, HEADLINE_K, metric)
-    by_k = [per_query(e2, key, method, k, metric) for k in e2.budgets]
+        return per_query(s1, key, method, HEADLINE_K, metric)
+    by_k = [per_query(s1, key, method, k, metric) for k in s1.budgets]
     return {q: sum(values[q] for values in by_k) / len(by_k) for q in by_k[0]}
 
 
 def compare(
-    e2: E2Results, key: tuple[str, str], which: str, metric: str = "ndcg@10"
+    s1: S1Results, key: tuple[str, str], which: str, metric: str = "ndcg@10"
 ) -> dict[str, Any]:
     """Retrieval-trained selector against L2S on one query set, paired over queries."""
     env = key[0]
-    new = summary(e2, key, f"retrieval:{env}", which, metric)
-    old = summary(e2, key, f"l2s:{env}", which, metric)
+    new = summary(s1, key, f"retrieval:{env}", which, metric)
+    old = summary(s1, key, f"l2s:{env}", which, metric)
     queries = sorted(new)
     a, b = [new[q] for q in queries], [old[q] for q in queries]
     low, high = paired_bootstrap_ci(a, b)
@@ -149,19 +149,19 @@ def compare(
     }
 
 
-def comparisons(e2: E2Results) -> list[dict[str, Any]]:
+def comparisons(s1: S1Results) -> list[dict[str, Any]]:
     """Test sets: one row per environment and summary, Holm over environments per summary."""
     rows = []
     for which in SUMMARIES:
-        found = [compare(e2, (env, "test"), which) for env in e2.environments]
+        found = [compare(s1, (env, "test"), which) for env in s1.environments]
         adjusted = holm({r["environment"]: r["p"] for r in found})
         rows += [{**r, "p_holm": adjusted[r["environment"]]} for r in found]
     return rows
 
 
-def criteria(e2: E2Results) -> list[dict[str, Any]]:
+def criteria(s1: S1Results) -> list[dict[str, Any]]:
     """SC-001 and SC-002 on the mean over the 10%-90% budgets (spec, research D7)."""
-    rows = [r for r in comparisons(e2) if r["summary"] == SUMMARIES[0]]
+    rows = [r for r in comparisons(s1) if r["summary"] == SUMMARIES[0]]
     better = sum(1 for r in rows if r["diff"] > 0 and r["p_holm"] <= ALPHA)
     worse = sum(1 for r in rows if r["diff"] < 0 and r["p_holm"] <= ALPHA)
     required = (2 * len(rows) + 2) // 3
@@ -183,8 +183,8 @@ def criteria(e2: E2Results) -> list[dict[str, Any]]:
     ]
 
 
-def _methods(e2: E2Results, env: str) -> list[str]:
-    families = sorted(e2.grids[env]["family_best"])
+def _methods(s1: S1Results, env: str) -> list[str]:
+    families = sorted(s1.grids[env]["family_best"])
     return [
         *BASELINES,
         f"l2s:{env}",
@@ -193,26 +193,26 @@ def _methods(e2: E2Results, env: str) -> list[str]:
     ]
 
 
-def progression(e2: E2Results) -> list[list[str]]:
-    header = [f"{round(100 * k / DIM)}% (k={k})" for k in [*e2.budgets, DIM]]
+def progression(s1: S1Results) -> list[list[str]]:
+    header = [f"{round(100 * k / DIM)}% (k={k})" for k in [*s1.budgets, DIM]]
     rows = [["test", "query set", "method", *header, "note"]]
-    for key in sorted(e2.results):
+    for key in sorted(s1.results):
         env, query_set = key
-        full = _mean(per_query(e2, key, "full", DIM))
+        full = _mean(per_query(s1, key, "full", DIM))
         rows.append([env, query_set, "full", *[_fmt(full)] * len(header), "—"])
-        for method in _methods(e2, env):
-            values = [_mean(per_query(e2, key, method, k)) for k in e2.budgets]
+        for method in _methods(s1, env):
+            values = [_mean(per_query(s1, key, method, k)) for k in s1.budgets]
             rows.append([env, query_set, method, *(_fmt(v) for v in values), _fmt(full), note(env)])
     return rows
 
 
-def vs_full(e2: E2Results) -> list[list[str]]:
+def vs_full(s1: S1Results) -> list[list[str]]:
     rows = [["test", "query set", "budget", "full", "l2s - full", "retrieval - full"]]
-    for key in sorted(e2.results):
-        full = _mean(per_query(e2, key, "full", DIM))
-        for k in e2.budgets:
-            l2s = _mean(per_query(e2, key, f"l2s:{key[0]}", k))
-            new = _mean(per_query(e2, key, f"retrieval:{key[0]}", k))
+    for key in sorted(s1.results):
+        full = _mean(per_query(s1, key, "full", DIM))
+        for k in s1.budgets:
+            l2s = _mean(per_query(s1, key, f"l2s:{key[0]}", k))
+            new = _mean(per_query(s1, key, f"retrieval:{key[0]}", k))
             rows.append([*key, str(k), _fmt(full), _fmt(l2s - full, "+"), _fmt(new - full, "+")])
     return rows
 
@@ -229,36 +229,36 @@ def _comparison_rows(rows: Sequence[dict[str, Any]], holm_column: bool) -> list[
     return table
 
 
-def trec(e2: E2Results) -> list[list[str]]:
+def trec(s1: S1Results) -> list[list[str]]:
     rows = []
-    for key in sorted(k for k in e2.results if k[1] != "test"):
+    for key in sorted(k for k in s1.results if k[1] != "test"):
         for which in SUMMARIES:
             for metric in ("ndcg@10", "ap"):
-                row = compare(e2, key, which, metric)
+                row = compare(s1, key, which, metric)
                 rows.append({**row, "summary": f"{which}, {metric}"})
     return _comparison_rows(rows, holm_column=False)
 
 
-def families(e2: E2Results) -> list[list[str]]:
+def families(s1: S1Results) -> list[list[str]]:
     """Each (variant, init) family's validation-best cell on test, seed 0 (context, FR-005)."""
     rows = [["test", "family", "cell", *SUMMARIES]]
-    for env in e2.environments:
+    for env in s1.environments:
         key = (env, "test")
         rows.append([env, "l2s (3 seeds)", "—", *(
-            _fmt(_mean(summary(e2, key, f"l2s:{env}", w))) for w in SUMMARIES
+            _fmt(_mean(summary(s1, key, f"l2s:{env}", w))) for w in SUMMARIES
         )])  # fmt: skip
-        for family, cell in sorted(e2.grids[env]["family_best"].items()):
+        for family, cell in sorted(s1.grids[env]["family_best"].items()):
             method = f"family:{family}:{env}"
             rows.append(
-                [env, family, cell, *(_fmt(_mean(summary(e2, key, method, w))) for w in SUMMARIES)]
+                [env, family, cell, *(_fmt(_mean(summary(s1, key, method, w))) for w in SUMMARIES)]
             )
     return rows
 
 
-def grid(e2: E2Results) -> list[list[str]]:
+def grid(s1: S1Results) -> list[list[str]]:
     rows = [["environment", "cell", "validation mean nDCG@10", "soft mass", "selectable", "role"]]
-    for env in e2.environments:
-        record = e2.grids[env]
+    for env in s1.environments:
+        record = s1.grids[env]
         best = set(record["family_best"].values())
         for key, cell in record["cells"].items():
             role = "selected" if key == record["selected"] else "family best" if key in best else ""
@@ -269,10 +269,10 @@ def grid(e2: E2Results) -> list[list[str]]:
     return rows
 
 
-def overlap(e2: E2Results) -> list[list[str]]:
+def overlap(s1: S1Results) -> list[list[str]]:
     rows = [["environment", "budget", "retrieval vs L2S", "L2S seeds", "retrieval seeds"]]
-    for env in e2.environments:
-        for k, values in sorted(e2.overlap[env].items(), key=lambda item: int(item[0])):
+    for env in s1.environments:
+        for k, values in sorted(s1.overlap[env].items(), key=lambda item: int(item[0])):
             rows.append([
                 env, k, _fmt(values["retrieval_l2s"]), _fmt(values["l2s_seeds"]),
                 _fmt(values["retrieval_seeds"]),
@@ -280,11 +280,11 @@ def overlap(e2: E2Results) -> list[list[str]]:
     return rows
 
 
-def fit(e2: E2Results) -> list[list[str]]:
+def fit(s1: S1Results) -> list[list[str]]:
     rows = [["environment", "selector", "mean gain over global importance", "p", "p_holm", "fits"]]
-    for env in e2.environments:
+    for env in s1.environments:
         for selector in ("l2s", "retrieval"):
-            r = e2.fit[selector][env]
+            r = s1.fit[selector][env]
             rows.append([
                 env, selector, _fmt(r["mean_gain"], "+"), _fmt(r["p_value"]), _fmt(r["p_holm"]),
                 _yes(r["fits"]),
@@ -292,11 +292,11 @@ def fit(e2: E2Results) -> list[list[str]]:
     return rows
 
 
-def curves(e2: E2Results) -> list[list[str]]:
+def curves(s1: S1Results) -> list[list[str]]:
     rows = [["environment", "seed", "steps", "best step", "best validation rerank nDCG@10",
              "final soft mass"]]  # fmt: skip
-    for env in e2.environments:
-        for seed, history in sorted(e2.histories[env].items()):
+    for env in s1.environments:
+        for seed, history in sorted(s1.histories[env].items()):
             top = max(history, key=lambda h: h["val_rerank_ndcg10"])
             rows.append([
                 env, str(seed), str(int(history[-1]["step"])), str(int(top["step"])),
@@ -305,38 +305,38 @@ def curves(e2: E2Results) -> list[list[str]]:
     return rows
 
 
-def render(e2: E2Results) -> tuple[str, dict[str, str]]:
-    computed = criteria(e2)
+def render(s1: S1Results) -> tuple[str, dict[str, str]]:
+    computed = criteria(s1)
     tables = {
-        "e2": [
+        "s1": [
             ["criterion", "value", "threshold", "met"],
             *[[c["name"], c["shown"], c["threshold"], _yes(c["met"])] for c in computed],
         ],
-        "comparison": _comparison_rows(comparisons(e2), holm_column=True),
-        "progression": progression(e2),
-        "vs_full": vs_full(e2),
-        "trec": trec(e2),
-        "families": families(e2),
-        "grid": grid(e2),
-        "overlap": overlap(e2),
-        "fit": fit(e2),
-        "curves": curves(e2),
+        "comparison": _comparison_rows(comparisons(s1), holm_column=True),
+        "progression": progression(s1),
+        "vs_full": vs_full(s1),
+        "trec": trec(s1),
+        "families": families(s1),
+        "grid": grid(s1),
+        "overlap": overlap(s1),
+        "fit": fit(s1),
+        "curves": curves(s1),
     }
-    cells = ", ".join(f"{env} `{e2.grids[env]['selected']}`" for env in e2.environments)
+    cells = ", ".join(f"{env} `{s1.grids[env]['selected']}`" for env in s1.environments)
     lines = [
-        "# E2: a selector trained for retrieval against Learning-to-Select",
+        "# S1: a selector trained for retrieval against Learning-to-Select",
         "",
         "Protocol: in-domain. Scoring: exact inner product over the full corpus, hard top-k mask.",
-        f"Budgets: {', '.join(str(k) for k in e2.budgets)} (10%-90%); 100% is the full query.",
+        f"Budgets: {', '.join(str(k) for k in s1.budgets)} (10%-90%); 100% is the full query.",
         f"Selectors: the retrieval grid's selected cell per environment ({cells}) and E1's",
-        f"`wide-grid` L2S selectors, seeds {', '.join(str(s) for s in e2.seeds)}; seed scores",
+        f"`wide-grid` L2S selectors, seeds {', '.join(str(s) for s in s1.seeds)}; seed scores",
         "are averaged per query before every paired test (F5 research D7).",
         "",
-        f"- compare-selectors `{e2.run}` (commit `{e2.commit[:12]}`)",
+        f"- compare-selectors `{s1.run}` (commit `{s1.commit[:12]}`)",
         "",
         "## Criteria",
         "",
-        *_markdown(tables["e2"]),
+        *_markdown(tables["s1"]),
         "",
         "## Against L2S on the test sets",
         "",
@@ -378,7 +378,7 @@ def render(e2: E2Results) -> tuple[str, dict[str, str]]:
         "",
         "## Notes",
         "",
-        *[f"- **{env}**: {text}" for env, text in sorted(NOTES.items()) if env in e2.environments],
+        *[f"- **{env}**: {text}" for env, text in sorted(NOTES.items()) if env in s1.environments],
         "",
         "Every grid cell is in `tables/grid.csv`.",
     ]
@@ -394,19 +394,19 @@ def write(root: Path, output: Path) -> Path:
     return output / "README.md"
 
 
-def decision(e2: E2Results, adr: Path) -> GateDecision:
-    computed = criteria(e2)
-    headline = [r for r in comparisons(e2) if r["summary"] == SUMMARIES[1]]
+def decision(s1: S1Results, adr: Path) -> GateDecision:
+    computed = criteria(s1)
+    headline = [r for r in comparisons(s1) if r["summary"] == SUMMARIES[1]]
     context = {
         "headline": ", ".join(
             f"{r['environment']} {_fmt(r['diff'], '+')} (Holm p {_fmt(r['p_holm'])})"
             for r in headline
         ),
-        "selected": ", ".join(f"{env} {e2.grids[env]['selected']}" for env in e2.environments),
-        **{f"note_{env}": NOTES[env] for env in e2.environments if env in NOTES},
+        "selected": ", ".join(f"{env} {s1.grids[env]['selected']}" for env in s1.environments),
+        **{f"note_{env}": NOTES[env] for env in s1.environments if env in NOTES},
     }
     return GateDecision(
-        gate="E2",
+        gate="S1",
         outcome="pass" if all(c["met"] for c in computed) else "fail",
         criteria=[
             Criterion(name=c["name"], value=c["value"], threshold=c["threshold"], met=c["met"])
@@ -414,9 +414,9 @@ def decision(e2: E2Results, adr: Path) -> GateDecision:
         ],
         context=context,
         evidence=[
-            e2.run,
+            s1.run,
             *sorted(
-                {run for env in e2.environments for run in e2.sources[env]["retrieval"].values()}
+                {run for env in s1.environments for run in s1.sources[env]["retrieval"].values()}
             ),
         ],  # fmt: skip
         adr=adr.as_posix(),
@@ -424,26 +424,26 @@ def decision(e2: E2Results, adr: Path) -> GateDecision:
     )
 
 
-def proposed_adr(e2: E2Results, record: GateDecision) -> str:
-    computed = criteria(e2)
+def proposed_adr(s1: S1Results, record: GateDecision) -> str:
+    computed = criteria(s1)
     lines = [
-        "# ADR-0009: Experiment E2 — a selector trained for retrieval",
+        "# ADR-0009: Experiment S1 — a selector trained for retrieval",
         "",
         "- **Status:** proposed",
-        f"- **Date:** {e2.finished}",
-        "- **Issue:** F5 (`specs/006-selector-objective`), experiment E2",
+        f"- **Date:** {s1.finished}",
+        "- **Issue:** F5 (`specs/006-selector-objective`), experiment S1",
         "",
         "## Context",
         "",
-        "E2 asks whether the same linear selector, trained on masked retrieval instead of the",
+        "S1 asks whether the same linear selector, trained on masked retrieval instead of the",
         "oracle's importance distribution, retrieves better than Learning-to-Select over the",
-        "10%-90% budgets (ADR-0008). This draft is generated by `hyperdime decide E2` from the",
-        "result files of `reports/E2/README.md`.",
+        "10%-90% budgets (ADR-0008). This draft is generated by `hyperdime decide S1` from the",
+        "result files of `reports/S1/README.md`.",
         "",
         "## Evidence",
         "",
-        f"From compare-selectors `{e2.run}` (commit `{e2.commit[:12]}`); every value is in",
-        "`reports/E2/README.md`.",
+        f"From compare-selectors `{s1.run}` (commit `{s1.commit[:12]}`); every value is in",
+        "`reports/S1/README.md`.",
         "",
         *[
             f"- **{c['name']}**: {c['shown']}; threshold {c['threshold']}; "
@@ -457,27 +457,27 @@ def proposed_adr(e2: E2Results, record: GateDecision) -> str:
         "",
         "## Decision",
         "",
-        f"The E2 criteria read **{record.outcome}**. The decision is the researcher's: accept",
+        f"The S1 criteria read **{record.outcome}**. The decision is the researcher's: accept",
         "this reading, or amend it here with the reasons.",
         "",
         "## Consequences",
         "",
-        "- If E2 passes: the retrieval-trained selector replaces L2S as the selector later work",
+        "- If S1 passes: the retrieval-trained selector replaces L2S as the selector later work",
         "  builds on.",
-        "- If E2 fails: the next candidates are higher capacity or a budget policy, each",
-        "  justified by the E2 diagnostics (ADR-0008).",
+        "- If S1 fails: the next candidates are higher capacity or a budget policy, each",
+        "  justified by the S1 diagnostics (ADR-0008).",
     ]
     return "\n".join(lines) + "\n"
 
 
-def write_adr(e2: E2Results, record: GateDecision, path: Path) -> Path:
+def write_adr(s1: S1Results, record: GateDecision, path: Path) -> Path:
     """Write the proposed ADR; an existing ADR is overwritten only while it is still proposed."""
     if path.exists():
         found = _STATUS.search(path.read_text(encoding="utf-8"))
         if found is None or found.group(1) != "proposed":
             raise ValueError(f"{path} is no longer proposed; it is not overwritten")
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(proposed_adr(e2, record), encoding="utf-8")
+    path.write_text(proposed_adr(s1, record), encoding="utf-8")
     return path
 
 

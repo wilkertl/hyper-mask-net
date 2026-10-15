@@ -1,22 +1,22 @@
-"""The E2 report and its drafted decision from synthetic result files (F5 US3, US4)."""
+"""The S1 report and its drafted decision from synthetic result files (F5 US3, US4)."""
 
 import csv
 import io
 from pathlib import Path
 
 import pytest
-from synthetic_e2 import BUDGETS, ENVS, build
+from synthetic_s1 import BUDGETS, ENVS, build
 
-from hyperdime.reports import e2
+from hyperdime.reports import s1
 
 TABLES = {
-    "e2", "comparison", "progression", "vs_full", "trec", "families", "grid", "overlap", "fit",
+    "s1", "comparison", "progression", "vs_full", "trec", "families", "grid", "overlap", "fit",
     "curves",
 }  # fmt: skip
 
 
 def _report(root: Path, output: Path) -> dict[str, bytes]:
-    e2.write(root, output)
+    s1.write(root, output)
     return {
         p.relative_to(output).as_posix(): p.read_bytes() for p in output.rglob("*") if p.is_file()
     }
@@ -29,35 +29,35 @@ def _rows(output: Path, table: str) -> list[dict[str, str]]:
 @pytest.fixture(scope="module")
 def report(tmp_path_factory: pytest.TempPathFactory) -> Path:
     """One report from synthetic files with a gain planted in SciFact, shared by read-only tests."""
-    root = tmp_path_factory.mktemp("e2")
+    root = tmp_path_factory.mktemp("s1")
     build(root / "artifacts", {"scifact": 0.05})
-    e2.write(root / "artifacts", root / "E2")
-    return root / "E2"
+    s1.write(root / "artifacts", root / "S1")
+    return root / "S1"
 
 
 def test_every_table_is_generated_and_regenerates_identically(tmp_path: Path) -> None:
     build(tmp_path / "artifacts", {"scifact": 0.05})
-    first = _report(tmp_path / "artifacts", tmp_path / "E2")
+    first = _report(tmp_path / "artifacts", tmp_path / "S1")
     assert {n.removeprefix("tables/").removesuffix(".csv") for n in first} == TABLES | {"README.md"}
-    assert _report(tmp_path / "artifacts", tmp_path / "E2") == first
+    assert _report(tmp_path / "artifacts", tmp_path / "S1") == first
 
 
 def test_the_budget_mean_is_the_per_query_mean_over_the_masked_budgets(tmp_path: Path) -> None:
     build(tmp_path, {})
-    results = e2.load(tmp_path)
+    results = s1.load(tmp_path)
     key = ("scifact", "test")
-    by_k = [e2.per_query(results, key, "prefix", k) for k in BUDGETS]
-    mean = e2.summary(results, key, "prefix", e2.SUMMARIES[0])
+    by_k = [s1.per_query(results, key, "prefix", k) for k in BUDGETS]
+    mean = s1.summary(results, key, "prefix", s1.SUMMARIES[0])
     assert results.budgets == list(BUDGETS)
     assert mean["q3"] == pytest.approx(sum(v["q3"] for v in by_k) / len(BUDGETS))
 
 
 def test_selectors_are_averaged_over_seeds_per_query(tmp_path: Path) -> None:
     build(tmp_path, {})
-    results = e2.load(tmp_path)
+    results = s1.load(tmp_path)
     key = ("nfcorpus", "test")
     seeds = [results.results[key][(f"l2s:nfcorpus:s{s}", 307)].per_query["q0"] for s in (0, 1, 2)]
-    averaged = e2.per_query(results, key, "l2s:nfcorpus", 307)["q0"]
+    averaged = s1.per_query(results, key, "l2s:nfcorpus", 307)["q0"]
     assert averaged == pytest.approx(sum(s["ndcg@10"] for s in seeds) / 3)
 
 
@@ -74,12 +74,12 @@ def test_the_criteria_find_planted_differences(
     tmp_path: Path, gains: dict[str, float], met: list[bool]
 ) -> None:
     build(tmp_path, gains)
-    assert [c["met"] for c in e2.criteria(e2.load(tmp_path))] == met
+    assert [c["met"] for c in s1.criteria(s1.load(tmp_path))] == met
 
 
 def test_a_planted_gain_is_found_only_where_it_was_planted(tmp_path: Path) -> None:
     build(tmp_path, {"scifact": 0.05})
-    rows = [r for r in e2.comparisons(e2.load(tmp_path)) if r["summary"] == e2.SUMMARIES[0]]
+    rows = [r for r in s1.comparisons(s1.load(tmp_path)) if r["summary"] == s1.SUMMARIES[0]]
     significant = {r["environment"] for r in rows if r["p_holm"] <= 0.05}
     assert significant == {"scifact"}
     assert next(r for r in rows if r["environment"] == "scifact")["diff"] == pytest.approx(0.05)
@@ -89,7 +89,7 @@ def test_holm_counts_the_three_test_sets_once_per_summary(report: Path) -> None:
     rows = _rows(report, "comparison")
     assert {r["query set"] for r in rows} == {"test"}
     assert sorted((r["test"], r["summary"]) for r in rows) == sorted(
-        (env, which) for env in ENVS for which in e2.SUMMARIES
+        (env, which) for env in ENVS for which in s1.SUMMARIES
     )
 
 
@@ -124,23 +124,23 @@ def test_training_curves_report_the_best_step_and_final_soft_mass(report: Path) 
 def test_the_report_refuses_fewer_than_three_seeds(tmp_path: Path) -> None:
     build(tmp_path, {}, seeds=(0, 1))
     with pytest.raises(ValueError, match="at least 3 seeds"):
-        e2.load(tmp_path)
+        s1.load(tmp_path)
 
 
 def test_the_decision_passes_only_when_both_criteria_hold(tmp_path: Path) -> None:
     build(tmp_path, {"scifact": 0.05, "nfcorpus": 0.05})
-    results = e2.load(tmp_path)
-    record = e2.decision(results, e2.DEFAULT_ADR)
-    assert record.gate == "E2" and record.outcome == "pass"
+    results = s1.load(tmp_path)
+    record = s1.decision(results, s1.DEFAULT_ADR)
+    assert record.gate == "S1" and record.outcome == "pass"
     assert record.evidence[0] == results.run
 
 
 def test_an_accepted_adr_is_not_overwritten(tmp_path: Path) -> None:
     build(tmp_path, {})
-    results = e2.load(tmp_path)
-    record = e2.decision(results, tmp_path / "adr.md")
-    path = e2.write_adr(results, record, tmp_path / "adr.md")
+    results = s1.load(tmp_path)
+    record = s1.decision(results, tmp_path / "adr.md")
+    path = s1.write_adr(results, record, tmp_path / "adr.md")
     assert "- **Status:** proposed" in path.read_text()
     path.write_text(path.read_text().replace("proposed", "accepted", 1))
     with pytest.raises(ValueError, match="no longer proposed"):
-        e2.write_adr(results, record, path)
+        s1.write_adr(results, record, path)

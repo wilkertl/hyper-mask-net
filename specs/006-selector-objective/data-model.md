@@ -1,7 +1,7 @@
-# Data Model: F5 Selector Objective and Experiment E2
+# Data Model: F5 Selector Objective and Experiment S1
 
 Existing records are reused: `SelectorCheckpoint`, `EvaluationResult`, `GateDecision`,
-`Criterion`, run manifests. Only `GateDecision.gate` changes (adds `"E2"`).
+`Criterion`, run manifests. Only `GateDecision.gate` changes (adds `"S1"`).
 
 ## RetrievalExamples (in memory, `training/examples.py`)
 
@@ -44,17 +44,17 @@ Built from a `Supervision`-like loader that never receives test or evaluation-se
 `selectors/retrieval-seeded/<env>/seed-<n>/<run_id>/`: `selector.safetensors`, `selector.json`,
 `selection.json` (cell, seed, history, validation scores, grid run id).
 
-`evaluation/E2/all/<run_id>/`
+`evaluation/S1/all/<run_id>/`
 
 - `results-<env>-<set>.jsonl`: `EvaluationResult` per method and budget (D7 method names).
 - `overlap.json`: per environment and budget, retrieval↔L2S overlap and both noise floors.
 - `fit.json`: per environment, oracle-mask agreement on validation for both selectors (E1 rule).
 - `inputs.json`: every selector run id and payload SHA-256 read.
 
-`decisions/E2/<run_id>/gate_decision.json`: `GateDecision(gate="E2", criteria=[SC-001, SC-002])`.
+`decisions/S1/<run_id>/gate_decision.json`: `GateDecision(gate="S1", criteria=[SC-001, SC-002])`.
 
 ## State
 
 `retrieval-grid` (seed 0, 32 cells, selection) → `retrieval-seeded` (selected cell, seeds 0–2) →
-`compare-selectors` → `report E2` → `decide E2` (ADR-0009, proposed). `compare-selectors` refuses
+`compare-selectors` → `report S1` → `decide S1` (ADR-0009, proposed). `compare-selectors` refuses
 when a seeded run's cell differs from the latest grid's selection or any payload hash mismatches.

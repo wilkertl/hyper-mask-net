@@ -1,4 +1,4 @@
-# Feature Specification: F5 Selector Objective and Experiment E2
+# Feature Specification: F5 Selector Objective and Experiment S1
 
 **Feature Branch**: `agent/F5-selector-objective`
 
@@ -14,9 +14,9 @@ hypernetwork to an automation step; E0 and E1 (`reports/E0/`, `reports/E1/`) are
 
 ## User Scenarios & Testing *(mandatory)*
 
-The users are the researcher, who decides from the E2 report whether a retrieval-trained selector
+The users are the researcher, who decides from the S1 report whether a retrieval-trained selector
 replaces Learning-to-Select (L2S) as the project's selector, and the agents who build on that
-selector afterwards. The question E2 answers: with the same linear selector, the same frozen
+selector afterwards. The question S1 answers: with the same linear selector, the same frozen
 embeddings, and the same training labels, does training the selector for the retrieval it is used
 for, rather than for matching the oracle's importance distribution, retrieve better at the budgets
 that matter?
@@ -88,11 +88,11 @@ fixed-budget selector trained at that budget.
 
 ---
 
-### User Story 3 - Experiment E2 against L2S at every budget (Priority: P1)
+### User Story 3 - Experiment S1 against L2S at every budget (Priority: P1)
 
 The researcher trains the chosen retrieval-trained variant with three seeds per environment
 (SciFact, NFCorpus, MS MARCO), evaluates it with the L2S selectors of E1, the global selector,
-prefix, random, and full 1024, and reads a generated E2 report.
+prefix, random, and full 1024, and reads a generated S1 report.
 
 **Why this priority**: it produces the evidence for or against replacing L2S.
 
@@ -102,7 +102,7 @@ bytes.
 
 **Acceptance Scenarios**:
 
-1. **Given** the three seeded checkpoints per environment and E1's seeded L2S selectors, **When** E2
+1. **Given** the three seeded checkpoints per environment and E1's seeded L2S selectors, **When** S1
    runs, **Then** every method is scored at every 10% budget on every test set and on MS MARCO's
    TREC DL 2019, DL 2020, and DL-HARD sets.
 2. **Given** the per-query results, **When** the report is generated, **Then** it states, per
@@ -153,7 +153,7 @@ selectors is 1 at every budget and the overlap with a random selector is near k/
   records the agreement between the soft and hard top-k on validation queries, and a setting whose
   agreement falls below the rule fixed in research is not selectable.
 - An environment where no retrieval-trained setting beats L2S on validation: the chosen setting
-  still goes to E2, and the report states the validation result; nothing falls back silently to L2S.
+  still goes to S1, and the report states the validation result; nothing falls back silently to L2S.
 - MS MARCO's training set is far larger than the others: training time per epoch is bounded by
   sampling a fixed number of steps, stated in research, so every environment gets a comparable
   budget of updates.
@@ -188,10 +188,10 @@ selectors is 1 at every budget and the overlap with a random selector is near k/
   existing evaluation without changes to how other selectors are scored.
 - **FR-008**: The chosen setting MUST be trained with seeds 0, 1, and 2 per environment, one run
   per seed.
-- **FR-009**: E2 MUST score, on every test set and TREC DL set, at every 10% budget: the
+- **FR-009**: S1 MUST score, on every test set and TREC DL set, at every 10% budget: the
   retrieval-trained selector (each seed), E1's L2S selector (each seed), the global selector,
   prefix, random, global importance, and full 1024, with exact scoring.
-- **FR-010**: The E2 report MUST be generated from result files and contain: the nDCG@10-by-budget
+- **FR-010**: The S1 report MUST be generated from result files and contain: the nDCG@10-by-budget
   table and curves per test set; per environment, the paired difference against L2S in mean
   nDCG@10 over 10%–90% and at k = 307, with 95% bootstrap confidence intervals and Holm-corrected
   p-values; the difference against full 1024 per budget; AP on the TREC DL sets; top-k overlap
@@ -199,7 +199,7 @@ selectors is 1 at every budget and the overlap with a random selector is near k/
   curves.
 - **FR-011**: The report MUST state the protocol of every table (in-domain), include full 1024 and
   prefix rows, and regenerate byte-identically from the same result files.
-- **FR-012**: The report MUST end with a verdict section that evaluates the E2 criteria
+- **FR-012**: The report MUST end with a verdict section that evaluates the S1 criteria
   (SC-001, SC-002) and a drafted ADR recording the decision.
 - **FR-013**: A test MUST show that the relaxed mask approaches the hard top-k mask as its
   sharpness grows, on a hand-computable example, and that at k = 1024 the masked query equals the
@@ -215,26 +215,26 @@ selectors is 1 at every budget and the overlap with a random selector is near k/
   or multi-budget), initialization (scratch or L2S), settings, seed, and validation scores.
 - **Training example**: a training query with its positive documents (graded judgments > 0) and
   its hard-negative pool, all from the training split.
-- **E2 result**: per method, seed, test set, and budget, the per-query nDCG@10 (and AP on TREC DL),
+- **S1 result**: per method, seed, test set, and budget, the per-query nDCG@10 (and AP on TREC DL),
   in the same record format as E0 and E1.
-- **E2 comparison**: per environment and summary (mean over 10%–90%, or k = 307), the paired
+- **S1 comparison**: per environment and summary (mean over 10%–90%, or k = 307), the paired
   difference against L2S with its interval, p-value, and Holm-corrected p-value.
 
 ## Success Criteria *(mandatory)*
 
 ### Measurable Outcomes
 
-- **SC-001** (E2 criterion 1): the retrieval-trained selector's mean nDCG@10 over the 10%–90%
+- **SC-001** (S1 criterion 1): the retrieval-trained selector's mean nDCG@10 over the 10%–90%
   budgets is higher than L2S's with Holm-corrected p ≤ 0.05 in at least 2 of the 3 environments.
-- **SC-002** (E2 criterion 2): in no environment is it lower than L2S, on the same summary, with
+- **SC-002** (S1 criterion 2): in no environment is it lower than L2S, on the same summary, with
   Holm-corrected p ≤ 0.05.
-- **SC-003**: Regenerating the E2 report from the same result files gives identical bytes.
+- **SC-003**: Regenerating the S1 report from the same result files gives identical bytes.
 - **SC-004**: 0 training steps read a test or evaluation-set judgment, verified by tests.
 - **SC-005**: On a synthetic environment with a planted set of relevant dimensions, the
   retrieval-trained selector recovers at least 90% of that set at its size, and its masked
   retrieval beats the untrained selector.
 - **SC-006**: Training one seed of the chosen setting finishes within 2 hours per environment on
-  the single RTX 4090, and the full E2 evaluation within 30 minutes (E1's took 11.5 minutes).
+  the single RTX 4090, and the full S1 evaluation within 30 minutes (E1's took 11.5 minutes).
 - **SC-007**: Every number in the report traces to a result file with a run manifest; 0 numbers
   are typed by hand.
 
@@ -242,8 +242,8 @@ selectors is 1 at every budget and the overlap with a random selector is near k/
 
 - ADR-0007 (G2 passes) is accepted before F5 merges, and ADR-0008 (proposed with this spec)
   re-scopes the roadmap: the per-environment selector is the contribution, and the space
-  descriptor and hypernetwork (Milestones 3 and 4) wait until E2 is decided.
-- Inputs are F2's published artifacts and E1's seeded L2S selectors on DataPolicy-4090, and E2
+  descriptor and hypernetwork (Milestones 3 and 4) wait until S1 is decided.
+- Inputs are F2's published artifacts and E1's seeded L2S selectors on DataPolicy-4090, and S1
   runs there, so every number comes from one machine.
 - The environments are SciFact, NFCorpus, and MS MARCO, as in E0 and E1; more environments are a
   separate feature.
@@ -256,4 +256,4 @@ selectors is 1 at every budget and the overlap with a random selector is near k/
 - The criteria count environments, not TREC DL sets; TREC DL results are reported as context for
   MS MARCO.
 - Higher capacity (low-rank, MLP), per-query budget policies, and soft re-weighting of dimensions
-  instead of masking are out of scope; E2's result decides whether they are next.
+  instead of masking are out of scope; S1's result decides whether they are next.

@@ -1,6 +1,6 @@
-# Research: F5 Selector Objective and Experiment E2
+# Research: F5 Selector Objective and Experiment S1
 
-Every rule below is fixed before any E2 run, so no test result can shape it (spec FR-006).
+Every rule below is fixed before any S1 run, so no test result can shape it (spec FR-006).
 Numbers cited as motivation come from generated tables in `reports/E0/` and `reports/E1/`.
 
 ## D1. Training examples
@@ -13,7 +13,7 @@ Numbers cited as motivation come from generated tables in `reports/E0/` and `rep
   matrix, as `oracle_pairs` does, but kept per document instead of being averaged into `p` and
   `n`. Queries whose positives are all missing from the corpus are skipped and counted.
   Validation examples are built the same way from validation judgments and pools.
-- **Rationale**: same labels and negatives as L2S, so E2 isolates the objective (spec FR-003,
+- **Rationale**: same labels and negatives as L2S, so S1 isolates the objective (spec FR-003,
   FR-015). MS MARCO's training set is F2's 50,000-query cap, so all documents fit in GPU memory
   (at most 50,000 × (positives + 64) × 1,024 float16 ≈ 7 GB; gathered as unique rows, far less).
 - **Alternatives considered**: mining new negatives with the masked query during training (an
@@ -36,7 +36,7 @@ Numbers cited as motivation come from generated tables in `reports/E0/` and `rep
   softmax with gain weights keeps graded NFCorpus judgments meaningful, as in the L2S targets.
 - **Alternatives considered**: pairwise margin (hinge) loss: needs a margin per environment; a
   ListNet loss over the oracle ordering: still imitates the oracle; adding the KL loss as an
-  auxiliary term: kept out so the objective is a clean swap (FR-015); can be an ablation if E2 is
+  auxiliary term: kept out so the objective is a clean swap (FR-015); can be an ablation if S1 is
   mixed.
 
 ## D3. Relaxed top-k mask
@@ -100,9 +100,9 @@ Numbers cited as motivation come from generated tables in `reports/E0/` and `rep
   4090; the full-corpus validation pass for MS MARCO (about 5,000 validation queries × 32 cells ×
   9 budgets) is the largest cost, comparable to E1's 145 variants.
 - **Alternatives considered**: selecting on k = 307 only, as F3 did: the spec's summary is the
-  mean over budgets (FR-006); a larger grid: deferred until E2 shows which axis matters.
+  mean over budgets (FR-006); a larger grid: deferred until S1 shows which axis matters.
 
-## D7. E2 evaluation
+## D7. S1 evaluation
 
 - **Decision**: `hyperdime compare-selectors` scores, per environment, its test set (and MS MARCO's
   TREC DL 2019, DL 2020, DL-HARD), in one corpus pass per query set, at every 10% budget: the
@@ -116,7 +116,7 @@ Numbers cited as motivation come from generated tables in `reports/E0/` and `rep
   bootstrap interval used in E1 (`evaluation.statistics`), and Holm-corrected over the three
   environments, separately for each summary. TREC DL sets are reported with AP and their own
   tests, not Holm-counted (spec Assumptions).
-- **Criteria**: E2 passes when SC-001 (better than L2S, mean over budgets, Holm p ≤ 0.05, in ≥ 2 of
+- **Criteria**: S1 passes when SC-001 (better than L2S, mean over budgets, Holm p ≤ 0.05, in ≥ 2 of
   3 environments) and SC-002 (worse in none, same test) both hold.
 
 ## D8. Diagnostics (US4)
@@ -137,7 +137,7 @@ Numbers cited as motivation come from generated tables in `reports/E0/` and `rep
   into `selectors/retrieval-seeded/<env>/seed-<n>/<run_id>/`; seed 0 is retrained, not copied
   (as F4 research D1). Checkpoints are `SelectorCheckpoint(kind="per_domain")`; the objective is
   recorded in `selection.json` (`"objective": "retrieval"`), so the contract is unchanged.
-  `compare-selectors` writes `evaluation/E2/all/<run_id>/` (`results-<env>-<set>.jsonl`,
-  `overlap.json`, `fit.json`, `inputs.json`). `decide E2` writes
-  `decisions/E2/<run_id>/gate_decision.json` and drafts ADR-0009; `GateDecision.gate` gains the
-  value `"E2"` (an additive contract change, justified in the pull request).
+  `compare-selectors` writes `evaluation/S1/all/<run_id>/` (`results-<env>-<set>.jsonl`,
+  `overlap.json`, `fit.json`, `inputs.json`). `decide S1` writes
+  `decisions/S1/<run_id>/gate_decision.json` and drafts ADR-0009; `GateDecision.gate` gains the
+  value `"S1"` (an additive contract change, justified in the pull request).

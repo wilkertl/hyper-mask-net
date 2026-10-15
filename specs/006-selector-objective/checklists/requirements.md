@@ -1,4 +1,4 @@
-# Specification Quality Checklist: F5 Selector Objective and Experiment E2
+# Specification Quality Checklist: F5 Selector Objective and Experiment S1
 
 **Purpose**: Validate specification completeness and quality before proceeding to planning
 **Created**: 2026-10-14

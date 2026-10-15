@@ -25,20 +25,20 @@ directory printed on stdout.
   family bests (seed 0), F3's global selector and global-importance τ, F2 embeddings and datasets.
 - Refuses (exit 1) on a missing seed, a seeded cell that differs from the grid's selection, or a
   payload hash mismatch.
-- Writes: `evaluation/E2/all/<run_id>/` (data model). Test and TREC DL judgments score rankings
+- Writes: `evaluation/S1/all/<run_id>/` (data model). Test and TREC DL judgments score rankings
   only; validation judgments only for the fit diagnostic; nothing is trained.
 - Deterministic: identical result files on the same inputs, apart from timestamps and run ids.
 
-## `hyperdime report E2 [--artifacts artifacts] [--report-dir reports/E2]`
+## `hyperdime report S1 [--artifacts artifacts] [--report-dir reports/S1]`
 
-- Reads: the latest complete `evaluation/E2/all` run and the grid and seeded `selection.json`s.
-- Writes: `reports/E2/README.md` and `reports/E2/tables/` (`progression.csv` per test set and
+- Reads: the latest complete `evaluation/S1/all` run and the grid and seeded `selection.json`s.
+- Writes: `reports/S1/README.md` and `reports/S1/tables/` (`progression.csv` per test set and
   method, `comparison.csv` (vs L2S: mean over budgets and k = 307, CI, p, Holm), `vs_full.csv`,
-  `trec.csv`, `families.csv`, `overlap.csv`, `fit.csv`, `grid.csv`, `e2.csv` (criteria)); identical
+  `trec.csv`, `families.csv`, `overlap.csv`, `fit.csv`, `grid.csv`, `s1.csv` (criteria)); identical
   bytes when run twice.
 
-## `hyperdime decide E2 [--adr docs/decisions/ADR-0009-e2-selector-objective.md]`
+## `hyperdime decide S1 [--adr docs/decisions/ADR-0009-s1-selector-objective.md]`
 
-- Reads: the same result files as `report E2`.
-- Writes: `decisions/E2/<run_id>/gate_decision.json` and the proposed ADR (every value generated,
+- Reads: the same result files as `report S1`.
+- Writes: `decisions/S1/<run_id>/gate_decision.json` and the proposed ADR (every value generated,
   decision left to the researcher); refuses to overwrite an accepted ADR.

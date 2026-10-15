@@ -1,4 +1,4 @@
-"""``hyperdime compare-selectors``: experiment E2, the retrieval-trained selector against L2S.
+"""``hyperdime compare-selectors``: experiment S1, the retrieval-trained selector against L2S.
 
 Per environment, every method is scored on the test set (and MS MARCO's TREC DL sets) at each
 10% budget in one corpus pass per query set (F5 research D7): the retrieval-trained selector and
@@ -50,7 +50,7 @@ SEEDS = (0, 1, 2)
 
 
 def register(commands: Any) -> None:
-    parser = commands.add_parser(COMMAND, help="experiment E2: retrieval selector against L2S")
+    parser = commands.add_parser(COMMAND, help="experiment S1: retrieval selector against L2S")
     add_config_arguments(parser)
     parser.add_argument("--envs", nargs="+", default=list(ENVIRONMENTS))
     parser.add_argument("--seeds", nargs="+", type=int, default=list(SEEDS))
@@ -137,7 +137,7 @@ def _build(config: RunConfig, output: Path, args: argparse.Namespace) -> Path:
         device=device,
         determinism=seed_everything(config.run.seed),
     )
-    with ArtifactWriter(output, "evaluation/E2/all", manifest) as writer:
+    with ArtifactWriter(output, "evaluation/S1/all", manifest) as writer:
         found_overlaps: dict[str, Any] = {}
         for name, env in envs.items():
             for set_name, matrix, ids, labels, threshold, depth in env.query_sets():

@@ -144,14 +144,14 @@ class Comparison(NamedTuple):
 def comparison(f5_stack: tuple[Path, Path], tmp_path_factory: pytest.TempPathFactory) -> Comparison:
     """Seeded retrieval selectors and one compare-selectors run, on a copy of the F5 stack."""
     configs, original = f5_stack
-    out = tmp_path_factory.mktemp("e2") / "out"
+    out = tmp_path_factory.mktemp("s1") / "out"
     shutil.copytree(original, out)
     for env in TOY_ENVS:
         for seed in SEEDS:
             assert _seeded(configs, out, env, seed) == 0
     before = _selector_bytes(out)
     assert _compare(configs, out) == 0
-    return Comparison(configs, out, latest_artifact(out, "evaluation/E2", "all"), before)
+    return Comparison(configs, out, latest_artifact(out, "evaluation/S1", "all"), before)
 
 
 def test_each_seed_retrains_the_grids_selected_cell(comparison: Comparison) -> None:
@@ -191,24 +191,24 @@ def test_a_second_comparison_gives_identical_result_files(
     out = tmp_path / "out"
     shutil.copytree(comparison.out, out)
     assert _compare(comparison.configs, out) == 0
-    rerun = sorted(p for p in latest_artifact(out, "evaluation/E2", "all").iterdir())
+    rerun = sorted(p for p in latest_artifact(out, "evaluation/S1", "all").iterdir())
     second = {p.name: p.read_bytes() for p in rerun if p.name != "manifest.json"}
     first = {p.name: p.read_bytes() for p in comparison.run.iterdir() if p.name != "manifest.json"}
     assert second == first
 
 
-def test_report_e2_and_decide_e2_run_on_the_comparison(
+def test_report_s1_and_decide_s1_run_on_the_comparison(
     comparison: Comparison, tmp_path: Path
 ) -> None:
     adr = tmp_path / "ADR-0009.md"
-    assert main(["report", "E2", "--artifacts", str(comparison.out),
-                 "--report-dir", str(tmp_path / "E2")]) == 0  # fmt: skip
-    assert comparison.run.name in (tmp_path / "E2" / "README.md").read_text()
-    assert main(["decide", "E2", "--artifacts", str(comparison.out), "--adr", str(adr)]) == 0
+    assert main(["report", "S1", "--artifacts", str(comparison.out),
+                 "--report-dir", str(tmp_path / "S1")]) == 0  # fmt: skip
+    assert comparison.run.name in (tmp_path / "S1" / "README.md").read_text()
+    assert main(["decide", "S1", "--artifacts", str(comparison.out), "--adr", str(adr)]) == 0
     record = load_record(
-        GateDecision, latest_artifact(comparison.out, "decisions/E2", "") / "gate_decision.json"
+        GateDecision, latest_artifact(comparison.out, "decisions/S1", "") / "gate_decision.json"
     )
-    assert record.gate == "E2" and record.evidence[0] == comparison.run.name
+    assert record.gate == "S1" and record.evidence[0] == comparison.run.name
     assert "- **Status:** proposed" in adr.read_text()
 
 

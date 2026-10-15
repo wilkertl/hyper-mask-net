@@ -126,6 +126,22 @@ uv run hyperdime decide G2                        # GateDecision and a proposed 
 `transfer-matrix` trains nothing; test judgments only score rankings, and the behavior battery
 reads query embeddings only. Rules are fixed in `specs/005-selector-shift/research.md`.
 
+## A selector trained for retrieval, experiment S1 (F5)
+
+```bash
+for env in scifact nfcorpus msmarco; do
+  uv run hyperdime train-selector --recipe retrieval-grid data=$env     # 32 cells, seed 0
+  for seed in 0 1 2; do uv run hyperdime train-selector --recipe retrieval-seeded data=$env run.seed=$seed; done
+done
+uv run hyperdime compare-selectors               # retrieval selector vs L2S, k = 10%…100%
+uv run hyperdime report S1                       # reports/S1 with both S1 criteria
+uv run hyperdime decide S1                       # GateDecision(gate="S1") and a proposed ADR-0009
+```
+
+The selector is the same linear map as Learning-to-Select, trained on masked retrieval through a
+relaxed top-k mask; evaluation keeps the hard top-k mask. Rules are fixed in
+`specs/006-selector-objective/research.md`; ADR-0008 explains why S1 comes before G3.
+
 ## Embedding service
 
 Qwen3-Embedding-0.6B is served by the same vLLM server as the `beir` project, through its

@@ -1,4 +1,4 @@
-"""Synthetic `compare-selectors` result files for the E2 report and decision tests."""
+"""Synthetic `compare-selectors` result files for the S1 report and decision tests."""
 
 import json
 from collections.abc import Mapping, Sequence
@@ -71,7 +71,7 @@ def build(root: Path, gains: Mapping[str, float], *, seeds: Sequence[int] = SEED
     manifest = start_manifest(
         "compare-selectors", {"synthetic": True}, dataset_hash=NO_DATASET, seed=0
     )
-    with ArtifactWriter(root, "evaluation/E2/all", manifest) as writer:
+    with ArtifactWriter(root, "evaluation/S1/all", manifest) as writer:
         for env in ENVS:
             for set_name in ("test", "trec-dl-2019") if env == "msmarco" else ("test",):
                 results = [_result(env, set_name, "full", 1024, [v + 0.02 for v in base])]

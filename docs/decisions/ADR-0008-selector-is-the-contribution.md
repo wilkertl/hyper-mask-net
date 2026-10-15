@@ -2,7 +2,7 @@
 
 - **Status:** proposed
 - **Date:** 2026-10-14
-- **Issue:** F5 (`specs/006-selector-objective`), experiment E2
+- **Issue:** F5 (`specs/006-selector-objective`), experiment S1
 
 ## Context
 
@@ -32,17 +32,20 @@ contribution and the hypernetwork a mechanism to automate it:
 
 1. **The per-environment selector is the primary contribution.** The next feature, F5
    (`specs/006-selector-objective`), trains the same linear selector for retrieval through a
-   relaxed top-k mask, fixed-budget and multi-budget, and experiment E2 compares it with L2S at
-   every 10% budget. E2's criteria are in the F5 spec (SC-001, SC-002).
+   relaxed top-k mask, fixed-budget and multi-budget, and experiment S1 compares it with L2S at
+   every 10% budget. S1's criteria are in the F5 spec (SC-001, SC-002).
 2. **Milestones 3 and 4 (space descriptor, hypernetwork) are deferred, not cancelled.** They are
-   re-planned after E2 is decided, around the selector E2 selects, and once more environments are
+   re-planned after S1 is decided, around the selector S1 selects, and once more environments are
    prepared.
 3. **No constitution amendment is needed for F5.** It keeps the linear selector (constitution IV:
    lowest capacity first) and adds no stage beyond G2. Higher capacity, a per-query budget policy,
-   or soft re-weighting would each need E2's evidence that the linear selector or the fixed budget
+   or soft re-weighting would each need S1's evidence that the linear selector or the fixed budget
    is limiting.
-4. **L2S stays the reproduced baseline.** Its trainer, checkpoints, and the E0 and E1 results are
-   not changed; every E2 table compares against it.
+4. **Selector experiments get their own series, S1, S2, ….** The plan's E-series keeps its
+   numbering (E2 is still the space-signal experiment of gate G3), so the first selector
+   experiment is S1; it is not a gate, and its decision record uses `GateDecision(gate="S1")`.
+5. **L2S stays the reproduced baseline.** Its trainer, checkpoints, and the E0 and E1 results are
+   not changed; every S1 table compares against it.
 
 ## Evidence
 
@@ -53,11 +56,11 @@ Every value referenced above is in a generated table: `reports/E0/tables/g1.csv`
 
 ## Consequences
 
-- `docs/wiki/Roadmap.md` and `docs/wiki/Hypotheses-and-Gates.md` gain an E2 step between G2 and
-  G3 on acceptance; Milestone 3 and 4 issues are labeled `status:blocked` on E2.
-- E2's decision is recorded in its own ADR. If the retrieval-trained selector meets E2's criteria,
+- `docs/wiki/Roadmap.md` and `docs/wiki/Hypotheses-and-Gates.md` gain an S1 step between G2 and
+  G3 on acceptance; Milestone 3 and 4 issues are labeled `status:blocked` on S1.
+- S1's decision is recorded in its own ADR. If the retrieval-trained selector meets S1's criteria,
   it replaces L2S as the selector later work builds on; if not, the next candidates are higher
-  capacity or a budget policy, each justified by E2's diagnostics.
+  capacity or a budget policy, each justified by S1's diagnostics.
 - More BEIR environments remain needed, now to show a selector improvement holds across domains;
   they are a separate feature.
 - Depends on ADR-0007 (G2) being accepted; the hypothesis order H1 → H2 → H3 is unchanged, only
