@@ -1,6 +1,6 @@
 # ADR-0007: Gate G2 — selector shift (H1)
 
-- **Status:** proposed
+- **Status:** accepted (by the researcher, 2026-10-15)
 - **Date:** 2026-10-14
 - **Issue:** #20, F4 (`specs/005-selector-shift`), experiment E1
 
@@ -31,8 +31,9 @@ Context, not decisive:
 
 ## Decision
 
-Research R8's criteria read **pass**. The decision is the researcher's: accept this
-reading, or amend it here with the reasons.
+Research R8's criteria read **pass**. Accepted by the researcher on 2026-10-15: **G2 passes**;
+H1 (selector shift) is supported on SciFact, NFCorpus, and MS MARCO, with the global selector's
+payoff and the MS MARCO and NFCorpus notes above as recorded context.
 
 ## Consequences
 
