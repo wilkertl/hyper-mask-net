@@ -149,6 +149,21 @@ uv run hyperdime probe-geometry                  # corpus moments, covariance sp
 uv run hyperdime report P1                       # reports/P1, paired with the latest S1 run
 ```
 
+## A selector started from the geometric prior, experiment S2 (F7)
+
+```bash
+for env in scifact nfcorpus msmarco; do
+  uv run hyperdime train-selector --recipe geometric-grid data=$env     # 16 cells from the prior
+  for seed in 0 1 2; do uv run hyperdime train-selector --recipe geometric-seeded data=$env run.seed=$seed; done
+done
+uv run hyperdime compare-selectors --experiment S2   # geometric vs S1 selector, variance, L2S
+uv run hyperdime report S2                           # reports/S2 with both S2 criteria
+uv run hyperdime decide S2                           # GateDecision(gate="S2") and a proposed ADR-0010
+```
+
+The geometric selector scores `log(q_d² · Var(x_d) + ε) + (W q + b)_d`: the corpus variance is a
+fixed prior from document embeddings, and `W, b` start at zero, so training learns a correction.
+
 ## Embedding service
 
 Qwen3-Embedding-0.6B is served by the same vLLM server as the `beir` project, through its

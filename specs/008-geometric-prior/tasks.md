@@ -11,5 +11,5 @@
 - [X] T007 [P] Tests in tests/unit/reports/test_s2.py with synthetic files: SC-001 against the S1 selector, SC-002 against `variance`, Holm per comparison, the step-0 note, byte-identical regeneration; the S1 report tests still pass
 - [X] T008 Implement src/hyperdime/reports/s2.py (reusing s1's helpers, parametrized by candidate) and `report S2`, `decide S2` (`GateDecision(gate="S2")`, ADR-0010)
 - [X] T009 Integration in tests/integration/test_f5_pipeline.py: geometric grid and seeds, `compare-selectors --experiment S2`, `report S2`, `decide S2` on the toy stack
-- [ ] T010 Run on DataPolicy-4090 (CPU threads capped per process); commit `reports/S2/`, ADR-0010, registry, README, architecture
-- [ ] T011 Run ruff, format, mypy, pytest, and SCRAP
+- [X] T010 Run on DataPolicy-4090 (CPU threads capped per process; commit `13d6580`; grids 1,870 s, 2,588 s, 2,642 s in parallel; seeds 85–478 s; compare-selectors `20261015T161858Z-d0c633dc`, 836 s); commit `reports/S2/`, ADR-0010, registry, README, architecture
+- [X] T011 Run ruff, format, mypy, pytest, and SCRAP
