@@ -37,8 +37,8 @@ checkpoints are unchanged when test judgments are removed (FR-014).
 sees every budget, and on the planted set its masked retrieval at each budget is within 0.05
 pool-rerank nDCG@10 of the fixed-budget selector trained at that budget.
 
-- [ ] T012 [P] [US2] Tests in tests/unit/training/test_retrieval_trainer.py: `budget_schedule(steps, seed)` draws from the nine `ratio_budgets()` values below 1024 only, uses all nine within 200 steps, and repeats for the same seed; the multi-budget selector on the planted set meets the 0.05 tolerance at k ∈ {D/4, D/2}
-- [ ] T013 [US2] Implement `budget_schedule` and the `multi-budget` branch of `train_retrieval_selector` in src/hyperdime/training/retrieval_trainer.py (D4); record the schedule's seed in the history
+- [X] T012 [P] [US2] Tests in tests/unit/training/test_retrieval_trainer.py: `budget_schedule(steps, seed)` draws from the nine `ratio_budgets()` values below 1024 only, uses all nine within 200 steps, and repeats for the same seed; the multi-budget selector (checkpoint chosen on both budgets) on the planted set meets the 0.05 tolerance at k ∈ {D/4, D/2}
+- [X] T013 [US2] Implement `budget_schedule` and the `multi-budget` branch of `train_retrieval_selector` in src/hyperdime/training/retrieval_trainer.py (D4); the schedule is drawn from `run.seed`, which every run's manifest and `selection.json` record
 
 ## Phase 4: User Story 3 — experiment E2 against L2S at every budget (P1)
 

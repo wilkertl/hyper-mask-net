@@ -6,8 +6,10 @@ from torch.nn import functional as F
 
 from hyperdime.training.examples import RetrievalExamples
 from hyperdime.training.retrieval_trainer import (
+    BUDGETS,
     RetrievalConfig,
     beta_at,
+    budget_schedule,
     rerank_ndcg10,
     train_retrieval_selector,
 )
@@ -90,3 +92,26 @@ def test_the_mask_sharpens_geometrically_from_one_to_its_end() -> None:
     assert beta_at(0, 101, 0.01) == pytest.approx(1.0)
     assert beta_at(50, 101, 0.01) == pytest.approx(0.1)
     assert beta_at(100, 101, 0.01) == pytest.approx(0.01)
+
+
+def test_the_budget_schedule_draws_every_10_percent_budget_reproducibly() -> None:
+    schedule = budget_schedule(200, BUDGETS, seed=3)
+    assert set(schedule) == set(BUDGETS) and 1024 not in schedule
+    assert schedule == budget_schedule(200, BUDGETS, seed=3)
+    assert schedule != budget_schedule(200, BUDGETS, seed=4)
+
+
+@pytest.mark.parametrize("k", [PLANTED, 2 * PLANTED])
+def test_one_multi_budget_selector_matches_a_selector_trained_at_each_budget(k: int) -> None:
+    budgets = (PLANTED, 2 * PLANTED)
+    multi, _ = train_retrieval_selector(
+        TRAIN,
+        VALIDATION,
+        RetrievalConfig(**{**CONFIG.__dict__, "budgets": budgets, "eval_budgets": budgets}),
+    )
+    fixed, _ = train_retrieval_selector(
+        TRAIN,
+        VALIDATION,
+        RetrievalConfig(**{**CONFIG.__dict__, "budgets": (k,), "eval_budgets": (k,)}),
+    )
+    assert rerank_ndcg10(multi, VALIDATION, (k,)) >= rerank_ndcg10(fixed, VALIDATION, (k,)) - 0.05
