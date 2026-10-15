@@ -15,7 +15,7 @@ import argparse
 import json
 from collections.abc import Mapping, Sequence
 from pathlib import Path
-from typing import Any
+from typing import Any, Protocol
 
 import numpy as np
 import torch
@@ -101,7 +101,17 @@ def selector_name(environment: str, seed: int) -> str:
     return f"selector:{environment}:s{seed}"
 
 
-class _Environment:
+class FitSource(Protocol):
+    """What the ranking-fit test reads: training-label inputs, a global-importance target, and
+    per-seed selector scores."""
+
+    inputs: EnvironmentInputs
+    mean_target: Tensor
+
+    def scores(self, queries: Tensor) -> dict[int, Tensor]: ...
+
+
+class SeededEnvironment:
     """One environment's inputs, selectors, and baselines, loaded read-only."""
 
     def __init__(self, root: Path, name: str, seeds: Sequence[int]) -> None:
@@ -161,7 +171,7 @@ def _build(config: RunConfig, output: Path, args: argparse.Namespace) -> Path:
     if len(set(args.seeds)) < 2:
         raise ValueError("the seed noise floor needs at least two seeds per environment")
     device = resolve_device(config.run.device)
-    envs = {name: _Environment(output, name, args.seeds) for name in args.envs}
+    envs = {name: SeededEnvironment(output, name, args.seeds) for name in args.envs}
     global_dir = latest_artifact(output, "selectors/global", "all")
     global_model = load_selector(global_dir, "global")[1]
     manifest = start_manifest(
@@ -225,7 +235,7 @@ def _build(config: RunConfig, output: Path, args: argparse.Namespace) -> Path:
         _write_json(writer, "fixed_subsets.json", {
             n: {str(k): s.tolist() for k, s in by_k.items()} for n, by_k in subsets.items()
         })  # fmt: skip
-        _write_json(writer, "fit.json", _fit(envs))
+        _write_json(writer, "fit.json", fit_results(envs))
         _behavior(writer, envs)
         sources = {"global": global_dir.name, **{n: e.sources for n, e in envs.items()}}
         _write_json(writer, "inputs.json", sources)
@@ -252,8 +262,8 @@ def _means(per_query: Mapping[str, Mapping[str, float]]) -> dict[str, float]:
     return {m: sum(v[m] for v in per_query.values()) / len(per_query) for m in METRICS}
 
 
-def _fit(envs: Mapping[str, _Environment]) -> dict[str, Any]:
-    """Each environment's ranking fit on validation queries, Holm over environments (D2)."""
+def fit_results(envs: Mapping[str, FitSource]) -> dict[str, Any]:
+    """Each environment's ranking fit on validation queries, Holm over environments (F4 D2)."""
     found: dict[str, dict[str, Any]] = {}
     for name, env in envs.items():
         queries, positive, negative = env.inputs.supervision.validation
@@ -276,7 +286,7 @@ def _fit(envs: Mapping[str, _Environment]) -> dict[str, Any]:
     return found
 
 
-def _behavior(writer: ArtifactWriter, envs: Mapping[str, _Environment]) -> None:
+def _behavior(writer: ArtifactWriter, envs: Mapping[str, SeededEnvironment]) -> None:
     """Every seeded selector on one balanced battery: properties, 36 pairs, and criterion 2."""
     battery = sample_battery({name: env.bundle.query_ids("test") for name, env in envs.items()})
     queries = torch.cat([envs[n].vectors("queries", ids) for n, ids in battery.ids.items()])

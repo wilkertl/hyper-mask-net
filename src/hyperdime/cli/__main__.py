@@ -7,6 +7,7 @@ import sys
 from collections.abc import Sequence
 
 from hyperdime.cli import (
+    compare_selectors,
     decide,
     diagnose,
     embed,
@@ -31,6 +32,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     train_global.register(commands)
     evaluate.register(commands)
     transfer_matrix.register(commands)
+    compare_selectors.register(commands)
     report.register(commands)
     decide.register(commands)
     args = parser.parse_args(argv)

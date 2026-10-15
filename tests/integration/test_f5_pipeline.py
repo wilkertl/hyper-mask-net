@@ -4,13 +4,17 @@ import json
 import shutil
 from collections.abc import Iterator
 from pathlib import Path
+from typing import NamedTuple
 
 import pytest
 import torch
 from test_f4_pipeline import TOY_ENVS, f4_stack, run_command  # noqa: F401 - f4_stack is a fixture
 
 from hyperdime.artifacts import latest_artifact
+from hyperdime.cli.__main__ import main
+from hyperdime.cli.transfer_matrix import BUDGETS
 from hyperdime.contracts.manifests import read_manifest
+from hyperdime.contracts.schemas import EvaluationResult, GateDecision, load_record, load_records
 from hyperdime.training.retrieval_selection import retrieval_cells
 from hyperdime.training.selection import load_selector
 
@@ -109,3 +113,112 @@ def test_the_grid_refuses_an_l2s_start_that_changed(
     payload = latest_artifact(out, "selectors/seeded/toyc", "seed-0") / "selector.safetensors"
     payload.write_bytes(payload.read_bytes()[:-1] + b"\0")
     assert _grid(configs, out, "toyc") == 1
+
+
+SEEDS = (0, 1, 2)
+
+
+def _seeded(configs: Path, out: Path, env: str, seed: int) -> int:
+    return run_command(
+        configs, out, "train-selector", "--recipe", "retrieval-seeded", f"data={env}",
+        f"run.seed={seed}",
+    )  # fmt: skip
+
+
+def _compare(configs: Path, out: Path) -> int:
+    return run_command(configs, out, "compare-selectors", "--envs", *TOY_ENVS)
+
+
+def _selector_bytes(out: Path) -> dict[Path, bytes]:
+    return {p: p.read_bytes() for p in (out / "selectors").rglob("*") if p.is_file()}
+
+
+class Comparison(NamedTuple):
+    configs: Path
+    out: Path
+    run: Path
+    selectors_before: dict[Path, bytes]
+
+
+@pytest.fixture(scope="module")
+def comparison(f5_stack: tuple[Path, Path], tmp_path_factory: pytest.TempPathFactory) -> Comparison:
+    """Seeded retrieval selectors and one compare-selectors run, on a copy of the F5 stack."""
+    configs, original = f5_stack
+    out = tmp_path_factory.mktemp("e2") / "out"
+    shutil.copytree(original, out)
+    for env in TOY_ENVS:
+        for seed in SEEDS:
+            assert _seeded(configs, out, env, seed) == 0
+    before = _selector_bytes(out)
+    assert _compare(configs, out) == 0
+    return Comparison(configs, out, latest_artifact(out, "evaluation/E2", "all"), before)
+
+
+def test_each_seed_retrains_the_grids_selected_cell(comparison: Comparison) -> None:
+    for env in TOY_ENVS:
+        grid = json.loads((_grid_dir(comparison.out, env) / "selection.json").read_text())
+        for seed in SEEDS:
+            directory = latest_artifact(
+                comparison.out, f"selectors/retrieval-seeded/{env}", f"seed-{seed}"
+            )
+            record = json.loads((directory / "selection.json").read_text())
+            assert record["source"]["cell"] == grid["selected"] and record["seed"] == seed
+            assert read_manifest(directory).seed == seed
+
+
+def test_every_method_is_scored_at_every_budget_and_full_only_at_1024(
+    comparison: Comparison,
+) -> None:
+    records = load_records(EvaluationResult, comparison.run / "results-toya-test.jsonl")
+    by_method: dict[str, set[int]] = {}
+    for r in records:
+        by_method.setdefault(r.selector, set()).add(r.k)
+        assert r.protocol == "in-domain"
+    assert by_method.pop("full") == {1024}
+    expected = {f"retrieval:toya:s{s}" for s in SEEDS} | {f"l2s:toya:s{s}" for s in SEEDS}
+    assert expected <= set(by_method)
+    assert any(m.startswith("family:") for m in by_method)
+    assert all(ks == set(BUDGETS) for ks in by_method.values())
+
+
+def test_compare_selectors_trains_nothing(comparison: Comparison) -> None:
+    assert _selector_bytes(comparison.out) == comparison.selectors_before
+
+
+def test_a_second_comparison_gives_identical_result_files(
+    comparison: Comparison, tmp_path: Path
+) -> None:
+    out = tmp_path / "out"
+    shutil.copytree(comparison.out, out)
+    assert _compare(comparison.configs, out) == 0
+    rerun = sorted(p for p in latest_artifact(out, "evaluation/E2", "all").iterdir())
+    second = {p.name: p.read_bytes() for p in rerun if p.name != "manifest.json"}
+    first = {p.name: p.read_bytes() for p in comparison.run.iterdir() if p.name != "manifest.json"}
+    assert second == first
+
+
+def test_report_e2_and_decide_e2_run_on_the_comparison(
+    comparison: Comparison, tmp_path: Path
+) -> None:
+    adr = tmp_path / "ADR-0009.md"
+    assert main(["report", "E2", "--artifacts", str(comparison.out),
+                 "--report-dir", str(tmp_path / "E2")]) == 0  # fmt: skip
+    assert comparison.run.name in (tmp_path / "E2" / "README.md").read_text()
+    assert main(["decide", "E2", "--artifacts", str(comparison.out), "--adr", str(adr)]) == 0
+    record = load_record(
+        GateDecision, latest_artifact(comparison.out, "decisions/E2", "") / "gate_decision.json"
+    )
+    assert record.gate == "E2" and record.evidence[0] == comparison.run.name
+    assert "- **Status:** proposed" in adr.read_text()
+
+
+def test_compare_selectors_refuses_a_seed_from_another_grid_cell(
+    comparison: Comparison, tmp_path: Path
+) -> None:
+    out = tmp_path / "out"
+    shutil.copytree(comparison.out, out)
+    path = latest_artifact(out, "selectors/retrieval-seeded/toyb", "seed-1") / "selection.json"
+    record = json.loads(path.read_text())
+    record["source"]["cell"] = "another-cell"
+    path.write_text(json.dumps(record))
+    assert _compare(comparison.configs, out) == 1
