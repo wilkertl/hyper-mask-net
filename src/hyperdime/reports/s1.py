@@ -44,14 +44,16 @@ class S1Results:
     sources: dict[str, Any]
     grids: dict[str, dict[str, Any]]  # env -> grid selection.json
     histories: dict[str, dict[int, list[dict[str, float]]]]  # env -> seed -> history
+    candidate: str = "retrieval"  # the trained selector under test: retrieval (S1), geometric (S2)
 
     @property
     def budgets(self) -> list[int]:
         return sorted({k for found in self.results.values() for _, k in found if k < DIM})
 
 
-def load(root: Path) -> S1Results:
-    directory = latest_artifact(root, "evaluation/S1", "all")
+def load(root: Path, experiment: str = "S1", candidate: str = "retrieval") -> S1Results:
+    """The latest run of ``experiment``, with the grid and seeded selectors of ``candidate``."""
+    directory = latest_artifact(root, f"evaluation/{experiment}", "all")
     manifest = read_manifest(directory)
     sources = _json(directory / "inputs.json")
     environments = sorted(e for e in sources if e != "global")
@@ -62,12 +64,17 @@ def load(root: Path) -> S1Results:
         results[(test, path.stem.removeprefix(f"results-{test}-"))] = {
             (r.selector, r.k): r for r in records
         }
-    seeds = sorted(int(s.removeprefix("seed-")) for s in sources[environments[0]]["retrieval"])
+    seeds = sorted(int(s.removeprefix("seed-")) for s in sources[environments[0]][candidate])
     if len(seeds) < MIN_SEEDS:
-        raise ValueError(f"S1 needs at least {MIN_SEEDS} seeds per environment; found {seeds}")
+        raise ValueError(
+            f"{experiment} needs at least {MIN_SEEDS} seeds per environment; found {seeds}"
+        )
     selectors = root / "selectors"
+    grid_key = "grid" if candidate == "retrieval" else f"{candidate}_grid"
     grids = {
-        env: _json(selectors / "retrieval-grid" / env / sources[env]["grid"] / "selection.json")
+        env: _json(
+            selectors / f"{candidate}-grid" / env / sources[env][grid_key] / "selection.json"
+        )
         for env in environments
     }
     histories = {
@@ -76,10 +83,10 @@ def load(root: Path) -> S1Results:
                 iter(
                     _json(
                         selectors
-                        / "retrieval-seeded"
+                        / f"{candidate}-seeded"
                         / env
                         / f"seed-{seed}"
-                        / sources[env]["retrieval"][f"seed-{seed}"]
+                        / sources[env][candidate][f"seed-{seed}"]
                         / "history.json"
                     ).values()
                 )
@@ -100,6 +107,7 @@ def load(root: Path) -> S1Results:
         sources,
         grids,
         histories,
+        candidate,
     )
 
 
@@ -109,7 +117,8 @@ def unchanged_starts(s1: S1Results) -> list[str]:
     found = []
     for env in s1.environments:
         grid = s1.grids[env]
-        if grid["cells"][grid["selected"]]["cell"]["init"] != "l2s":
+        start = "l2s" if s1.candidate == "retrieval" else "prior"
+        if grid["cells"][grid["selected"]]["cell"]["init"] != start:
             continue
         best = [
             max(h, key=lambda row: row["val_rerank_ndcg10"])["step"]
@@ -120,7 +129,13 @@ def unchanged_starts(s1: S1Results) -> list[str]:
     return found
 
 
-def unchanged_note(env: str) -> str:
+def unchanged_note(env: str, candidate: str = "retrieval") -> str:
+    if candidate != "retrieval":
+        return (
+            "the selected cell starts from the geometric prior and every seed keeps its step-0 "
+            "checkpoint (no training step improved validation), so `"
+            f"{candidate}:{env}` is the `variance` method itself."
+        )
     return (
         "the selected cell starts from the L2S selector and every seed keeps its step-0 "
         "checkpoint (no training step improved validation), so `retrieval:"
@@ -134,7 +149,7 @@ def per_query(
     """Per-query metric of ``method`` at budget ``k``; ``l2s:<env>`` and ``retrieval:<env>`` are
     averaged over seeds per query (as in E1)."""
     names = [method]
-    if method.split(":")[0] in ("l2s", "retrieval"):
+    if method.split(":")[0] in ("l2s", "retrieval", "geometric"):
         names = [f"{method}:s{s}" for s in s1.seeds]
     found = s1.results[key]
     queries = found[(names[0], k)].per_query
@@ -151,13 +166,24 @@ def summary(
     return {q: sum(values[q] for values in by_k) / len(by_k) for q in by_k[0]}
 
 
+def method_name(name: str, env: str) -> str:
+    """Seeded selectors are named per environment; baselines such as ``variance`` are not."""
+    return f"{name}:{env}" if name in ("l2s", "retrieval", "geometric") else name
+
+
 def compare(
-    s1: S1Results, key: tuple[str, str], which: str, metric: str = "ndcg@10"
+    s1: S1Results,
+    key: tuple[str, str],
+    which: str,
+    metric: str = "ndcg@10",
+    new_name: str = "retrieval",
+    old_name: str = "l2s",
 ) -> dict[str, Any]:
-    """Retrieval-trained selector against L2S on one query set, paired over queries."""
+    """``new_name`` against ``old_name`` (S1: the retrieval selector against L2S) on one query
+    set, paired over queries."""
     env = key[0]
-    new = summary(s1, key, f"retrieval:{env}", which, metric)
-    old = summary(s1, key, f"l2s:{env}", which, metric)
+    new = summary(s1, key, method_name(new_name, env), which, metric)
+    old = summary(s1, key, method_name(old_name, env), which, metric)
     queries = sorted(new)
     a, b = [new[q] for q in queries], [old[q] for q in queries]
     low, high = paired_bootstrap_ci(a, b)
@@ -165,8 +191,8 @@ def compare(
         "environment": env,
         "query_set": key[1],
         "summary": which,
-        "l2s": sum(b) / len(b),
-        "retrieval": sum(a) / len(a),
+        "old": sum(b) / len(b),
+        "new": sum(a) / len(a),
         "diff": (sum(a) - sum(b)) / len(a),
         "ci_low": low,
         "ci_high": high,
@@ -247,7 +273,7 @@ def _comparison_rows(rows: Sequence[dict[str, Any]], holm_column: bool) -> list[
     table = [head + (["p_holm"] if holm_column else []) + ["note"]]
     for r in rows:
         table.append([
-            r["environment"], r["query_set"], r["summary"], _fmt(r["l2s"]), _fmt(r["retrieval"]),
+            r["environment"], r["query_set"], r["summary"], _fmt(r["old"]), _fmt(r["new"]),
             _fmt(r["diff"], "+"), _fmt(r["ci_low"], "+"), _fmt(r["ci_high"], "+"), _fmt(r["p"]),
             *([_fmt(r["p_holm"])] if holm_column else []), note(r["environment"]),
         ])  # fmt: skip
@@ -404,7 +430,7 @@ def render(s1: S1Results) -> tuple[str, dict[str, str]]:
         "## Notes",
         "",
         *[f"- **{env}**: {text}" for env, text in sorted(NOTES.items()) if env in s1.environments],
-        *[f"- **{env}**: {unchanged_note(env)}" for env in unchanged_starts(s1)],
+        *[f"- **{env}**: {unchanged_note(env, s1.candidate)}" for env in unchanged_starts(s1)],
         "",
         "Every grid cell is in `tables/grid.csv`.",
     ]
@@ -430,7 +456,7 @@ def decision(s1: S1Results, adr: Path) -> GateDecision:
         ),
         "selected": ", ".join(f"{env} {s1.grids[env]['selected']}" for env in s1.environments),
         **{f"note_{env}": NOTES[env] for env in s1.environments if env in NOTES},
-        **{f"unchanged_{env}": unchanged_note(env) for env in unchanged_starts(s1)},
+        **{f"unchanged_{env}": unchanged_note(env, s1.candidate) for env in unchanged_starts(s1)},
     }
     return GateDecision(
         gate="S1",
