@@ -1,6 +1,6 @@
 # ADR-0010: Experiment S2 — a retrieval selector started from the geometric prior
 
-- **Status:** proposed
+- **Status:** accepted (by the researcher, 2026-10-15)
 - **Date:** 2026-10-15
 - **Issue:** F7 (`specs/008-geometric-prior`), experiment S2
 
@@ -32,8 +32,11 @@ Context, not decisive:
 
 ## Decision
 
-The S2 criteria read **pass**. The decision is the researcher's: accept
-this reading, or amend it here with the reasons.
+The S2 criteria read **pass**. Accepted by the researcher on 2026-10-15, with two readings
+recorded: on MS MARCO the selected selector is the `variance` method itself (the
+`unchanged_msmarco` note above), so that gain is the prior's; on SciFact the geometric selector
+is below the S1 selector over 10%-90% (above it at 10%), so no single selector is best in every
+environment yet.
 
 ## Consequences
 
