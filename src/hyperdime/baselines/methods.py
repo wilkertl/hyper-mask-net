@@ -29,6 +29,12 @@ def global_importance(queries: Tensor, mean_target: Tensor) -> Tensor:
     return mean_target.float().expand(queries.shape[0], -1).clone()
 
 
+def variance_importance(queries: Tensor, variance: Tensor) -> Tensor:
+    """Label-free geometric importance ``q_d² · Var(x_d)``: how much dimension ``d`` moves the
+    query's scores across the corpus; a constant offset in ``d`` cannot change the ranking (P1)."""
+    return queries.float() ** 2 * variance.float()
+
+
 def selector_importance(queries: Tensor, model: LinearSelector, batch: int = 8192) -> Tensor:
     """A trained Learning-to-Select selector's log-importance."""
     with torch.no_grad():
