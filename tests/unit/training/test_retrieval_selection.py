@@ -1,14 +1,18 @@
 """The retrieval grid and its validation selection (F5 research D6)."""
 
+from typing import cast
+
 import pytest
 
 from hyperdime.baselines.learning_to_select import LinearSelector
+from hyperdime.training.examples import RetrievalExamples
 from hyperdime.training.retrieval_selection import (
     RetrievalCell,
     TrainedRetrieval,
     best_retrieval,
     family_bests,
     retrieval_cells,
+    train_retrieval_cells,
 )
 from hyperdime.training.retrieval_trainer import BUDGETS, HEADLINE_K
 
@@ -51,3 +55,14 @@ def test_selection_keeps_the_best_cell_whose_soft_mask_passes_the_guard() -> Non
 def test_selection_refuses_when_no_cell_passes_the_guard() -> None:
     with pytest.raises(ValueError, match="research D3"):
         best_retrieval([_trained("fixed-307", "scratch", 0.5, mass=0.2)])
+
+
+def test_the_s2_grid_has_16_cells_that_all_start_from_the_prior() -> None:
+    cells = retrieval_cells(inits=("prior",))
+    assert len(cells) == 16 and {c.init for c in cells} == {"prior"}
+
+
+def test_a_prior_cell_is_refused_without_a_prior() -> None:
+    cell = RetrievalCell("fixed-307", "prior", 1e-3, 0.05, 0.1, steps=1)
+    with pytest.raises(ValueError, match="geometric prior"):
+        train_retrieval_cells([cell], cast(RetrievalExamples, None), cast(RetrievalExamples, None))

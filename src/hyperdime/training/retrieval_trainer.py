@@ -16,7 +16,7 @@ from dataclasses import dataclass
 import torch
 from torch import Tensor
 
-from hyperdime.baselines.learning_to_select import LinearSelector
+from hyperdime.baselines.learning_to_select import GeometricSelector, LinearSelector
 from hyperdime.selection.relaxed import soft_mass_on_topk, soft_top_k
 from hyperdime.selection.topk import resolve_k, top_k_mask
 from hyperdime.training.examples import RetrievalExamples
@@ -61,12 +61,16 @@ def train_retrieval_selector(
     validation: RetrievalExamples,
     config: RetrievalConfig,
     start: Mapping[str, Tensor] | None = None,
+    prior: Tensor | None = None,
 ) -> tuple[LinearSelector, list[dict[str, float]]]:
-    """Train for ``config.steps`` steps from ``start`` (or a seeded initialization); returns the
-    best validation checkpoint on the CPU and one history row per evaluation (step 0 included)."""
+    """Train for ``config.steps`` steps from ``start`` (or a seeded initialization; with a corpus
+    ``prior`` variance, a ``GeometricSelector`` whose linear map starts at zero); returns the best
+    validation checkpoint on the CPU and one history row per evaluation (step 0 included)."""
     device = torch.device(config.device)
     torch.manual_seed(config.seed)
-    model = LinearSelector(train.queries.shape[1])
+    model = (
+        GeometricSelector(prior) if prior is not None else LinearSelector(train.queries.shape[1])
+    )
     if start is not None:
         model.load_state_dict(start)
     model.to(device)

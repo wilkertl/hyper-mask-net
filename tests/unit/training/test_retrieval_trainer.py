@@ -4,6 +4,7 @@ import pytest
 import torch
 from torch.nn import functional as F
 
+from hyperdime.baselines.learning_to_select import GeometricSelector
 from hyperdime.training.examples import RetrievalExamples
 from hyperdime.training.retrieval_trainer import (
     BUDGETS,
@@ -131,3 +132,16 @@ def test_padding_the_positive_lists_does_not_change_the_selector() -> None:
     assert [h["val_rerank_ndcg10"] for h in history_a] == [
         h["val_rerank_ndcg10"] for h in history_b
     ]
+
+
+def test_a_prior_selector_starts_as_the_variance_method_and_learns_past_a_bad_prior() -> None:
+    # Negatives vary most on the irrelevant dims 8..31, so the prior first favors them; the
+    # zero-started correction needs more steps and a larger rate to outweigh it.
+    prior = TRAIN.documents.var(0, correction=0)
+    config = RetrievalConfig(**{**CONFIG.__dict__, "steps": 1000, "lr": 5e-2})
+    model, history = train_retrieval_selector(TRAIN, VALIDATION, config, prior=prior)
+    assert history[0]["val_rerank_ndcg10"] == pytest.approx(
+        rerank_ndcg10(GeometricSelector(prior), VALIDATION, (PLANTED,))
+    )
+    top = model(VALIDATION.queries).topk(PLANTED, dim=-1).indices
+    assert ((top < PLANTED).sum(-1) >= PLANTED - 1).float().mean() >= 0.9

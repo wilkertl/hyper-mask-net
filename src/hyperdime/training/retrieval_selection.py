@@ -69,9 +69,10 @@ class RetrievalCell:
         )
 
 
-def retrieval_cells(steps: int = STEPS) -> list[RetrievalCell]:
-    """The 32 cells of research D6, in the order of the product."""
-    grid = itertools.product(VARIANTS, INITS, LEARNING_RATES, SCORE_TEMPERATURES, BETA_ENDS)
+def retrieval_cells(steps: int = STEPS, inits: Sequence[str] = INITS) -> list[RetrievalCell]:
+    """The 32 cells of research D6 in the order of the product; S2 passes ``inits=("prior",)``
+    for its 16 cells that start from the geometric prior."""
+    grid = itertools.product(VARIANTS, inits, LEARNING_RATES, SCORE_TEMPERATURES, BETA_ENDS)
     return [RetrievalCell(*values, steps=steps) for values in grid]
 
 
@@ -103,15 +104,20 @@ def train_retrieval_cells(
     seed: int = 0,
     device: str = "cpu",
     start: Mapping[str, Tensor] | None = None,
+    prior: Tensor | None = None,
 ) -> list[TrainedRetrieval]:
-    """Train every cell; ``l2s`` cells start from ``start``, which they need."""
+    """Train every cell; ``l2s`` cells start from ``start`` and ``prior`` cells from the corpus
+    variance ``prior``, which they need."""
     trained = []
     for cell in cells:
         if cell.init == "l2s" and start is None:
             raise ValueError(f"{cell.key} starts from an L2S selector; none was given")
+        if cell.init == "prior" and prior is None:
+            raise ValueError(f"{cell.key} starts from the geometric prior; none was given")
         model, history = train_retrieval_selector(
-            train, validation, cell.config(seed, device), start if cell.init == "l2s" else None
-        )
+            train, validation, cell.config(seed, device),
+            start if cell.init == "l2s" else None, prior if cell.init == "prior" else None,
+        )  # fmt: skip
         trained.append(TrainedRetrieval(cell, model, history))
     return trained
 
