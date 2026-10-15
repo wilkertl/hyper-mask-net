@@ -65,14 +65,14 @@ overlap 1 at every budget; a random selector's overlap is near k/1024.
 
 ## Phase 6: Runs (DataPolicy-4090)
 
-- [ ] T024 Sync the branch to DataPolicy-4090 (git bundle) and run `train-selector --recipe retrieval-grid` for scifact, nfcorpus, msmarco; check every environment has at least one cell passing the D3 guard (else apply the straight-through fallback of D3 through an ADR before continuing)
-- [ ] T025 Run `train-selector --recipe retrieval-seeded` for seeds 0, 1, 2 per environment; record each seed's training time against SC-006
-- [ ] T026 Run `compare-selectors`, `report S1`, `decide S1`; record wall time against SC-006; copy `reports/S1/` and the proposed ADR-0009 into the branch
+- [X] T024 Sync the branch to DataPolicy-4090 (git bundle) and run `train-selector --recipe retrieval-grid` for scifact, nfcorpus, msmarco; check every environment has at least one cell passing the D3 guard (else apply the straight-through fallback of D3 through an ADR before continuing) (commit `2768d95`; grids scifact `20261015T104624Z-0e4def76`, nfcorpus `20261015T104625Z-ba034423`, msmarco `20261015T122204Z-eb2eb92f`; all 96 cells pass the guard; 6,333 s, 7,168 s, 5,168 s on a GPU shared with other users' jobs, the three environments in parallel. The first attempt was stopped for the research D2 amendment; later restarts limited CPU threads and the scoring chunk, which change speed and memory, not results)
+- [X] T025 Run `train-selector --recipe retrieval-seeded` for seeds 0, 1, 2 per environment; record each seed's training time against SC-006 (131–303 s per seed, under SC-006's 2 hours)
+- [X] T026 Run `compare-selectors`, `report S1`, `decide S1`; record wall time against SC-006; copy `reports/S1/` and the proposed ADR-0009 into the branch (compare-selectors `20261015T135520Z-3d0fd03e`, 602 s, under 30 minutes)
 
 ## Phase 7: Polish
 
 - [X] T027 [P] Document the retrieval objective, recipes, and commands in docs/architecture.md and README.md; add S1 to docs/experiment_registry.md
-- [ ] T028 Run `ruff check . && ruff format --check . && mypy && pytest` and `PYTHONPATH=tools python -m scrap tests`; act on HIGH recommendations for changed test files
+- [X] T028 Run `ruff check . && ruff format --check . && mypy && pytest` and `PYTHONPATH=tools python -m scrap tests`; act on HIGH recommendations for changed test files
 
 ## Dependencies
 
