@@ -28,24 +28,23 @@ def masked_retrieval_loss(
     Each query ``i`` scores ``<queries[i] * mask[i], d> / score_temperature`` (the masked query is
     not re-normalized) against its positives (``positives[i]``, padded with -1, weighted by
     ``weights[i]``, which sum to 1), its hard negatives (``negatives[i]``, repeats counted), and the
-    positives of the other queries in the batch, except documents that are also its own positives.
-    Indices point into ``documents``.
+    distinct positive documents of the other queries in the batch (each once), except documents that
+    are also its own positives. Indices point into ``documents``.
     """
     masked = queries * mask
     valid = positives >= 0
     rows = positives.clamp(min=0)
     positive_logits = torch.einsum("bd,bpd->bp", masked, documents[rows]) / score_temperature
     negative_logits = torch.einsum("bd,bnd->bn", masked, documents[negatives]) / score_temperature
-    batch_logits = masked @ documents[rows.flatten()].T / score_temperature  # [B, B * P]
-    query = torch.arange(len(queries), device=queries.device)
-    own = query[:, None] == query.repeat_interleave(rows.shape[1])[None, :]
-    shared = ((rows.flatten()[None, None, :] == rows[:, :, None]) & valid[:, :, None]).any(1)
-    excluded = own | shared | ~valid.flatten()[None, :]
+    batch_docs, column = torch.unique(rows[valid], return_inverse=True)
+    own = torch.zeros(len(queries), len(batch_docs), dtype=torch.bool, device=queries.device)
+    own[valid.nonzero()[:, 0], column] = True
+    batch_logits = masked @ documents[batch_docs].T / score_temperature
     candidates = torch.cat(
         [
             positive_logits.masked_fill(~valid, float("-inf")),
             negative_logits,
-            batch_logits.masked_fill(excluded, float("-inf")),
+            batch_logits.masked_fill(own, float("-inf")),
         ],
         dim=-1,
     )

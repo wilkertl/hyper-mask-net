@@ -115,3 +115,19 @@ def test_one_multi_budget_selector_matches_a_selector_trained_at_each_budget(k: 
         RetrievalConfig(**{**CONFIG.__dict__, "budgets": (k,), "eval_budgets": (k,)}),
     )
     assert rerank_ndcg10(multi, VALIDATION, (k,)) >= rerank_ndcg10(fixed, VALIDATION, (k,)) - 0.05
+
+
+def test_padding_the_positive_lists_does_not_change_the_selector() -> None:
+    config = RetrievalConfig(**{**CONFIG.__dict__, "steps": 20, "eval_every": 10})
+    pad = lambda e: RetrievalExamples(  # noqa: E731
+        e.queries, e.documents,
+        torch.cat([e.positives, torch.full((len(e), 4), -1)], dim=1),
+        torch.cat([e.weights, torch.zeros(len(e), 4)], dim=1),
+        e.negatives, e.skipped,
+    )  # fmt: skip
+    a, history_a = train_retrieval_selector(TRAIN, VALIDATION, config)
+    b, history_b = train_retrieval_selector(pad(TRAIN), pad(VALIDATION), config)
+    assert all(torch.allclose(a.state_dict()[k], b.state_dict()[k]) for k in a.state_dict())
+    assert [h["val_rerank_ndcg10"] for h in history_a] == [
+        h["val_rerank_ndcg10"] for h in history_b
+    ]

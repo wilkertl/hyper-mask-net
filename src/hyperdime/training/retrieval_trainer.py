@@ -117,8 +117,10 @@ def _batches(n: int, size: int, steps: int, seed: int) -> list[Tensor]:
 
 
 def _gather(examples: RetrievalExamples, rows: Tensor, device: torch.device) -> tuple[Tensor, ...]:
-    """The batch's queries, its distinct documents, and its indices remapped into them."""
-    positives, negatives = examples.positives[rows], examples.negatives[rows]
+    """The batch's queries, its distinct documents, and its indices remapped into them; positives
+    are trimmed to the batch's longest list (they are left-packed)."""
+    width = int((examples.positives[rows] >= 0).sum(1).max())
+    positives, negatives = examples.positives[rows, :width], examples.negatives[rows]
     wanted = torch.cat([positives.flatten(), negatives.flatten()]).clamp(min=0)
     unique, inverse = torch.unique(wanted, return_inverse=True)
     local_pos = inverse[: positives.numel()].view_as(positives).masked_fill(positives < 0, -1)
@@ -128,7 +130,7 @@ def _gather(examples: RetrievalExamples, rows: Tensor, device: torch.device) -> 
         examples.queries[rows].float().to(device),
         documents.to(device),
         local_pos.to(device),
-        examples.weights[rows].to(device),
+        examples.weights[rows, :width].to(device),
         local_neg.to(device),
     )
 
@@ -166,7 +168,7 @@ def _rerank(
     candidates: Tensor,
     budgets: Sequence[int],
     device: torch.device,
-    batch: int = 512,
+    batch: int = 128,
 ) -> float:
     model.eval()
     scores = []
@@ -174,9 +176,11 @@ def _rerank(
         rows = torch.arange(start, min(start + batch, len(examples)))
         queries = examples.queries[rows].float().to(device)
         importance = model(queries)
-        cand = candidates[rows].to(device)
-        docs = examples.documents[cand.clamp(min=0).cpu()].float().to(device)
-        gains = _gains(examples, rows, candidates[rows]).to(device)
+        cand = candidates[rows]
+        cand = cand[:, : int((cand >= 0).sum(1).max())]  # candidates are left-packed
+        gains = _gains(examples, rows, cand).to(device)
+        docs = examples.documents[cand.clamp(min=0)].float().to(device)
+        cand = cand.to(device)
         for k in budgets:
             masked = queries * top_k_mask(importance, k).float()
             logits = torch.einsum("bd,bcd->bc", masked, docs).masked_fill(cand < 0, float("-inf"))
@@ -185,9 +189,10 @@ def _rerank(
 
 
 def _gains(examples: RetrievalExamples, rows: Tensor, candidates: Tensor) -> Tensor:
-    width = examples.positives.shape[1]
+    """Positives come first among the candidates, so their weights are the leading gains."""
+    width = min(examples.positives.shape[1], candidates.shape[1])
     gains = torch.zeros(candidates.shape, dtype=torch.float32)
-    gains[:, :width] = examples.weights[rows]
+    gains[:, :width] = examples.weights[rows, :width]
     return gains
 
 

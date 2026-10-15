@@ -75,3 +75,18 @@ def test_a_shared_positive_is_not_an_in_batch_negative() -> None:
         score_temperature=1.0,
     )
     assert loss.item() == pytest.approx(-math.log(math.e / (math.e + 1)))
+
+
+def test_a_document_positive_for_two_other_queries_is_one_in_batch_negative() -> None:
+    loss = masked_retrieval_loss(
+        torch.tensor([[1.0, 0.0], [0.0, 1.0], [0.0, 1.0]]),
+        torch.ones(3, 2),
+        DOCS,
+        positives=torch.tensor([[0], [1], [1]]),
+        weights=torch.ones(3, 1),
+        negatives=torch.tensor([[2], [2], [2]]),
+        score_temperature=1.0,
+    )
+    # Query 0: own positive 1, document 1 (positive of queries 1 and 2) once at 0, negative 1.
+    # Queries 1 and 2: own positive 1, document 0 at 0, negative 1.
+    assert loss.item() == pytest.approx(-math.log(math.e / (math.e + 1 + math.e)))

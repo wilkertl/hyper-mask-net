@@ -34,6 +34,14 @@ Numbers cited as motivation come from generated tables in `reports/E0/` and `rep
   (spec, motivation). In-batch positives add easy negatives that the full-corpus evaluation also
   contains; the hard negatives alone come only from the top of the unmasked ranking. Multi-positive
   softmax with gain weights keeps graded NFCorpus judgments meaningful, as in the L2S targets.
+- **Amendment (2026-10-15, after the first SciFact grid, before any test evaluation)**: the
+  in-batch negatives are the batch's *distinct* positive documents, each counted once, and each
+  batch's positive lists are trimmed to its longest one. The first run padded every batch to the
+  longest list in the environment (1,363 positives for one NFCorpus query) and compared every
+  positive slot with every other, about 1.9 billion comparisons per step; NFCorpus's grid had not
+  finished one environment in an hour. Counting a shared document once is also what "the
+  positives of the other queries" means for a softmax over documents. The SciFact grid and seeds
+  were rerun with the amended loss, so all S1 runs come from one commit.
 - **Alternatives considered**: pairwise margin (hinge) loss: needs a margin per environment; a
   ListNet loss over the oracle ordering: still imitates the oracle; adding the KL loss as an
   auxiliary term: kept out so the objective is a clean swap (FR-015); can be an ablation if S1 is
