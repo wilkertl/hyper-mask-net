@@ -103,6 +103,31 @@ def load(root: Path) -> S1Results:
     )
 
 
+def unchanged_starts(s1: S1Results) -> list[str]:
+    """Environments whose selected cell starts from L2S and whose every seed keeps its step-0
+    checkpoint: there, the retrieval selector is the L2S selector itself."""
+    found = []
+    for env in s1.environments:
+        grid = s1.grids[env]
+        if grid["cells"][grid["selected"]]["cell"]["init"] != "l2s":
+            continue
+        best = [
+            max(h, key=lambda row: row["val_rerank_ndcg10"])["step"]
+            for h in s1.histories[env].values()
+        ]
+        if all(step == 0 for step in best):
+            found.append(env)
+    return found
+
+
+def unchanged_note(env: str) -> str:
+    return (
+        "the selected cell starts from the L2S selector and every seed keeps its step-0 "
+        "checkpoint (no training step improved validation), so `retrieval:"
+        f"{env}` is the L2S selector itself and its difference from L2S is zero by construction."
+    )
+
+
 def per_query(
     s1: S1Results, key: tuple[str, str], method: str, k: int, metric: str = "ndcg@10"
 ) -> dict[str, float]:
@@ -379,6 +404,7 @@ def render(s1: S1Results) -> tuple[str, dict[str, str]]:
         "## Notes",
         "",
         *[f"- **{env}**: {text}" for env, text in sorted(NOTES.items()) if env in s1.environments],
+        *[f"- **{env}**: {unchanged_note(env)}" for env in unchanged_starts(s1)],
         "",
         "Every grid cell is in `tables/grid.csv`.",
     ]
@@ -404,6 +430,7 @@ def decision(s1: S1Results, adr: Path) -> GateDecision:
         ),
         "selected": ", ".join(f"{env} {s1.grids[env]['selected']}" for env in s1.environments),
         **{f"note_{env}": NOTES[env] for env in s1.environments if env in NOTES},
+        **{f"unchanged_{env}": unchanged_note(env) for env in unchanged_starts(s1)},
     }
     return GateDecision(
         gate="S1",

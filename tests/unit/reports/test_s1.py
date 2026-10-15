@@ -144,3 +144,21 @@ def test_an_accepted_adr_is_not_overwritten(tmp_path: Path) -> None:
     path.write_text(path.read_text().replace("proposed", "accepted", 1))
     with pytest.raises(ValueError, match="no longer proposed"):
         s1.write_adr(results, record, path)
+
+
+def test_a_selector_that_kept_its_l2s_start_is_named_in_the_report_and_decision(
+    tmp_path: Path,
+) -> None:
+    build(tmp_path, {}, unchanged=("nfcorpus",))
+    results = s1.load(tmp_path)
+    assert s1.unchanged_starts(results) == ["nfcorpus"]
+    assert "unchanged_nfcorpus" in s1.decision(results, s1.DEFAULT_ADR).context
+    s1.write(tmp_path, tmp_path / "S1")
+    assert (
+        "`retrieval:nfcorpus` is the L2S selector itself"
+        in (tmp_path / "S1" / "README.md").read_text()
+    )
+
+
+def test_no_selector_is_named_unchanged_when_training_moved_it(report: Path) -> None:
+    assert "is the L2S selector itself" not in (report / "README.md").read_text()

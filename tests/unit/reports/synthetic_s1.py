@@ -35,18 +35,26 @@ def _write(directory: Path, name: str, payload: object) -> None:
     (directory / name).write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
 
 
-def build(root: Path, gains: Mapping[str, float], *, seeds: Sequence[int] = SEEDS) -> Path:
+def build(
+    root: Path,
+    gains: Mapping[str, float],
+    *,
+    seeds: Sequence[int] = SEEDS,
+    unchanged: Sequence[str] = (),
+) -> Path:
     """The retrieval selector scores ``gains[env]`` above L2S on every query of ``env``, with
-    seed noise; L2S equals the baseline. Returns the evaluation directory."""
+    seed noise; L2S equals the baseline. In ``unchanged`` environments the selected cell starts
+    from L2S and no seed improves on step 0. Returns the evaluation directory."""
     sources: dict[str, object] = {"global": "global-run"}
     for env in ENVS:
         cells = {
             f"{family}-lr0.001-ts0.05-b0.1": {
                 "validation_mean": 0.5 + i / 10, "soft_mass": 0.95, "selectable": True,
+                "cell": {"init": family.rsplit("-", 1)[1]},
             }
             for i, family in enumerate(FAMILIES)
         }  # fmt: skip
-        selected = next(iter(cells))
+        selected = list(cells)[1 if env in unchanged else 0]
         _write(root / "selectors" / "retrieval-grid" / env / f"grid-{env}", "selection.json", {
             "cells": cells, "selected": selected,
             "family_best": {f: f"{f}-lr0.001-ts0.05-b0.1" for f in FAMILIES},
@@ -56,7 +64,12 @@ def build(root: Path, gains: Mapping[str, float], *, seeds: Sequence[int] = SEED
             run = f"retrieval-{env}-{seed}"
             history = [
                 {"step": 0.0, "val_rerank_ndcg10": 0.4, "soft_mass": 0.7, "beta": 1.0},
-                {"step": 1000.0, "val_rerank_ndcg10": 0.6, "soft_mass": 0.96, "beta": 0.1},
+                {
+                    "step": 1000.0,
+                    "val_rerank_ndcg10": 0.3 if env in unchanged else 0.6,
+                    "soft_mass": 0.96,
+                    "beta": 0.1,
+                },
             ]
             directory = root / "selectors" / "retrieval-seeded" / env / f"seed-{seed}" / run
             _write(directory, "history.json", {selected: history})
