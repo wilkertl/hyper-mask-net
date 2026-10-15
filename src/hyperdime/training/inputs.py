@@ -14,6 +14,7 @@ from hyperdime.contracts.validation import ContractError
 from hyperdime.data.prepare import DatasetBundle, load_environment
 from hyperdime.embeddings.cache import load_embeddings
 from hyperdime.oracle.targets import oracle_pairs
+from hyperdime.training.examples import RetrievalExamples, retrieval_examples
 from hyperdime.training.selection import Supervision
 
 
@@ -85,4 +86,24 @@ def load_inputs(root: Path, environment: str) -> EnvironmentInputs:
         query_vectors,
         query_rows,
         supervision,
+    )
+
+
+def load_examples(inputs: EnvironmentInputs, split: str) -> RetrievalExamples:
+    """Retrieval examples of the ``train`` or ``validation`` split, from the same judgments and
+    negative pools as the oracle targets (F5 research D1)."""
+    if split not in ("train", "validation"):
+        raise ValueError(f"retrieval examples come from train or validation, not {split!r}")
+    pools = {
+        p.query_id: p.doc_ids
+        for p in load_records(NegativePool, inputs.negatives_dir / "negatives.jsonl")
+    }
+    return retrieval_examples(
+        inputs.bundle.query_ids(split),
+        inputs.query_vectors,
+        inputs.query_rows,
+        inputs.documents,
+        {doc_id: i for i, doc_id in enumerate(inputs.doc_ids)},
+        judgments(inputs.bundle, split),
+        pools,
     )
