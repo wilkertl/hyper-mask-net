@@ -49,7 +49,7 @@ contribution and the hypernetwork a mechanism to automate it:
 Every value referenced above is in a generated table: `reports/E0/tables/g1.csv`,
 `reports/E0/tables/selection.csv`, `reports/E1/tables/methods.csv`,
 `reports/E1/tables/progression.csv` (budget-progression run, transfer-matrix
-`20261014T213239Z-eedf9066`). No number is restated here.
+`20261015T004735Z-4e76ec6e`). No number is restated here.
 
 ## Consequences
 
