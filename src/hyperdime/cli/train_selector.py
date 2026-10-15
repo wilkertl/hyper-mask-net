@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 from dataclasses import asdict
 from pathlib import Path
 from typing import Any
@@ -190,6 +191,8 @@ def _seeded(
     key = candidates["family_best"][SEEDED_FAMILY]
     cell = Cell(**candidates["cells"][key]["cell"])
     (trained,) = _scored([cell], inputs, config, device, chunk_size)
+    if not all(math.isfinite(v) for v in (trained.score, trained.val_kl)):
+        raise ValueError(f"seed {config.run.seed} of {key} gives a non-finite validation result")
     return {
         "recipe": "seeded",
         "family": SEEDED_FAMILY,

@@ -14,6 +14,7 @@ from hyperdime.contracts.schemas import Criterion, GateDecision
 from hyperdime.evaluation.transfer import ALPHA
 from hyperdime.reports.e0 import _fmt
 from hyperdime.reports.e1 import (
+    GLOBAL_NOTE,
     NOTES,
     E1Results,
     criteria,
@@ -37,6 +38,7 @@ def decision(e1: E1Results, adr: Path) -> GateDecision:
     context = {
         "fit": fit,
         "payoff": _significant(payoff(e1), "above the global selector"),
+        "global_selector": GLOBAL_NOTE,
         "fixed_subset": _significant(fixed_subset_rows(e1), "above a fixed subset"),
         **{f"note_{env}": NOTES[env] for env in e1.environments if env in NOTES},
         **{f"departure_{i}": line for i, line in enumerate(departures(e1))},

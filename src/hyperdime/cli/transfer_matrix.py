@@ -36,8 +36,10 @@ from hyperdime.contracts.manifests import ArtifactWriter, resolve_device, start_
 from hyperdime.contracts.schemas import (
     EvaluationResult,
     PayloadRef,
+    SelectorCheckpoint,
     SelectorProperties,
     dump_records,
+    load_record,
 )
 from hyperdime.contracts.seeding import seed_everything
 from hyperdime.contracts.validation import ContractError
@@ -53,7 +55,6 @@ from hyperdime.evaluation.selector_shift import (
 from hyperdime.evaluation.statistics import holm, paired_randomization_test
 from hyperdime.evaluation.transfer import (
     ALPHA,
-    criterion_1,
     degradation_tests,
     fit_gain,
     fits,
@@ -102,9 +103,10 @@ class _Environment:
         self.sources: dict[str, str] = {}
         for seed in seeds:
             directory = latest_artifact(root, f"selectors/seeded/{name}", f"seed-{seed}")
-            record, model = load_selector(directory, "selector")
+            record = load_record(SelectorCheckpoint, directory / "selector.json")
             if file_sha256(directory / record.payload.path) != record.payload.sha256:
                 raise ContractError(f"{directory}: selector payload does not match its record")
+            _, model = load_selector(directory, "selector")
             self.selectors[seed] = model
             self.payloads[seed] = record.payload.sha256
             self.sources[f"seed-{seed}"] = directory.name
@@ -117,7 +119,12 @@ class _Environment:
         self.sources["embeddings"] = self.inputs.embeddings_dir.name
 
     def scores(self, queries: Tensor) -> dict[int, Tensor]:
-        return {seed: selector_importance(queries, m) for seed, m in self.selectors.items()}
+        """Each seed's log-importance; a non-finite output stops the run (spec edge cases)."""
+        found = {seed: selector_importance(queries, m) for seed, m in self.selectors.items()}
+        for seed, importance in found.items():
+            if not bool(torch.isfinite(importance).all()):
+                raise ContractError(f"{selector_name(self.name, seed)} gives non-finite scores")
+        return found
 
     def fixed_subset(self) -> Tensor:
         train = self.inputs.supervision.train[0]
@@ -202,9 +209,6 @@ def _build(config: RunConfig, output: Path, args: argparse.Namespace) -> Path:
             for row in rows
         ]
         dump_records(cells, writer.path("cells.jsonl"))
-        drops, pairs_count, holds = criterion_1(rows)
-        _write_json(writer, "criterion_1.json",
-                    {"significant_drops": drops, "pairs": pairs_count, "holds": holds})  # fmt: skip
         _write_json(writer, "fixed_subsets.json", {n: s.tolist() for n, s in subsets.items()})
         _write_json(writer, "fit.json", _fit(envs))
         _behavior(writer, envs)
@@ -262,7 +266,7 @@ def _behavior(writer: ArtifactWriter, envs: Mapping[str, _Environment]) -> None:
     battery = sample_battery({name: env.bundle.query_ids("test") for name, env in envs.items()})
     queries = torch.cat([envs[n].vectors("queries", ids) for n, ids in battery.ids.items()])
     selectors = [(name, seed) for name, env in envs.items() for seed in env.selectors]
-    scores = {(n, s): selector_importance(queries, envs[n].selectors[s]) for n, s in selectors}
+    scores = {(n, s): t for n in envs for s, t in envs[n].scores(queries).items()}
     for (name, seed), importance in scores.items():
         stem = f"properties-{name}-s{seed}"
         payloads = {
