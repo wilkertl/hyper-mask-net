@@ -222,3 +222,21 @@ def test_compare_selectors_refuses_a_seed_from_another_grid_cell(
     record["source"]["cell"] = "another-cell"
     path.write_text(json.dumps(record))
     assert _compare(comparison.configs, out) == 1
+
+
+def test_probe_geometry_and_report_p1_run_on_the_comparison(
+    comparison: Comparison, tmp_path: Path
+) -> None:
+    out = tmp_path / "out"
+    shutil.copytree(comparison.out, out)
+    assert run_command(comparison.configs, out, "probe-geometry", "--envs", *TOY_ENVS) == 0
+    run = latest_artifact(out, "evaluation/P1", "all")
+    records = load_records(EvaluationResult, run / "results-toya-test.jsonl")
+    assert {(r.selector, r.k) for r in records} == {("full", 1024)} | {
+        ("variance", k) for k in BUDGETS
+    }
+    assert json.loads((run / "inputs.json").read_text())["s1"] == comparison.run.name
+    assert (
+        main(["report", "P1", "--artifacts", str(out), "--report-dir", str(tmp_path / "P1")]) == 0
+    )
+    assert run.name in (tmp_path / "P1" / "README.md").read_text()
