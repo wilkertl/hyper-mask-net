@@ -1,0 +1,3 @@
+criterion,value,threshold,met
+"SC-001 better than L2S (mean nDCG@10 over 10%-90%, Holm, alpha 0.05)",2 of 3 environments,>= 2 of 3,yes
+SC-002 worse than L2S in no environment (same test),0 of 3 environments,0,yes
