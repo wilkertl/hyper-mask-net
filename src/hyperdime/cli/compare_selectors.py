@@ -29,6 +29,7 @@ from hyperdime.baselines.methods import (
     prefix_importance,
     random_importance,
     selector_importance,
+    variance_importance,
 )
 from hyperdime.cli.common import add_config_arguments, run_with_config
 from hyperdime.cli.transfer_matrix import BUDGETS, SeededEnvironment, fit_results
@@ -41,6 +42,7 @@ from hyperdime.contracts.validation import ContractError
 from hyperdime.evaluation.runs import DIM, Importance, QuerySet, evaluate_methods
 from hyperdime.evaluation.selector_shift import overlap_at_k
 from hyperdime.selection.topk import top_k_mask
+from hyperdime.space.geometry import corpus_geometry
 from hyperdime.training.inputs import EnvironmentInputs
 from hyperdime.training.selection import load_selector
 
@@ -55,6 +57,10 @@ def register(commands: Any) -> None:
     parser.add_argument("--envs", nargs="+", default=list(ENVIRONMENTS))
     parser.add_argument("--seeds", nargs="+", type=int, default=list(SEEDS))
     parser.add_argument("--chunk-size", type=int, default=1_000_000)
+    parser.add_argument(
+        "--experiment", choices=["S1", "S2"], default="S1",
+        help="S2 adds the geometric selectors (F7) and the variance method",
+    )  # fmt: skip
     parser.set_defaults(handler=run)
 
 
@@ -72,23 +78,29 @@ def _checked(directory: Path, name: str) -> tuple[LinearSelector, str]:
 class RetrievalSelectors:
     """One environment's seeded retrieval selectors and its grid's family bests, read-only."""
 
-    def __init__(self, root: Path, env: SeededEnvironment, seeds: Sequence[int]) -> None:
+    def __init__(
+        self, root: Path, env: SeededEnvironment, seeds: Sequence[int], track: str = "retrieval"
+    ) -> None:
+        """``track`` is ``retrieval`` (S1) or ``geometric`` (S2); its sources are recorded under
+        ``grid`` and ``retrieval`` for S1 and ``geometric_grid`` and ``geometric`` for S2."""
         self.name = env.name
+        self.track = track
         self.inputs: EnvironmentInputs = env.inputs
         self.mean_target = env.mean_target
-        grid_dir = latest_artifact(root, "selectors/retrieval-grid", self.name)
+        grid_dir = latest_artifact(root, f"selectors/{track}-grid", self.name)
         grid = json.loads((grid_dir / "selection.json").read_text(encoding="utf-8"))
-        self.sources: dict[str, Any] = {"grid": grid_dir.name, "retrieval": {}}
+        grid_key = "grid" if track == "retrieval" else f"{track}_grid"
+        self.sources: dict[str, Any] = {grid_key: grid_dir.name, track: {}}
         self.selectors: dict[int, LinearSelector] = {}
         for seed in seeds:
             directory = latest_artifact(
-                root, f"selectors/retrieval-seeded/{self.name}", f"seed-{seed}"
+                root, f"selectors/{track}-seeded/{self.name}", f"seed-{seed}"
             )
             record = json.loads((directory / "selection.json").read_text(encoding="utf-8"))
             if record["source"] != {"run": grid_dir.name, "cell": grid["selected"]}:
                 raise ContractError(f"{directory} is not the latest grid's selected cell")
             self.selectors[seed] = _checked(directory, "selector")[0]
-            self.sources["retrieval"][f"seed-{seed}"] = directory.name
+            self.sources[track][f"seed-{seed}"] = directory.name
         self.families = {
             family: _checked(grid_dir, key)[0] for family, key in grid["family_best"].items()
         }
@@ -97,15 +109,15 @@ class RetrievalSelectors:
         found = {seed: selector_importance(queries, m) for seed, m in self.selectors.items()}
         for seed, importance in found.items():
             if not bool(torch.isfinite(importance).all()):
-                raise ContractError(f"retrieval:{self.name}:s{seed} gives non-finite scores")
+                raise ContractError(f"{self.track}:{self.name}:s{seed} gives non-finite scores")
         return found
 
 
 def overlaps(
-    l2s: Mapping[int, Tensor], retrieval: Mapping[int, Tensor]
+    l2s: Mapping[int, Tensor], retrieval: Mapping[int, Tensor], name: str = "retrieval"
 ) -> dict[str, dict[str, float]]:
-    """Per budget: seed-matched retrieval-L2S top-k overlap, and each selector's seed noise
-    floor (mean over seed pairs), on the same queries (F5 research D8)."""
+    """Per budget: seed-matched top-k overlap of a candidate (``name``) with L2S, and each
+    selector's seed noise floor (mean over seed pairs), on the same queries (F5 research D8)."""
 
     def mean(pairs: list[tuple[Tensor, Tensor]], k: int) -> float:
         values = [float(overlap_at_k(top_k_mask(a, k), top_k_mask(b, k)).mean()) for a, b in pairs]
@@ -114,9 +126,9 @@ def overlaps(
     matched = [(retrieval[s], l2s[s]) for s in sorted(retrieval)]
     return {
         str(k): {
-            "retrieval_l2s": mean(matched, k),
+            f"{name}_l2s": mean(matched, k),
             "l2s_seeds": mean(list(itertools.combinations(l2s.values(), 2)), k),
-            "retrieval_seeds": mean(list(itertools.combinations(retrieval.values(), 2)), k),
+            f"{name}_seeds": mean(list(itertools.combinations(retrieval.values(), 2)), k),
         }
         for k in BUDGETS
     }
@@ -128,6 +140,12 @@ def _build(config: RunConfig, output: Path, args: argparse.Namespace) -> Path:
     device = resolve_device(config.run.device)
     envs = {name: SeededEnvironment(output, name, args.seeds) for name in args.envs}
     retrieval = {name: RetrievalSelectors(output, env, args.seeds) for name, env in envs.items()}
+    s2 = args.experiment == "S2"
+    geometric = {
+        name: RetrievalSelectors(output, env, args.seeds, track="geometric")
+        for name, env in envs.items()
+        if s2
+    }
     global_dir = latest_artifact(output, "selectors/global", "all")
     global_model = load_selector(global_dir, "global")[1]
     manifest = start_manifest(
@@ -137,12 +155,31 @@ def _build(config: RunConfig, output: Path, args: argparse.Namespace) -> Path:
         device=device,
         determinism=seed_everything(config.run.seed),
     )
-    with ArtifactWriter(output, "evaluation/S1/all", manifest) as writer:
+    with ArtifactWriter(output, f"evaluation/{args.experiment}/all", manifest) as writer:
         found_overlaps: dict[str, Any] = {}
         for name, env in envs.items():
+            variance = (
+                torch.from_numpy(
+                    corpus_geometry(env.inputs.documents, args.chunk_size, device).variance
+                )
+                if s2
+                else None
+            )
             for set_name, matrix, ids, labels, threshold, depth in env.query_sets():
                 queries = env.vectors(matrix, ids)
                 l2s, new = env.scores(queries), retrieval[name].scores(queries)
+                extra: dict[str, Importance] = {}
+                geo: dict[int, Tensor] = {}
+                if variance is not None:
+                    geo = geometric[name].scores(queries)
+                    extra = {
+                        "variance": variance_importance(queries, variance),
+                        **{f"geometric:{name}:s{seed}": v for seed, v in geo.items()},
+                        **{
+                            f"family:{family}:{name}": selector_importance(queries, model)
+                            for family, model in geometric[name].families.items()
+                        },
+                    }
                 methods: dict[str, Importance] = {
                     "full": None,
                     "prefix": prefix_importance(queries),
@@ -155,6 +192,7 @@ def _build(config: RunConfig, output: Path, args: argparse.Namespace) -> Path:
                         f"family:{family}:{name}": selector_importance(queries, model)
                         for family, model in retrieval[name].families.items()
                     },
+                    **extra,
                 }
                 pairs = [("full", DIM)] + [(m, k) for m in methods if m != "full" for k in BUDGETS]
                 evaluation = evaluate_methods(
@@ -164,11 +202,14 @@ def _build(config: RunConfig, output: Path, args: argparse.Namespace) -> Path:
                 )  # fmt: skip
                 dump_records(evaluation.results, writer.path(f"results-{name}-{set_name}.jsonl"))
                 if set_name == "test":
-                    found_overlaps[name] = overlaps(l2s, new)
+                    found_overlaps[name] = (
+                        overlaps(l2s, geo, name="geometric") if s2 else overlaps(l2s, new)
+                    )
         _write_json(writer, "overlap.json", found_overlaps)
-        _write_json(
-            writer, "fit.json", {"l2s": fit_results(envs), "retrieval": fit_results(retrieval)}
-        )
+        fit = {"l2s": fit_results(envs), "retrieval": fit_results(retrieval)}
+        if s2:
+            fit["geometric"] = fit_results(geometric)
+        _write_json(writer, "fit.json", fit)
         sources = {
             "global": global_dir.name,
             **{
@@ -176,6 +217,7 @@ def _build(config: RunConfig, output: Path, args: argparse.Namespace) -> Path:
                     "l2s": {k: v for k, v in env.sources.items() if k.startswith("seed-")},
                     **{k: v for k, v in env.sources.items() if not k.startswith("seed-")},
                     **retrieval[name].sources,
+                    **(geometric[name].sources if s2 else {}),
                 }
                 for name, env in envs.items()
             },

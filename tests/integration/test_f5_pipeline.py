@@ -11,6 +11,7 @@ import torch
 from test_f4_pipeline import TOY_ENVS, f4_stack, run_command  # noqa: F401 - f4_stack is a fixture
 
 from hyperdime.artifacts import latest_artifact
+from hyperdime.baselines.learning_to_select import GeometricSelector
 from hyperdime.cli.__main__ import main
 from hyperdime.cli.transfer_matrix import BUDGETS
 from hyperdime.contracts.manifests import read_manifest
@@ -240,3 +241,63 @@ def test_probe_geometry_and_report_p1_run_on_the_comparison(
         main(["report", "P1", "--artifacts", str(out), "--report-dir", str(tmp_path / "P1")]) == 0
     )
     assert run.name in (tmp_path / "P1" / "README.md").read_text()
+
+
+@pytest.fixture(scope="module")
+def s2_comparison(comparison: Comparison, tmp_path_factory: pytest.TempPathFactory) -> Path:
+    """Geometric grids and seeds, then compare-selectors --experiment S2, on a copy of S1's."""
+    out = tmp_path_factory.mktemp("s2") / "out"
+    shutil.copytree(comparison.out, out)
+    for env in TOY_ENVS:
+        recipe = ("train-selector", "--recipe")
+        assert run_command(comparison.configs, out, *recipe, "geometric-grid", f"data={env}",
+                           "--steps", STEPS) == 0  # fmt: skip
+        for seed in SEEDS:
+            assert run_command(comparison.configs, out, *recipe, "geometric-seeded",
+                               f"data={env}", f"run.seed={seed}") == 0  # fmt: skip
+    assert (
+        run_command(
+            comparison.configs, out, "compare-selectors", "--envs", *TOY_ENVS, "--experiment", "S2"
+        )
+        == 0
+    )
+    return out
+
+
+def test_the_geometric_grid_starts_every_cell_from_the_prior(s2_comparison: Path) -> None:
+    record = json.loads(
+        (
+            latest_artifact(s2_comparison, "selectors/geometric-grid", "toya") / "selection.json"
+        ).read_text()
+    )
+    assert len(record["cells"]) == 16
+    assert {c["cell"]["init"] for c in record["cells"].values()} == {"prior"}
+    _, model = load_selector(latest_artifact(s2_comparison, "selectors/geometric-grid", "toya"),
+                             record["selected"])  # fmt: skip
+    assert isinstance(model, GeometricSelector)
+
+
+def test_s2_scores_the_geometric_selector_variance_and_the_s1_selector(
+    s2_comparison: Path,
+) -> None:
+    run = latest_artifact(s2_comparison, "evaluation/S2", "all")
+    methods = {r.selector for r in load_records(EvaluationResult, run / "results-toyb-test.jsonl")}
+    assert {"variance", "geometric:toyb:s0", "retrieval:toyb:s0", "l2s:toyb:s0"} <= methods
+    assert set(json.loads((run / "fit.json").read_text())) == {"l2s", "retrieval", "geometric"}
+
+
+def test_report_s2_and_decide_s2_run_and_leave_s1_unchanged(
+    s2_comparison: Path, comparison: Comparison, tmp_path: Path
+) -> None:
+    adr = tmp_path / "ADR-0010.md"
+    assert main(["report", "S2", "--artifacts", str(s2_comparison),
+                 "--report-dir", str(tmp_path / "S2")]) == 0  # fmt: skip
+    assert main(["decide", "S2", "--artifacts", str(s2_comparison), "--adr", str(adr)]) == 0
+    assert "- **Status:** proposed" in adr.read_text()
+    assert main(["report", "S1", "--artifacts", str(s2_comparison),
+                 "--report-dir", str(tmp_path / "S1a")]) == 0  # fmt: skip
+    assert main(["report", "S1", "--artifacts", str(comparison.out),
+                 "--report-dir", str(tmp_path / "S1b")]) == 0  # fmt: skip
+    assert (tmp_path / "S1a" / "README.md").read_bytes() == (
+        tmp_path / "S1b" / "README.md"
+    ).read_bytes()
