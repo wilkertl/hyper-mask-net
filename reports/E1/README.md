@@ -6,7 +6,7 @@ Scoring: exact inner product over the full corpus. Budget: k = 307 (30%).
 Selectors: F3's `wide-grid` cell per environment, seeds 0, 1, 2;
 seed scores are averaged per query before every paired test (F4 research D4).
 
-- transfer-matrix `20261014T021651Z-08a6e7d9` (commit `8f2d939309a6`)
+- transfer-matrix `20261015T004735Z-4e76ec6e` (commit `26e903e092d6`)
 - `msmarco` seeded selectors: seed 0 cell `wide-grid-t0.5-e200`, seed 1 cell `wide-grid-t0.5-e200`, seed 2 cell `wide-grid-t0.5-e200`
 - `nfcorpus` seeded selectors: seed 0 cell `wide-grid-t0.2-e500`, seed 1 cell `wide-grid-t0.2-e500`, seed 2 cell `wide-grid-t0.2-e500`
 - `scifact` seeded selectors: seed 0 cell `wide-grid-t0.1-e500`, seed 1 cell `wide-grid-t0.1-e500`, seed 2 cell `wide-grid-t0.1-e500`
@@ -43,6 +43,81 @@ overlap@k is the mean over seed pairs of the two environments' selectors.
 | scifact | msmarco | test | transfer | 0.3419 | 0.3572 | 0.3800 | 0.3385 | +0.0153 | +0.0109 | +0.0196 | 0.0001 | 0.0006 | 0.3249 | see note: msmarco |
 | scifact | nfcorpus | test | transfer | 0.3304 | 0.3607 | 0.3619 | 0.3263 | +0.0303 | +0.0153 | +0.0455 | 0.0001 | 0.0006 | 0.3218 | see note: nfcorpus |
 | scifact | scifact | test | in-domain | 0.8353 | 0.8353 | 0.7000 | 0.6640 | +0.0000 | — | — | — | — | 0.7661 | — |
+
+## nDCG@10 by budget (every 10% of the 1024 dimensions)
+
+Every method at every budget on every query set, exact scoring; `selector:<env>` is the
+mean over that environment's seeds; at k = 1024 every mask keeps the full query. Reported
+for context: gate G2 reads k = 307 only.
+
+| test | query set | method | protocol | 10% (k=102) | 20% (k=204) | 30% (k=307) | 40% (k=409) | 50% (k=512) | 60% (k=614) | 70% (k=716) | 80% (k=819) | 90% (k=921) | 100% (k=1024) | note |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| msmarco | test | full | in-domain | 0.3800 | 0.3800 | 0.3800 | 0.3800 | 0.3800 | 0.3800 | 0.3800 | 0.3800 | 0.3800 | 0.3800 | — |
+| msmarco | test | prefix | in-domain | 0.2598 | 0.3180 | 0.3385 | 0.3528 | 0.3626 | 0.3702 | 0.3746 | 0.3777 | 0.3792 | 0.3800 | see note: msmarco |
+| msmarco | test | random | in-domain | 0.2397 | 0.3186 | 0.3425 | 0.3587 | 0.3643 | 0.3695 | 0.3746 | 0.3758 | 0.3778 | 0.3800 | see note: msmarco |
+| msmarco | test | global-importance | in-domain | 0.2435 | 0.3230 | 0.3524 | 0.3639 | 0.3714 | 0.3737 | 0.3774 | 0.3797 | 0.3798 | 0.3800 | see note: msmarco |
+| msmarco | test | global-selector | in-domain | 0.3064 | 0.3460 | 0.3591 | 0.3680 | 0.3742 | 0.3757 | 0.3767 | 0.3786 | 0.3797 | 0.3800 | see note: msmarco |
+| msmarco | test | selector:msmarco | in-domain | 0.3047 | 0.3444 | 0.3572 | 0.3640 | 0.3702 | 0.3718 | 0.3752 | 0.3785 | 0.3799 | 0.3800 | see note: msmarco |
+| msmarco | test | selector:nfcorpus | transfer | 0.2308 | 0.3173 | 0.3448 | 0.3550 | 0.3621 | 0.3687 | 0.3722 | 0.3751 | 0.3759 | 0.3800 | see note: msmarco, nfcorpus |
+| msmarco | test | selector:scifact | transfer | 0.2313 | 0.3144 | 0.3419 | 0.3556 | 0.3630 | 0.3687 | 0.3726 | 0.3756 | 0.3782 | 0.3800 | see note: msmarco |
+| msmarco | test | fixed:msmarco | in-domain | 0.2459 | 0.3218 | 0.3514 | 0.3644 | 0.3704 | 0.3717 | 0.3726 | 0.3737 | 0.3717 | 0.3800 | see note: msmarco |
+| msmarco | test | fixed:nfcorpus | transfer | 0.2201 | 0.3151 | 0.3475 | 0.3609 | 0.3608 | 0.3580 | 0.3639 | 0.3688 | 0.3725 | 0.3800 | see note: msmarco, nfcorpus |
+| msmarco | test | fixed:scifact | transfer | 0.2209 | 0.3181 | 0.3489 | 0.3607 | 0.3663 | 0.3698 | 0.3682 | 0.3717 | 0.3737 | 0.3800 | see note: msmarco |
+| msmarco | trec-dl-2019 | full | in-domain | 0.6654 | 0.6654 | 0.6654 | 0.6654 | 0.6654 | 0.6654 | 0.6654 | 0.6654 | 0.6654 | 0.6654 | — |
+| msmarco | trec-dl-2019 | prefix | in-domain | 0.5240 | 0.5803 | 0.5990 | 0.6270 | 0.6327 | 0.6466 | 0.6609 | 0.6620 | 0.6671 | 0.6654 | see note: msmarco |
+| msmarco | trec-dl-2019 | random | in-domain | 0.4374 | 0.5820 | 0.6367 | 0.6472 | 0.6611 | 0.6559 | 0.6553 | 0.6563 | 0.6600 | 0.6654 | see note: msmarco |
+| msmarco | trec-dl-2019 | global-importance | in-domain | 0.4592 | 0.5850 | 0.6165 | 0.6387 | 0.6522 | 0.6664 | 0.6583 | 0.6606 | 0.6589 | 0.6654 | see note: msmarco |
+| msmarco | trec-dl-2019 | global-selector | in-domain | 0.5762 | 0.6410 | 0.6495 | 0.6472 | 0.6511 | 0.6648 | 0.6645 | 0.6651 | 0.6632 | 0.6654 | see note: msmarco |
+| msmarco | trec-dl-2019 | selector:msmarco | in-domain | 0.5829 | 0.6342 | 0.6348 | 0.6482 | 0.6574 | 0.6636 | 0.6638 | 0.6696 | 0.6685 | 0.6654 | see note: msmarco |
+| msmarco | trec-dl-2019 | selector:nfcorpus | transfer | 0.4173 | 0.5721 | 0.6120 | 0.6338 | 0.6419 | 0.6475 | 0.6545 | 0.6575 | 0.6701 | 0.6654 | see note: msmarco, nfcorpus |
+| msmarco | trec-dl-2019 | selector:scifact | transfer | 0.4555 | 0.5693 | 0.6015 | 0.6278 | 0.6424 | 0.6513 | 0.6599 | 0.6633 | 0.6643 | 0.6654 | see note: msmarco |
+| msmarco | trec-dl-2019 | fixed:msmarco | in-domain | 0.4559 | 0.5894 | 0.6124 | 0.6311 | 0.6369 | 0.6626 | 0.6602 | 0.6731 | 0.6837 | 0.6654 | see note: msmarco |
+| msmarco | trec-dl-2019 | fixed:nfcorpus | transfer | 0.4808 | 0.5859 | 0.6215 | 0.6453 | 0.6558 | 0.6570 | 0.6690 | 0.6656 | 0.6652 | 0.6654 | see note: msmarco, nfcorpus |
+| msmarco | trec-dl-2019 | fixed:scifact | transfer | 0.4644 | 0.6083 | 0.6330 | 0.6563 | 0.6579 | 0.6665 | 0.6749 | 0.6784 | 0.6767 | 0.6654 | see note: msmarco |
+| msmarco | trec-dl-2020 | full | in-domain | 0.6767 | 0.6767 | 0.6767 | 0.6767 | 0.6767 | 0.6767 | 0.6767 | 0.6767 | 0.6767 | 0.6767 | — |
+| msmarco | trec-dl-2020 | prefix | in-domain | 0.4900 | 0.5717 | 0.6234 | 0.6497 | 0.6525 | 0.6595 | 0.6616 | 0.6591 | 0.6678 | 0.6767 | see note: msmarco |
+| msmarco | trec-dl-2020 | random | in-domain | 0.4936 | 0.6049 | 0.6478 | 0.6658 | 0.6668 | 0.6785 | 0.6732 | 0.6736 | 0.6687 | 0.6767 | see note: msmarco |
+| msmarco | trec-dl-2020 | global-importance | in-domain | 0.4598 | 0.5977 | 0.6450 | 0.6580 | 0.6697 | 0.6714 | 0.6742 | 0.6747 | 0.6767 | 0.6767 | see note: msmarco |
+| msmarco | trec-dl-2020 | global-selector | in-domain | 0.5698 | 0.6370 | 0.6507 | 0.6566 | 0.6661 | 0.6734 | 0.6757 | 0.6715 | 0.6769 | 0.6767 | see note: msmarco |
+| msmarco | trec-dl-2020 | selector:msmarco | in-domain | 0.5939 | 0.6347 | 0.6534 | 0.6550 | 0.6590 | 0.6680 | 0.6721 | 0.6778 | 0.6803 | 0.6767 | see note: msmarco |
+| msmarco | trec-dl-2020 | selector:nfcorpus | transfer | 0.4598 | 0.5910 | 0.6234 | 0.6361 | 0.6488 | 0.6523 | 0.6623 | 0.6673 | 0.6723 | 0.6767 | see note: msmarco, nfcorpus |
+| msmarco | trec-dl-2020 | selector:scifact | transfer | 0.4464 | 0.6043 | 0.6378 | 0.6529 | 0.6617 | 0.6671 | 0.6703 | 0.6710 | 0.6750 | 0.6767 | see note: msmarco |
+| msmarco | trec-dl-2020 | fixed:msmarco | in-domain | 0.4580 | 0.5751 | 0.6397 | 0.6514 | 0.6637 | 0.6616 | 0.6646 | 0.6661 | 0.6715 | 0.6767 | see note: msmarco |
+| msmarco | trec-dl-2020 | fixed:nfcorpus | transfer | 0.4437 | 0.5983 | 0.6431 | 0.6616 | 0.6646 | 0.6730 | 0.6635 | 0.6741 | 0.6671 | 0.6767 | see note: msmarco, nfcorpus |
+| msmarco | trec-dl-2020 | fixed:scifact | transfer | 0.4759 | 0.5923 | 0.6414 | 0.6526 | 0.6634 | 0.6582 | 0.6669 | 0.6713 | 0.6725 | 0.6767 | see note: msmarco |
+| msmarco | trec-dl-hard | full | in-domain | 0.3681 | 0.3681 | 0.3681 | 0.3681 | 0.3681 | 0.3681 | 0.3681 | 0.3681 | 0.3681 | 0.3681 | — |
+| msmarco | trec-dl-hard | prefix | in-domain | 0.2813 | 0.2999 | 0.3363 | 0.3404 | 0.3435 | 0.3508 | 0.3586 | 0.3600 | 0.3707 | 0.3681 | see note: msmarco |
+| msmarco | trec-dl-hard | random | in-domain | 0.2088 | 0.2979 | 0.3385 | 0.3441 | 0.3543 | 0.3655 | 0.3734 | 0.3726 | 0.3678 | 0.3681 | see note: msmarco |
+| msmarco | trec-dl-hard | global-importance | in-domain | 0.2490 | 0.3157 | 0.3420 | 0.3469 | 0.3563 | 0.3610 | 0.3689 | 0.3704 | 0.3681 | 0.3681 | see note: msmarco |
+| msmarco | trec-dl-hard | global-selector | in-domain | 0.3146 | 0.3368 | 0.3462 | 0.3477 | 0.3557 | 0.3611 | 0.3577 | 0.3686 | 0.3700 | 0.3681 | see note: msmarco |
+| msmarco | trec-dl-hard | selector:msmarco | in-domain | 0.3252 | 0.3484 | 0.3509 | 0.3594 | 0.3772 | 0.3803 | 0.3781 | 0.3835 | 0.3729 | 0.3681 | see note: msmarco |
+| msmarco | trec-dl-hard | selector:nfcorpus | transfer | 0.2213 | 0.3155 | 0.3328 | 0.3483 | 0.3602 | 0.3693 | 0.3682 | 0.3720 | 0.3726 | 0.3681 | see note: msmarco, nfcorpus |
+| msmarco | trec-dl-hard | selector:scifact | transfer | 0.2174 | 0.3051 | 0.3267 | 0.3439 | 0.3537 | 0.3525 | 0.3593 | 0.3608 | 0.3640 | 0.3681 | see note: msmarco |
+| msmarco | trec-dl-hard | fixed:msmarco | in-domain | 0.2334 | 0.3082 | 0.3317 | 0.3414 | 0.3593 | 0.3631 | 0.3594 | 0.3511 | 0.3672 | 0.3681 | see note: msmarco |
+| msmarco | trec-dl-hard | fixed:nfcorpus | transfer | 0.2327 | 0.3104 | 0.3392 | 0.3390 | 0.3478 | 0.3350 | 0.3446 | 0.3667 | 0.3614 | 0.3681 | see note: msmarco, nfcorpus |
+| msmarco | trec-dl-hard | fixed:scifact | transfer | 0.2162 | 0.3201 | 0.3414 | 0.3389 | 0.3576 | 0.3526 | 0.3662 | 0.3702 | 0.3637 | 0.3681 | see note: msmarco |
+| nfcorpus | test | full | in-domain | 0.3619 | 0.3619 | 0.3619 | 0.3619 | 0.3619 | 0.3619 | 0.3619 | 0.3619 | 0.3619 | 0.3619 | — |
+| nfcorpus | test | prefix | in-domain | 0.2716 | 0.3165 | 0.3263 | 0.3394 | 0.3459 | 0.3492 | 0.3555 | 0.3609 | 0.3617 | 0.3619 | see note: nfcorpus |
+| nfcorpus | test | random | in-domain | 0.2400 | 0.2987 | 0.3183 | 0.3345 | 0.3488 | 0.3546 | 0.3582 | 0.3614 | 0.3633 | 0.3619 | see note: nfcorpus |
+| nfcorpus | test | global-importance | in-domain | 0.2471 | 0.3091 | 0.3358 | 0.3371 | 0.3501 | 0.3511 | 0.3540 | 0.3559 | 0.3620 | 0.3619 | see note: nfcorpus |
+| nfcorpus | test | global-selector | in-domain | 0.3075 | 0.3304 | 0.3436 | 0.3495 | 0.3550 | 0.3555 | 0.3581 | 0.3572 | 0.3590 | 0.3619 | see note: nfcorpus |
+| nfcorpus | test | selector:msmarco | transfer | 0.3025 | 0.3267 | 0.3455 | 0.3452 | 0.3506 | 0.3531 | 0.3572 | 0.3582 | 0.3621 | 0.3619 | see note: msmarco, nfcorpus |
+| nfcorpus | test | selector:nfcorpus | in-domain | 0.3132 | 0.3480 | 0.3607 | 0.3682 | 0.3736 | 0.3747 | 0.3751 | 0.3751 | 0.3709 | 0.3619 | see note: nfcorpus |
+| nfcorpus | test | selector:scifact | transfer | 0.2539 | 0.3094 | 0.3304 | 0.3417 | 0.3516 | 0.3556 | 0.3579 | 0.3599 | 0.3615 | 0.3619 | see note: nfcorpus |
+| nfcorpus | test | fixed:msmarco | transfer | 0.2561 | 0.3104 | 0.3281 | 0.3403 | 0.3509 | 0.3505 | 0.3540 | 0.3556 | 0.3576 | 0.3619 | see note: msmarco, nfcorpus |
+| nfcorpus | test | fixed:nfcorpus | in-domain | 0.2522 | 0.3129 | 0.3389 | 0.3494 | 0.3498 | 0.3483 | 0.3481 | 0.3514 | 0.3563 | 0.3619 | see note: nfcorpus |
+| nfcorpus | test | fixed:scifact | transfer | 0.2521 | 0.3031 | 0.3334 | 0.3399 | 0.3455 | 0.3507 | 0.3470 | 0.3500 | 0.3525 | 0.3619 | see note: nfcorpus |
+| scifact | test | full | in-domain | 0.7000 | 0.7000 | 0.7000 | 0.7000 | 0.7000 | 0.7000 | 0.7000 | 0.7000 | 0.7000 | 0.7000 | — |
+| scifact | test | prefix | in-domain | 0.5520 | 0.6387 | 0.6640 | 0.6672 | 0.6895 | 0.6915 | 0.6921 | 0.6937 | 0.6974 | 0.7000 | — |
+| scifact | test | random | in-domain | 0.5285 | 0.6379 | 0.6556 | 0.6708 | 0.6838 | 0.6914 | 0.6871 | 0.6926 | 0.7012 | 0.7000 | — |
+| scifact | test | global-importance | in-domain | 0.5559 | 0.6671 | 0.6922 | 0.6988 | 0.7049 | 0.7055 | 0.7090 | 0.7037 | 0.7019 | 0.7000 | — |
+| scifact | test | global-selector | in-domain | 0.6735 | 0.7099 | 0.7238 | 0.7256 | 0.7252 | 0.7146 | 0.7089 | 0.7070 | 0.7061 | 0.7000 | — |
+| scifact | test | selector:msmarco | transfer | 0.6142 | 0.6637 | 0.6744 | 0.6915 | 0.6937 | 0.6939 | 0.6955 | 0.6986 | 0.7007 | 0.7000 | see note: msmarco |
+| scifact | test | selector:nfcorpus | transfer | 0.5281 | 0.6251 | 0.6471 | 0.6662 | 0.6733 | 0.6818 | 0.6884 | 0.6901 | 0.6942 | 0.7000 | see note: nfcorpus |
+| scifact | test | selector:scifact | in-domain | 0.8021 | 0.8270 | 0.8353 | 0.8369 | 0.8312 | 0.8247 | 0.8142 | 0.8033 | 0.7749 | 0.7000 | — |
+| scifact | test | fixed:msmarco | transfer | 0.5722 | 0.6578 | 0.6759 | 0.6836 | 0.6903 | 0.6922 | 0.6998 | 0.7072 | 0.7006 | 0.7000 | see note: msmarco |
+| scifact | test | fixed:nfcorpus | transfer | 0.5278 | 0.6447 | 0.6738 | 0.6800 | 0.6939 | 0.6859 | 0.6909 | 0.6955 | 0.7015 | 0.7000 | see note: nfcorpus |
+| scifact | test | fixed:scifact | in-domain | 0.5474 | 0.6424 | 0.6784 | 0.7043 | 0.7106 | 0.7052 | 0.7100 | 0.7086 | 0.7042 | 0.7000 | — |
 
 ## Transfer to evaluation query sets (reported, not counted in criterion 1)
 
