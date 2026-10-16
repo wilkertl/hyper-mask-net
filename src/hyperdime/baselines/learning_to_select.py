@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import torch
 from torch import Tensor, nn
 from torch.nn import functional as F
 
@@ -17,3 +18,26 @@ class LinearSelector(nn.Module):
 
     def forward(self, query_embeddings: Tensor) -> Tensor:
         return F.log_softmax(self.projection(query_embeddings).float(), dim=-1)
+
+
+class GeometricSelector(LinearSelector):
+    """``log(q_d² · Var(x_d) + ε) + (W q + b)_d`` followed by log-softmax (S2).
+
+    The prior is fixed (a buffer computed from the corpus's document embeddings), so the only
+    learned parameters are the L2S linear map, which starts at zero: an untrained geometric
+    selector ranks dimensions exactly as the ``variance`` method.
+    """
+
+    EPSILON = 1e-12
+    variance: Tensor
+
+    def __init__(self, variance: Tensor) -> None:
+        super().__init__(variance.shape[0])
+        self.register_buffer("variance", variance.detach().float().clone())
+        nn.init.zeros_(self.projection.weight)
+        nn.init.zeros_(self.projection.bias)
+
+    def forward(self, query_embeddings: Tensor) -> Tensor:
+        queries = query_embeddings.float()
+        prior = torch.log(queries**2 * self.variance + self.EPSILON)
+        return F.log_softmax(prior + self.projection(queries), dim=-1)

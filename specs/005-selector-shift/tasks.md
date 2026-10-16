@@ -68,9 +68,9 @@ synthetic result files regenerate byte-identically and give the expected criteri
 
 ## Phase 7: Runs on DataPolicy-4090
 
-- [ ] T025 Sync the branch to DataPolicy-4090; train `--recipe seeded` for seeds 0, 1, 2 in scifact, nfcorpus, msmarco; record wall times and whether seed 0 matches F3's `wide-grid` checkpoint
-- [ ] T026 Run `hyperdime transfer-matrix`; record wall time against SC-006
-- [ ] T027 Generate reports/E1 twice on the host (identical bytes), copy it back, and commit it on `exp/E1-selector-shift`
+- [X] T025 Sync the branch to DataPolicy-4090; train `--recipe seeded` for seeds 0, 1, 2 in scifact, nfcorpus, msmarco; record wall times and whether seed 0 matches F3's `wide-grid` checkpoint — done on DataPolicy-4090 at `8f2d939`: 6 s / 15 s / 2.4 min per seed; seed 0 is tensor-identical to F3's `wide-grid` checkpoint in all three environments
+- [X] T026 Run `hyperdime transfer-matrix`; record wall time against SC-006 — done: 2.1 min (SC-006: 30 min)
+- [X] T027 Generate reports/E1 twice on the host (identical bytes), copy it back, and commit it on `exp/E1-selector-shift` — done: generated twice on the host, byte-identical
 - [ ] T028 Run `hyperdime decide G2 --adr docs/decisions/ADR-0007-g2-selector-shift.md` and open it as proposed for the researcher's decision; on acceptance, tag the merge `g2-selector-shift` (issue #20)
 
 ## Dependencies
@@ -102,3 +102,8 @@ on the branch, so every number comes from one committed version.
 - [X] T033 State in the E1 report (payoff and methods sections) and in the G2 context that `global-selector` is trained on all three environments' training labels, never test labels, in src/hyperdime/reports/e1.py and src/hyperdime/reports/g2.py per spec edge case "global selector … recorded wherever it appears" (missing)
 - [X] T034 Remove `criterion_1.json` from src/hyperdime/cli/transfer_matrix.py (the report recomputes criterion 1 from `cells.jsonl`) — removed, per contracts/cli.md (unrequested)
 - [X] T035 List `methods.csv` and `environment_pairs.csv` among the `report E1` tables in specs/005-selector-shift/contracts/cli.md per contracts/cli.md (unrequested)
+
+## Phase 9: Budget progression
+
+- [X] T036 Score every masked method at every 10% budget in `hyperdime transfer-matrix` (fixed subsets rebuilt per budget; `evaluate_methods` takes per-budget importance), keep cells and G2 at k = 307, and add `progression.csv` and its section to the E1 report, with tests in tests/unit/evaluation/test_runs.py, tests/unit/reports/test_e1.py, and tests/integration/test_f4_pipeline.py per FR-019
+- [X] T037 Rerun `hyperdime transfer-matrix` and `report E1` on DataPolicy-4090; record wall time against SC-006 and confirm the k = 307 cells and G2 are unchanged (run `20261015T004735Z-4e76ec6e`, commit `26e903e`: 717 s, under 30 minutes; every k = 307 table and G2 byte-identical to run `20261014T021651Z-08a6e7d9`)

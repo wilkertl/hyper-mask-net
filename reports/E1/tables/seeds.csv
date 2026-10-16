@@ -1,0 +1,10 @@
+environment,seed,cell,validation nDCG@10,test nDCG@10,note
+msmarco,0,wide-grid-t0.5-e200,0.3239,0.3577,see note: msmarco
+msmarco,1,wide-grid-t0.5-e200,0.3216,0.3570,see note: msmarco
+msmarco,2,wide-grid-t0.5-e200,0.3216,0.3570,see note: msmarco
+nfcorpus,0,wide-grid-t0.2-e500,0.3670,0.3599,see note: nfcorpus
+nfcorpus,1,wide-grid-t0.2-e500,0.3562,0.3618,see note: nfcorpus
+nfcorpus,2,wide-grid-t0.2-e500,0.3599,0.3604,see note: nfcorpus
+scifact,0,wide-grid-t0.1-e500,0.8238,0.8366,—
+scifact,1,wide-grid-t0.1-e500,0.8157,0.8389,—
+scifact,2,wide-grid-t0.1-e500,0.8201,0.8305,—

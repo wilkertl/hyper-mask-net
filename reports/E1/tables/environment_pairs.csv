@@ -1,0 +1,4 @@
+environments,cross overlap@k,within overlap@k (each)
+nfcorpus / msmarco,0.3267,"msmarco 0.9429, nfcorpus 0.7350"
+scifact / msmarco,0.3376,"msmarco 0.9429, scifact 0.5555"
+scifact / nfcorpus,0.3240,"nfcorpus 0.7350, scifact 0.5555"

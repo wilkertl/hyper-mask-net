@@ -13,6 +13,7 @@ from hyperdime.evaluation.runs import METRICS
 from hyperdime.evaluation.transfer import degradation_tests, seed_average, transfer_cell
 
 ENVS = ("msmarco", "nfcorpus", "scifact")
+BUDGETS = (102, 307, 512)
 BASELINES = {"prefix": 0.15, "random": 0.2, "global-importance": 0.1, "global-selector": 0.05}
 
 
@@ -73,22 +74,26 @@ def build(
         for test in ENVS:
             for set_name in ("test", "trec-dl-2019") if test == "msmarco" else ("test",):
                 results = [_result(test, set_name, "full", 1024, [v + 0.02 for v in base])]
-                results += [
-                    _result(test, set_name, m, 307, [v - d for v in base])
-                    for m, d in BASELINES.items()
-                ]
-                for train in ENVS:
-                    drop = 0.0 if train == test else shift
-                    values = [v - drop + e for v, e in zip(base, noise, strict=True)]
+                for k in BUDGETS:
+                    step = (k - 307) / 1024  # each budget scores a little differently
                     results += [
-                        _result(test, set_name, f"selector:{train}:s{s}", 307, values)
-                        for s in seeds
+                        _result(test, set_name, m, k, [v - d + step for v in base])
+                        for m, d in BASELINES.items()
                     ]
-                    results.append(
-                        _result(test, set_name, f"fixed:{train}", 307, [v - 0.05 for v in base])
-                    )
+                    for train in ENVS:
+                        drop = 0.0 if train == test else shift
+                        values = [v - drop + e + step for v, e in zip(base, noise, strict=True)]
+                        results += [
+                            _result(test, set_name, f"selector:{train}:s{s}", k, values)
+                            for s in seeds
+                        ]
+                        results.append(
+                            _result(
+                                test, set_name, f"fixed:{train}", k, [v - 0.05 + step for v in base]
+                            )
+                        )
                 dump_records(results, writer.path(f"results-{test}-{set_name}.jsonl"))
-                by_name = {r.selector: r for r in results}
+                by_name = {r.selector: r for r in results if r.k == 307}
                 for train in ENVS:
                     averaged[(train, test, set_name)] = seed_average(
                         [by_name[f"selector:{train}:s{s}"].per_query for s in seeds]

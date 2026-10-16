@@ -1,0 +1,16 @@
+test,family,cell,mean 10%-90%,k = 307
+msmarco,l2s (3 seeds),—,0.3607,0.3572
+msmarco,fixed-307-l2s,fixed-307-l2s-lr0.0001-ts0.05-b0.1,0.3663,0.3642
+msmarco,fixed-307-scratch,fixed-307-scratch-lr0.001-ts0.05-b0.1,0.3660,0.3653
+msmarco,multi-budget-l2s,multi-budget-l2s-lr0.001-ts0.05-b0.1,0.3633,0.3592
+msmarco,multi-budget-scratch,multi-budget-scratch-lr0.001-ts0.05-b0.1,0.3635,0.3604
+nfcorpus,l2s (3 seeds),—,0.3622,0.3607
+nfcorpus,fixed-307-l2s,fixed-307-l2s-lr0.0001-ts0.02-b0.1,0.3618,0.3599
+nfcorpus,fixed-307-scratch,fixed-307-scratch-lr0.001-ts0.05-b0.1,0.3642,0.3657
+nfcorpus,multi-budget-l2s,multi-budget-l2s-lr0.0001-ts0.02-b0.1,0.3618,0.3599
+nfcorpus,multi-budget-scratch,multi-budget-scratch-lr0.001-ts0.05-b0.02,0.3658,0.3669
+scifact,l2s (3 seeds),—,0.8166,0.8353
+scifact,fixed-307-l2s,fixed-307-l2s-lr0.001-ts0.02-b0.1,0.8277,0.8428
+scifact,fixed-307-scratch,fixed-307-scratch-lr0.001-ts0.02-b0.1,0.8326,0.8576
+scifact,multi-budget-l2s,multi-budget-l2s-lr0.0001-ts0.02-b0.02,0.8274,0.8478
+scifact,multi-budget-scratch,multi-budget-scratch-lr0.001-ts0.02-b0.02,0.8346,0.8471

@@ -260,10 +260,11 @@ class Criterion(BaseModel):
 
 
 class GateDecision(Record):
-    """A drafted gate outcome from result files; the researcher decides in the ADR."""
+    """A drafted gate (or experiment, e.g. S1) outcome from result files; the researcher decides
+    in the ADR."""
 
     schema_version: Literal[0] = 0
-    gate: Literal["G1", "G2", "G3", "G4", "G5"]
+    gate: Literal["G1", "G2", "G3", "G4", "G5", "S1", "S2"]
     outcome: Literal["pass", "fail"]
     criteria: Annotated[list[Criterion], Field(min_length=1)]
     context: dict[str, str]

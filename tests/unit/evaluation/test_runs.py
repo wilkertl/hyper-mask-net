@@ -64,3 +64,17 @@ def test_ratio_budgets() -> None:
     with pytest.raises(ValueError):
         ratio_budgets((0.0,))
     assert np.isclose(307 / 1024, 0.2998, atol=1e-3)
+
+
+def test_a_method_can_give_each_budget_its_own_scores() -> None:
+    per_budget = {64: _importance(3), 512: _importance(4)}
+    together = evaluate_methods(
+        _set(), {"fixed": per_budget}, [64, 512], DOCS.numpy(), DOC_IDS, environment="toy"
+    )
+    alone = [
+        evaluate_methods(
+            _set(), {"fixed": scores}, [k], DOCS.numpy(), DOC_IDS, environment="toy"
+        ).results[0]
+        for k, scores in per_budget.items()
+    ]
+    assert [r.per_query for r in together.results] == [r.per_query for r in alone]

@@ -1,0 +1,4 @@
+test,variance,L2S,global importance,share of L2S's gain,recovers half
+msmarco,0.3760,0.3607,0.3516,+2.7088,yes
+nfcorpus,0.3587,0.3622,0.3336,+0.8800,yes
+scifact,0.6964,0.8166,0.6821,+0.1058,no

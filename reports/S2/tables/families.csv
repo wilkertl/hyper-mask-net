@@ -1,0 +1,10 @@
+test,family,cell,mean 10%-90%,k = 307
+msmarco,l2s (3 seeds),—,0.3607,0.3572
+msmarco,fixed-307-prior,fixed-307-prior-lr0.0001-ts0.02-b0.1,0.3760,0.3765
+msmarco,multi-budget-prior,multi-budget-prior-lr0.0001-ts0.02-b0.1,0.3760,0.3765
+nfcorpus,l2s (3 seeds),—,0.3622,0.3607
+nfcorpus,fixed-307-prior,fixed-307-prior-lr0.001-ts0.05-b0.1,0.3726,0.3801
+nfcorpus,multi-budget-prior,multi-budget-prior-lr0.001-ts0.05-b0.1,0.3725,0.3750
+scifact,l2s (3 seeds),—,0.8166,0.8353
+scifact,fixed-307-prior,fixed-307-prior-lr0.001-ts0.02-b0.1,0.7917,0.8434
+scifact,multi-budget-prior,multi-budget-prior-lr0.001-ts0.05-b0.02,0.8017,0.8426

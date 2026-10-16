@@ -4,6 +4,12 @@
 the ADR-0003 families and records the validation-best selector of all as ``selected``;
 ``--recipe seeded`` retrains F3's ``wide-grid`` cell with ``run.seed`` (F4 research D1), one
 artifact per seed under ``selectors/seeded/<env>/seed-<n>/``.
+
+``--recipe retrieval-grid`` trains the F5 retrieval-objective grid with seed 0 and selects a cell
+on validation (F5 research D6); ``--recipe retrieval-seeded`` retrains that cell with
+``run.seed`` under ``selectors/retrieval-seeded/<env>/seed-<n>/``. ``--recipe geometric-grid``
+and ``geometric-seeded`` do the same for S2's selectors that start from the corpus's geometric
+prior (F7), under ``selectors/geometric-grid|geometric-seeded``.
 """
 
 from __future__ import annotations
@@ -18,11 +24,23 @@ from typing import Any
 from hyperdime.artifacts import latest_artifact
 from hyperdime.cli.common import add_config_arguments, run_with_config
 from hyperdime.contracts.config import RunConfig
-from hyperdime.contracts.hashing import config_hash
+from hyperdime.contracts.hashing import config_hash, file_sha256
 from hyperdime.contracts.manifests import ArtifactWriter, resolve_device, start_manifest
 from hyperdime.contracts.seeding import seed_everything
 from hyperdime.data.environments import spec_for
-from hyperdime.training.inputs import EnvironmentInputs, load_inputs
+from hyperdime.space.geometry import corpus_geometry
+from hyperdime.training.inputs import EnvironmentInputs, load_examples, load_inputs
+from hyperdime.training.retrieval_selection import (
+    INITS,
+    STEPS,
+    RetrievalCell,
+    best_retrieval,
+    family_bests,
+    retrieval_cells,
+    retrieval_summary,
+    score_on_validation_budgets,
+    train_retrieval_cells,
+)
 from hyperdime.training.selection import (
     Cell,
     Trained,
@@ -37,13 +55,26 @@ from hyperdime.training.selection import (
 )
 
 COMMAND = "train-selector"
+RECIPES = [
+    "official", "candidates", "seeded", "retrieval-grid", "retrieval-seeded", "geometric-grid",
+    "geometric-seeded",
+]  # fmt: skip
+SEEDED_RECIPES = ("seeded", "retrieval-seeded", "geometric-seeded")
+# Retrieval-objective tracks: S1 starts from scratch or L2S, S2 from the geometric prior.
+TRACK_INITS = {"retrieval": INITS, "geometric": ("prior",)}
 
 
 def register(commands: Any) -> None:
     parser = commands.add_parser(COMMAND, help="train per-environment selectors on validation")
     add_config_arguments(parser)
-    parser.add_argument("--recipe", choices=["official", "candidates", "seeded"], required=True)
+    parser.add_argument("--recipe", choices=RECIPES, required=True)
     parser.add_argument("--chunk-size", type=int, default=1_000_000)
+    parser.add_argument(
+        "--steps", type=int, default=STEPS, help="retrieval recipes: steps per cell"
+    )
+    parser.add_argument(
+        "--cells", type=int, default=None, help="retrieval-grid: train only the first N cells"
+    )
     parser.set_defaults(handler=run)
 
 
@@ -73,7 +104,7 @@ def _train(config: RunConfig, output: Path, args: argparse.Namespace) -> Path:
         "negatives": inputs.negatives_dir.name,
     }
     kind = f"selectors/{args.recipe}/{environment}"
-    if args.recipe == "seeded":
+    if args.recipe in SEEDED_RECIPES:
         kind += f"/seed-{config.run.seed}"
     with ArtifactWriter(output, kind, manifest) as writer:
         if args.recipe == "official":
@@ -81,6 +112,14 @@ def _train(config: RunConfig, output: Path, args: argparse.Namespace) -> Path:
             models = {"official": record["model"]}
         elif args.recipe == "seeded":
             record = _seeded(inputs, output, config, device, args.chunk_size, sources)
+            models = {"selector": record["model"]}
+        elif args.recipe.endswith("-grid"):
+            track = args.recipe.removesuffix("-grid")
+            record = _retrieval_grid(inputs, output, config, device, args, sources, track)
+            models = record["models"]
+        elif args.recipe.endswith("-seeded") and args.recipe != "seeded":
+            track = args.recipe.removesuffix("-seeded")
+            record = _retrieval_seeded(inputs, output, config, device, args, sources, track)
             models = {"selector": record["model"]}
         else:
             record = _candidates(inputs, output, config, device, args.chunk_size, sources)
@@ -93,6 +132,11 @@ def _train(config: RunConfig, output: Path, args: argparse.Namespace) -> Path:
                 kind="per_domain",
                 environment=environment,
                 training_manifest_sha256=fingerprint,
+            )
+        if "histories" in record:
+            writer.path("history.json").write_text(
+                json.dumps(record.pop("histories"), indent=2, sort_keys=True) + "\n",
+                encoding="utf-8",
             )
         selection = {key: value for key, value in record.items() if key not in ("model", "models")}
         selection["inputs"] = sources
@@ -208,5 +252,100 @@ def _seeded(
             "selected": candidates["selected"],
             "family_scores": candidates["family_scores"],
         },
+        "model": trained.model,
+    }
+
+
+def _l2s_start(output: Path, environment: str, seed: int) -> tuple[dict[str, Any], Any]:
+    """E1's seeded L2S selector of ``seed``, read-only; refuses a payload that changed."""
+    directory = latest_artifact(output, f"selectors/seeded/{environment}", f"seed-{seed}")
+    record, model = load_selector(directory, "selector")
+    if file_sha256(directory / record.payload.path) != record.payload.sha256:
+        raise ValueError(f"{directory} payload differs from its record")
+    return {"run": directory.name, "sha256": record.payload.sha256}, model.state_dict()
+
+
+def _prior(inputs: EnvironmentInputs, device: str, chunk_size: int) -> Any:
+    """The corpus's per-dimension variance, from document embeddings only (S2)."""
+    import torch
+
+    return torch.from_numpy(corpus_geometry(inputs.documents, chunk_size, device).variance)
+
+
+def _retrieval_grid(
+    inputs: EnvironmentInputs,
+    output: Path,
+    config: RunConfig,
+    device: str,
+    args: argparse.Namespace,
+    sources: dict[str, str],
+    track: str = "retrieval",
+) -> dict[str, Any]:
+    """Every cell of the track's grid with ``run.seed``, scored on validation; one is selected."""
+    cells = retrieval_cells(args.steps, TRACK_INITS[track])[: args.cells]
+    train, validation = load_examples(inputs, "train"), load_examples(inputs, "validation")
+    start_record, start = None, None
+    if any(cell.init == "l2s" for cell in cells):
+        start_record, start = _l2s_start(output, inputs.environment, config.run.seed)
+    prior = _prior(inputs, device, args.chunk_size) if track == "geometric" else None
+    trained = train_retrieval_cells(
+        cells, train, validation, seed=config.run.seed, device=device, start=start, prior=prior
+    )
+    score_on_validation_budgets(
+        trained, inputs.supervision, inputs.documents, inputs.doc_ids,
+        environment=inputs.environment, device=device, chunk_size=args.chunk_size,
+    )  # fmt: skip
+    chosen = best_retrieval(trained)
+    return {
+        "recipe": f"{track}-grid",
+        "objective": "retrieval",
+        **({"prior": "corpus variance q_d^2 Var(x_d)"} if prior is not None else {}),
+        "seed": config.run.seed,
+        "cells": retrieval_summary(trained),
+        "selected": chosen.cell.key,
+        "family_best": {f: t.cell.key for f, t in family_bests(trained).items()},
+        "skipped": {"train": train.skipped, "validation": validation.skipped},
+        "l2s_start": start_record,
+        "histories": {t.cell.key: t.history for t in trained},
+        "models": {t.cell.key: t.model for t in trained},
+    }
+
+
+def _retrieval_seeded(
+    inputs: EnvironmentInputs,
+    output: Path,
+    config: RunConfig,
+    device: str,
+    args: argparse.Namespace,
+    sources: dict[str, str],
+    track: str = "retrieval",
+) -> dict[str, Any]:
+    """The track grid's selected cell, trained once with ``run.seed`` (F5 research D9)."""
+    grid_dir = latest_artifact(output, f"selectors/{track}-grid", inputs.environment)
+    grid = json.loads((grid_dir / "selection.json").read_text(encoding="utf-8"))
+    if grid["inputs"] != sources:
+        raise ValueError(f"{grid_dir} was trained on other inputs; rerun --recipe {track}-grid")
+    cell = RetrievalCell(**grid["cells"][grid["selected"]]["cell"])
+    start_record, start = None, None
+    if cell.init == "l2s":
+        start_record, start = _l2s_start(output, inputs.environment, config.run.seed)
+    prior = _prior(inputs, device, args.chunk_size) if cell.init == "prior" else None
+    train, validation = load_examples(inputs, "train"), load_examples(inputs, "validation")
+    (trained,) = train_retrieval_cells(
+        [cell], train, validation, seed=config.run.seed, device=device, start=start, prior=prior
+    )
+    score_on_validation_budgets(
+        [trained], inputs.supervision, inputs.documents, inputs.doc_ids,
+        environment=inputs.environment, device=device, chunk_size=args.chunk_size,
+    )  # fmt: skip
+    return {
+        "recipe": f"{track}-seeded",
+        "objective": "retrieval",
+        "cell": asdict(cell),
+        "seed": config.run.seed,
+        "validation": retrieval_summary([trained])[cell.key],
+        "source": {"run": grid_dir.name, "cell": grid["selected"]},
+        "l2s_start": start_record,
+        "histories": {cell.key: trained.history},
         "model": trained.model,
     }

@@ -1,0 +1,10 @@
+environment,seed,steps,best step,best validation rerank nDCG@10,final soft mass
+msmarco,0,20000,19000,0.7032,0.9327
+msmarco,1,20000,15000,0.7034,0.9327
+msmarco,2,20000,18000,0.7031,0.9327
+nfcorpus,0,20000,0,0.6139,0.9377
+nfcorpus,1,20000,0,0.6154,0.9379
+nfcorpus,2,20000,0,0.6113,0.9380
+scifact,0,20000,1000,0.9259,0.9868
+scifact,1,20000,9000,0.9263,0.9869
+scifact,2,20000,16000,0.9264,0.9867

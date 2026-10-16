@@ -1,0 +1,13 @@
+test,query set,summary,L2S,retrieval,diff,ci_low,ci_high,p,note
+msmarco,trec-dl-2019,"mean 10%-90%, ndcg@10",0.6470,0.6457,-0.0013,-0.0117,+0.0084,0.8168,see note: msmarco
+msmarco,trec-dl-2019,"mean 10%-90%, ap",0.4162,0.4241,+0.0079,-0.0002,+0.0163,0.0666,see note: msmarco
+msmarco,trec-dl-2019,"k = 307, ndcg@10",0.6348,0.6349,+0.0001,-0.0195,+0.0193,0.9950,see note: msmarco
+msmarco,trec-dl-2019,"k = 307, ap",0.4051,0.4207,+0.0156,+0.0004,+0.0322,0.0599,see note: msmarco
+msmarco,trec-dl-2020,"mean 10%-90%, ndcg@10",0.6549,0.6588,+0.0039,-0.0052,+0.0131,0.4097,see note: msmarco
+msmarco,trec-dl-2020,"mean 10%-90%, ap",0.4202,0.4265,+0.0062,-0.0006,+0.0132,0.0946,see note: msmarco
+msmarco,trec-dl-2020,"k = 307, ndcg@10",0.6534,0.6522,-0.0012,-0.0189,+0.0155,0.8904,see note: msmarco
+msmarco,trec-dl-2020,"k = 307, ap",0.4098,0.4186,+0.0089,-0.0062,+0.0240,0.2578,see note: msmarco
+msmarco,trec-dl-hard,"mean 10%-90%, ndcg@10",0.3640,0.3559,-0.0080,-0.0190,+0.0028,0.1583,see note: msmarco
+msmarco,trec-dl-hard,"mean 10%-90%, ap",0.2286,0.2246,-0.0041,-0.0109,+0.0028,0.2533,see note: msmarco
+msmarco,trec-dl-hard,"k = 307, ndcg@10",0.3509,0.3478,-0.0031,-0.0219,+0.0154,0.7491,see note: msmarco
+msmarco,trec-dl-hard,"k = 307, ap",0.2198,0.2181,-0.0018,-0.0152,+0.0129,0.8157,see note: msmarco

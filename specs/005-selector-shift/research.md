@@ -49,6 +49,10 @@ each family named below.
   `EvaluationResult` is written with `protocol = "transfer"` when A ≠ B, `"in-domain"` otherwise.
 - **Rationale**: one corpus pass per query set, as E0 (MS MARCO dev: about 7,000 queries × 16
   variants, fewer than E0's 61).
+- **Amendment (FR-019)**: every masked method is also scored at each 10% budget below 1,024, in the
+  same pass (1 + 16 × 9 = 145 variants; about 4 GB of float32 queries for MS MARCO dev). `fixed:<A>`
+  is rebuilt at each budget from that budget's selection frequencies (D6), so the method maps
+  each k to its own importance. Only k = 307 feeds the cells and G2.
 
 ## D4. One paired test per ordered pair
 
@@ -81,7 +85,9 @@ each family named below.
   lower index. As a method it is a constant importance vector `1024 − rank`, so `top_k_mask`
   returns exactly that subset for every query. Reported, per test environment B: the in-domain
   selector against `fixed:A` for each A (including A = B), paired test, Holm over the nine
-  comparisons. Not a G2 criterion (clarification Q2).
+  comparisons. Not a G2 criterion (clarification Q2). For the budget progression (FR-019) the same
+  rule gives a k-dimension subset at every budget k; `fixed_subsets.json` maps each environment to
+  its subset per budget.
 - **Rationale**: Training queries only, so the subset is a deployable baseline; rank-valued
   importance makes the mask independent of `topk`'s tie order.
 

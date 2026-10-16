@@ -20,6 +20,7 @@ from hyperdime.evaluation.transfer import ALPHA, seed_average
 from hyperdime.reports.e0 import _csv, _fmt, _markdown, _yes
 
 HEADLINE_K = 307
+DIM = 1024
 MIN_SEEDS = 3
 BASELINES = ("full", "prefix", "random", "global-importance", "global-selector")
 MEASURES = ("overlap", "js", "kl_ab", "kl_ba", "spearman_importance", "spearman_frequency")
@@ -55,6 +56,7 @@ class E1Results:
     environments: list[str]
     seeds: list[int]
     results: dict[tuple[str, str], dict[str, EvaluationResult]]  # (test env, set) -> method
+    budgets: dict[tuple[str, str], dict[tuple[str, int], EvaluationResult]]  # -> (method, k)
     cells: list[TransferCell]
     fit: dict[str, Any]
     behavior: dict[str, Any]
@@ -69,11 +71,15 @@ def load(root: Path) -> E1Results:
     sources = _json(directory / "inputs.json")
     environments = sorted(e for e in sources if e != "global")
     results: dict[tuple[str, str], dict[str, EvaluationResult]] = {}
+    budgets: dict[tuple[str, str], dict[tuple[str, int], EvaluationResult]] = {}
     for path in sorted(directory.glob("results-*.jsonl")):
         records = load_records(EvaluationResult, path)
         test = records[0].environment
         query_set = path.stem.removeprefix(f"results-{test}-")
-        results[(test, query_set)] = {r.selector: r for r in records}
+        results[(test, query_set)] = {
+            r.selector: r for r in records if r.k == HEADLINE_K or r.selector == "full"
+        }
+        budgets[(test, query_set)] = {(r.selector, r.k): r for r in records}
     cells = load_records(TransferCell, directory / "cells.jsonl")
     seeds = sorted(cells[0].seeds)
     if len(seeds) < MIN_SEEDS:
@@ -100,6 +106,7 @@ def load(root: Path) -> E1Results:
         environments,
         seeds,
         results,
+        budgets,
         cells,
         _json(directory / "fit.json"),
         _json(directory / "behavior.json"),
@@ -179,6 +186,33 @@ def fixed_subset_rows(e1: E1Results) -> list[dict[str, Any]]:
     return comparisons(e1, {t: [f"fixed:{a}" for a in e1.environments] for t in e1.environments})
 
 
+def progression(e1: E1Results) -> list[list[str]]:
+    """Mean nDCG@10 of every method at every budget; seeds of a selector are averaged, and the
+    last column (k = 1024) is the full query for every method."""
+    ks = sorted({k for found in e1.budgets.values() for method, k in found if method != "full"})
+    methods = [m for m in BASELINES if m != "full"]
+    methods += [f"selector:{env}" for env in e1.environments]
+    methods += [f"fixed:{env}" for env in e1.environments]
+    header = [f"{round(100 * k / DIM)}% (k={k})" for k in [*ks, DIM]]
+    rows = [["test", "query set", "method", "protocol", *header, "note"]]
+    for (test, query_set), found in sorted(e1.budgets.items()):
+        full = found[("full", DIM)].metrics["ndcg@10"]
+        rows.append([test, query_set, "full", "in-domain", *[_fmt(full)] * len(header), "—"])
+        for method in methods:
+            seeds = [method]
+            if method.startswith("selector:"):
+                seeds = [f"{method}:s{s}" for s in e1.seeds]
+            values = [
+                sum(found[(name, k)].metrics["ndcg@10"] for name in seeds) / len(seeds) for k in ks
+            ]
+            rows.append([
+                test, query_set, method, found[(seeds[0], ks[0])].protocol,
+                *(_fmt(v) for v in values), _fmt(full),
+                note(test, method.split(":")[1] if ":" in method else test),
+            ])  # fmt: skip
+    return rows
+
+
 def departures(e1: E1Results) -> list[str]:
     """Environments where F3's validation pick was not the wide-grid family F4 uses."""
     lines = []
@@ -226,7 +260,7 @@ def render(e1: E1Results) -> tuple[str, dict[str, str]]:
                 note(c.train_environment, c.test_environment),
             ])  # fmt: skip
         tables[name] = rows
-    method_rows = [["test", "query set", "method", "k", "nDCG@10", "AP"]]
+    method_rows = [["test", "query set", "method", "k", "nDCG@10", "AP"]]  # headline budget
     for (test, query_set), methods in sorted(e1.results.items()):
         ordered = [m for m in BASELINES if m in methods]
         for method in ordered + sorted(set(methods) - set(ordered)):
@@ -234,6 +268,7 @@ def render(e1: E1Results) -> tuple[str, dict[str, str]]:
             method_rows.append([test, query_set, method, str(r.k), _fmt(r.metrics["ndcg@10"]),
                                 _fmt(r.metrics["ap"])])  # fmt: skip
     tables["methods"] = method_rows
+    tables["progression"] = progression(e1)
     seed_rows = [["environment", "seed", "cell", "validation nDCG@10", "test nDCG@10", "note"]]
     for env in e1.environments:
         for seed in e1.seeds:
@@ -317,6 +352,16 @@ def render(e1: E1Results) -> tuple[str, dict[str, str]]:
         "overlap@k is the mean over seed pairs of the two environments' selectors.",
         "",
         *_markdown(tables["transfer"]),
+    ]
+    lines += [
+        "",
+        "## nDCG@10 by budget (every 10% of the 1024 dimensions)",
+        "",
+        "Every method at every budget on every query set, exact scoring; `selector:<env>` is the",
+        "mean over that environment's seeds; at k = 1024 every mask keeps the full query. Reported",
+        f"for context: gate G2 reads k = {HEADLINE_K} only.",
+        "",
+        *_markdown(tables["progression"]),
     ]
     if len(tables["trec"]) > 1:
         lines += [

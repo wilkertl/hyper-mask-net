@@ -1,5 +1,9 @@
 """``hyperdime transfer-matrix``: every seeded selector on every environment (F4 US2, US3).
 
+Every method is scored at each 10% budget (k = 102 ... 921; k = 1024 is the full query) so the
+report can show nDCG@10 against the budget; transfer cells, the fit test, and the behavior
+battery stay at the headline k = 307 that gate G2 reads.
+
 No model is trained or updated: checkpoints are loaded read-only and their payload hashes checked.
 Test and evaluation-set judgments are read only to score rankings; fixed subsets and the fit test
 use training labels; the behavior battery reads query embeddings only.
@@ -11,7 +15,7 @@ import argparse
 import json
 from collections.abc import Mapping, Sequence
 from pathlib import Path
-from typing import Any
+from typing import Any, Protocol
 
 import numpy as np
 import torch
@@ -45,7 +49,14 @@ from hyperdime.contracts.seeding import seed_everything
 from hyperdime.contracts.validation import ContractError
 from hyperdime.data.prepare import DatasetBundle, load_environment
 from hyperdime.embeddings.cache import load_embeddings
-from hyperdime.evaluation.runs import METRICS, QuerySet, evaluate_methods
+from hyperdime.evaluation.runs import (
+    DIM,
+    METRICS,
+    Importance,
+    QuerySet,
+    evaluate_methods,
+    ratio_budgets,
+)
 from hyperdime.evaluation.selector_shift import (
     group_permutation_test,
     overlap_at_k,
@@ -70,6 +81,7 @@ from hyperdime.training.selection import HEADLINE_K, load_selector
 COMMAND = "transfer-matrix"
 ENVIRONMENTS = ("scifact", "nfcorpus", "msmarco")
 SEEDS = (0, 1, 2)
+BUDGETS = tuple(k for k in ratio_budgets() if k < DIM)  # k = DIM is the unmasked query
 
 
 def register(commands: Any) -> None:
@@ -89,7 +101,17 @@ def selector_name(environment: str, seed: int) -> str:
     return f"selector:{environment}:s{seed}"
 
 
-class _Environment:
+class FitSource(Protocol):
+    """What the ranking-fit test reads: training-label inputs, a global-importance target, and
+    per-seed selector scores."""
+
+    inputs: EnvironmentInputs
+    mean_target: Tensor
+
+    def scores(self, queries: Tensor) -> dict[int, Tensor]: ...
+
+
+class SeededEnvironment:
     """One environment's inputs, selectors, and baselines, loaded read-only."""
 
     def __init__(self, root: Path, name: str, seeds: Sequence[int]) -> None:
@@ -126,11 +148,10 @@ class _Environment:
                 raise ContractError(f"{selector_name(self.name, seed)} gives non-finite scores")
         return found
 
-    def fixed_subset(self) -> Tensor:
-        train = self.inputs.supervision.train[0]
-        return fixed_subset(
-            [selection_frequency(s, HEADLINE_K) for s in self.scores(train).values()], HEADLINE_K
-        )
+    def fixed_subsets(self, budgets: Sequence[int]) -> dict[int, Tensor]:
+        """The fixed subset at each budget, from that budget's selection frequencies."""
+        seeds = list(self.scores(self.inputs.supervision.train[0]).values())
+        return {k: fixed_subset([selection_frequency(s, k) for s in seeds], k) for k in budgets}
 
     def query_sets(self) -> list[tuple[str, str, list[str], dict[str, dict[str, int]], int, int]]:
         sets = [("test", "queries", self.bundle.query_ids("test"), judgments(self.bundle, "test"),
@@ -150,7 +171,7 @@ def _build(config: RunConfig, output: Path, args: argparse.Namespace) -> Path:
     if len(set(args.seeds)) < 2:
         raise ValueError("the seed noise floor needs at least two seeds per environment")
     device = resolve_device(config.run.device)
-    envs = {name: _Environment(output, name, args.seeds) for name in args.envs}
+    envs = {name: SeededEnvironment(output, name, args.seeds) for name in args.envs}
     global_dir = latest_artifact(output, "selectors/global", "all")
     global_model = load_selector(global_dir, "global")[1]
     manifest = start_manifest(
@@ -160,7 +181,7 @@ def _build(config: RunConfig, output: Path, args: argparse.Namespace) -> Path:
         device=device,
         determinism=seed_everything(config.run.seed),
     )
-    subsets = {name: env.fixed_subset() for name, env in envs.items()}
+    subsets = {name: env.fixed_subsets(BUDGETS) for name, env in envs.items()}
     with ArtifactWriter(output, "evaluation/E1/all", manifest) as writer:
         scores: dict[tuple[str, str, str], dict[str, float]] = {}
         averaged: dict[tuple[str, str, str], dict[str, dict[str, float]]] = {}
@@ -169,7 +190,7 @@ def _build(config: RunConfig, output: Path, args: argparse.Namespace) -> Path:
             for set_name, matrix, ids, labels, threshold, depth in test.query_sets():
                 queries = test.vectors(matrix, ids)
                 per_seed = {name: env.scores(queries) for name, env in envs.items()}
-                methods: dict[str, Tensor | None] = {
+                methods: dict[str, Importance] = {
                     "full": None,
                     "prefix": prefix_importance(queries),
                     "random": random_importance(queries, seed=0),
@@ -179,16 +200,18 @@ def _build(config: RunConfig, output: Path, args: argparse.Namespace) -> Path:
                 for name in envs:
                     for seed, importance in per_seed[name].items():
                         methods[selector_name(name, seed)] = importance
-                    methods[f"fixed:{name}"] = rank_importance(subsets[name], queries)
-                pairs = [("full", 1024)] + [(m, HEADLINE_K) for m in methods if m != "full"]
+                    methods[f"fixed:{name}"] = {
+                        k: rank_importance(subset, queries) for k, subset in subsets[name].items()
+                    }
+                pairs = [("full", DIM)] + [(m, k) for m in methods if m != "full" for k in BUDGETS]
                 evaluation = evaluate_methods(
                     QuerySet(set_name, ids, queries, labels, threshold, depth),
-                    methods, [HEADLINE_K], test.inputs.documents, test.inputs.doc_ids,
+                    methods, BUDGETS, test.inputs.documents, test.inputs.doc_ids,
                     environment=test_name, device=device, chunk_size=args.chunk_size, pairs=pairs,
                 )  # fmt: skip
                 results = [_protocol(r, test_name) for r in evaluation.results]
                 dump_records(results, writer.path(f"results-{test_name}-{set_name}.jsonl"))
-                by_name = {r.selector: r for r in results}
+                by_name = {r.selector: r for r in results if r.k == HEADLINE_K}
                 for name in envs:
                     key = (name, test_name, set_name)
                     averaged[key] = seed_average(
@@ -209,8 +232,10 @@ def _build(config: RunConfig, output: Path, args: argparse.Namespace) -> Path:
             for row in rows
         ]
         dump_records(cells, writer.path("cells.jsonl"))
-        _write_json(writer, "fixed_subsets.json", {n: s.tolist() for n, s in subsets.items()})
-        _write_json(writer, "fit.json", _fit(envs))
+        _write_json(writer, "fixed_subsets.json", {
+            n: {str(k): s.tolist() for k, s in by_k.items()} for n, by_k in subsets.items()
+        })  # fmt: skip
+        _write_json(writer, "fit.json", fit_results(envs))
         _behavior(writer, envs)
         sources = {"global": global_dir.name, **{n: e.sources for n, e in envs.items()}}
         _write_json(writer, "inputs.json", sources)
@@ -237,8 +262,8 @@ def _means(per_query: Mapping[str, Mapping[str, float]]) -> dict[str, float]:
     return {m: sum(v[m] for v in per_query.values()) / len(per_query) for m in METRICS}
 
 
-def _fit(envs: Mapping[str, _Environment]) -> dict[str, Any]:
-    """Each environment's ranking fit on validation queries, Holm over environments (D2)."""
+def fit_results(envs: Mapping[str, FitSource]) -> dict[str, Any]:
+    """Each environment's ranking fit on validation queries, Holm over environments (F4 D2)."""
     found: dict[str, dict[str, Any]] = {}
     for name, env in envs.items():
         queries, positive, negative = env.inputs.supervision.validation
@@ -261,7 +286,7 @@ def _fit(envs: Mapping[str, _Environment]) -> dict[str, Any]:
     return found
 
 
-def _behavior(writer: ArtifactWriter, envs: Mapping[str, _Environment]) -> None:
+def _behavior(writer: ArtifactWriter, envs: Mapping[str, SeededEnvironment]) -> None:
     """Every seeded selector on one balanced battery: properties, 36 pairs, and criterion 2."""
     battery = sample_battery({name: env.bundle.query_ids("test") for name, env in envs.items()})
     queries = torch.cat([envs[n].vectors("queries", ids) for n, ids in battery.ids.items()])

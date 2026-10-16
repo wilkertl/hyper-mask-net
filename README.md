@@ -118,13 +118,51 @@ judgments.
 for env in scifact nfcorpus msmarco; do
   for seed in 0 1 2; do uv run hyperdime train-selector --recipe seeded data=$env run.seed=$seed; done
 done
-uv run hyperdime transfer-matrix                  # every selector on every environment, k = 307
+uv run hyperdime transfer-matrix                  # every selector on every environment, k = 10%…100%
 uv run hyperdime report E1                        # reports/E1 with both G2 criteria
 uv run hyperdime decide G2                        # GateDecision and a proposed ADR-0007
 ```
 
 `transfer-matrix` trains nothing; test judgments only score rankings, and the behavior battery
 reads query embeddings only. Rules are fixed in `specs/005-selector-shift/research.md`.
+
+## A selector trained for retrieval, experiment S1 (F5)
+
+```bash
+for env in scifact nfcorpus msmarco; do
+  uv run hyperdime train-selector --recipe retrieval-grid data=$env     # 32 cells, seed 0
+  for seed in 0 1 2; do uv run hyperdime train-selector --recipe retrieval-seeded data=$env run.seed=$seed; done
+done
+uv run hyperdime compare-selectors               # retrieval selector vs L2S, k = 10%…100%
+uv run hyperdime report S1                       # reports/S1 with both S1 criteria
+uv run hyperdime decide S1                       # GateDecision(gate="S1") and a proposed ADR-0009
+```
+
+The selector is the same linear map as Learning-to-Select, trained on masked retrieval through a
+relaxed top-k mask; evaluation keeps the hard top-k mask. Rules are fixed in
+`specs/006-selector-objective/research.md`; ADR-0008 explains why S1 comes before G3.
+
+## Corpus geometry probe, experiment P1 (F6)
+
+```bash
+uv run hyperdime probe-geometry                  # corpus moments, covariance spectrum, q²·Var(x) at k = 10%…90%
+uv run hyperdime report P1                       # reports/P1, paired with the latest S1 run
+```
+
+## A selector started from the geometric prior, experiment S2 (F7)
+
+```bash
+for env in scifact nfcorpus msmarco; do
+  uv run hyperdime train-selector --recipe geometric-grid data=$env     # 16 cells from the prior
+  for seed in 0 1 2; do uv run hyperdime train-selector --recipe geometric-seeded data=$env run.seed=$seed; done
+done
+uv run hyperdime compare-selectors --experiment S2   # geometric vs S1 selector, variance, L2S
+uv run hyperdime report S2                           # reports/S2 with both S2 criteria
+uv run hyperdime decide S2                           # GateDecision(gate="S2") and a proposed ADR-0010
+```
+
+The geometric selector scores `log(q_d² · Var(x_d) + ε) + (W q + b)_d`: the corpus variance is a
+fixed prior from document embeddings, and `W, b` start at zero, so training learns a correction.
 
 ## Embedding service
 
