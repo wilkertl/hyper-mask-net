@@ -164,6 +164,21 @@ uv run hyperdime decide S2                           # GateDecision(gate="S2") a
 The geometric selector scores `log(q_d² · Var(x_d) + ε) + (W q + b)_d`: the corpus variance is a
 fixed prior from document embeddings, and `W, b` start at zero, so training learns a correction.
 
+## A learned weight on the geometric prior, experiment S3 (F8)
+
+```bash
+for env in scifact nfcorpus msmarco; do
+  uv run hyperdime train-selector --recipe weighted-grid data=$env      # 16 cells, a starts at 1
+  for seed in 0 1 2; do uv run hyperdime train-selector --recipe weighted-seeded data=$env run.seed=$seed; done
+done
+uv run hyperdime compare-selectors --experiment S3   # weighted vs S1, S2 selectors, variance, L2S
+uv run hyperdime report S3                           # reports/S3 with both S3 criteria
+uv run hyperdime decide S3                           # GateDecision(gate="S3") and a proposed ADR-0011
+```
+
+The weighted selector scores `a · log(q_d² · Var(x_d) + ε) + (W q + b)_d`, with the scalar `a`
+learned from 1, so training can turn the prior down where the ranking must be reshaped.
+
 ## Embedding service
 
 Qwen3-Embedding-0.6B is served by the same vLLM server as the `beir` project, through its
