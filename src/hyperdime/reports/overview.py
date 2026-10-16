@@ -59,7 +59,8 @@ def results_table(results: s1.S1Results, query_sets: set[str]) -> list[list[str]
             method = template.format(env=env)
             by_k = {k: _value(results, key, method, k) for k in budgets}
             by_k[DIM] = _value(results, key, "full", DIM)
-            best = max(by_k, key=lambda k: (by_k[k], -k))
+            # the full query is one ranking at every budget, so its budget is 1024
+            best = DIM if method == "full" else max(by_k, key=lambda k: (by_k[k], -k))
             table.append([
                 *key, method, strategy, _fmt(_value(results, key, method, None)),
                 _fmt(by_k[low]), _fmt(by_k[headline]), str(best), _fmt(by_k[best]),

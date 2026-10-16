@@ -37,6 +37,7 @@ def test_every_strategy_is_reported_on_every_test_set(report: Path) -> None:
 def test_the_full_query_has_one_value_at_every_budget(report: Path) -> None:
     full = next(r for r in _rows(report, "test") if r["method"] == "full")
     assert full["mean 10%-90%"] == full["30% (k=307)"] == full["nDCG@10 at best"]
+    assert full["best budget"] == "1024"
 
 
 def test_the_leader_is_the_masked_strategy_with_the_highest_mean(report: Path) -> None:
