@@ -1,6 +1,6 @@
 # ADR-0011: Experiment S3 — a learned weight on the geometric prior
 
-- **Status:** proposed
+- **Status:** accepted (by the researcher, 2026-10-16)
 - **Date:** 2026-10-16
 - **Issue:** #59, F8 (`specs/009-prior-weight`), experiment S3
 
@@ -34,8 +34,11 @@ Context, not decisive:
 
 ## Decision
 
-The S3 criteria read **pass**. The decision is the researcher's: accept
-this reading, or amend it here with the reasons.
+The S3 criteria read **pass**. Accepted by the researcher on 2026-10-16: the weighted
+selector is the selector later work builds on. Recorded readings: on MS MARCO it is the
+`variance` method itself (every seed kept step 0, weight 1); on NFCorpus and SciFact the learned
+weight falls near zero, so training mostly uses the prior as a starting point; on NFCorpus at the
+smallest budgets it is below the S2 selector, which a per-budget weight would address.
 
 ## Consequences
 
