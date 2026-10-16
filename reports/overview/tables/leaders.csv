@@ -1,0 +1,4 @@
+test,best masked method,mean 10%-90%,full query
+msmarco,variance,0.3760,0.3800
+nfcorpus,geometric:nfcorpus,0.3725,0.3619
+scifact,weighted:scifact,0.8340,0.7000

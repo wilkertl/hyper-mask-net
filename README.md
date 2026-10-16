@@ -179,6 +179,9 @@ uv run hyperdime decide S3                           # GateDecision(gate="S3") a
 The weighted selector scores `a · log(q_d² · Var(x_d) + ε) + (W q + b)_d`, with the scalar `a`
 learned from 1, so training can turn the prior down where the ranking must be reshaped.
 
+`uv run hyperdime report overview` writes [reports/overview](reports/overview/README.md): the
+end-to-end pipeline, every selector strategy, and their results from the latest S3 run.
+
 ## Embedding service
 
 Qwen3-Embedding-0.6B is served by the same vLLM server as the `beir` project, through its

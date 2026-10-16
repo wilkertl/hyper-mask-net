@@ -1,0 +1,31 @@
+test,query set,method,strategy,mean 10%-90%,10% (k=102),30% (k=307),best budget,nDCG@10 at best
+msmarco,trec-dl-2019,full,"full query, all 1024 dimensions",0.6654,0.6654,0.6654,1024,0.6654
+msmarco,trec-dl-2019,prefix,first k dimensions (MRL-style truncation),0.6222,0.5240,0.5990,921,0.6671
+msmarco,trec-dl-2019,random,k random dimensions,0.6213,0.4374,0.6367,1024,0.6654
+msmarco,trec-dl-2019,global-importance,one dimension ranking for every query: mean oracle target,0.6217,0.4592,0.6165,614,0.6664
+msmarco,trec-dl-2019,global-selector,one L2S selector trained on all environments together,0.6469,0.5762,0.6495,1024,0.6654
+msmarco,trec-dl-2019,l2s:msmarco,Learning-to-Select: linear map trained by KL to the oracle,0.6470,0.5829,0.6348,819,0.6696
+msmarco,trec-dl-2019,variance,label-free geometric score q_d² · Var(x_d),0.6577,0.6273,0.6540,716,0.6687
+msmarco,trec-dl-2019,retrieval:msmarco,linear map trained on masked retrieval,0.6457,0.5736,0.6349,512,0.6690
+msmarco,trec-dl-2019,geometric:msmarco,fixed geometric prior + linear correction,0.6577,0.6273,0.6540,716,0.6687
+msmarco,trec-dl-2019,weighted:msmarco,learned weight on the prior + linear correction,0.6577,0.6273,0.6540,716,0.6687
+msmarco,trec-dl-2020,full,"full query, all 1024 dimensions",0.6767,0.6767,0.6767,1024,0.6767
+msmarco,trec-dl-2020,prefix,first k dimensions (MRL-style truncation),0.6262,0.4900,0.6234,1024,0.6767
+msmarco,trec-dl-2020,random,k random dimensions,0.6414,0.4936,0.6478,614,0.6785
+msmarco,trec-dl-2020,global-importance,one dimension ranking for every query: mean oracle target,0.6364,0.4598,0.6450,921,0.6767
+msmarco,trec-dl-2020,global-selector,one L2S selector trained on all environments together,0.6531,0.5698,0.6507,921,0.6769
+msmarco,trec-dl-2020,l2s:msmarco,Learning-to-Select: linear map trained by KL to the oracle,0.6549,0.5939,0.6534,921,0.6803
+msmarco,trec-dl-2020,variance,label-free geometric score q_d² · Var(x_d),0.6700,0.6488,0.6738,1024,0.6767
+msmarco,trec-dl-2020,retrieval:msmarco,linear map trained on masked retrieval,0.6588,0.6058,0.6522,921,0.6791
+msmarco,trec-dl-2020,geometric:msmarco,fixed geometric prior + linear correction,0.6700,0.6488,0.6738,1024,0.6767
+msmarco,trec-dl-2020,weighted:msmarco,learned weight on the prior + linear correction,0.6700,0.6488,0.6738,1024,0.6767
+msmarco,trec-dl-hard,full,"full query, all 1024 dimensions",0.3681,0.3681,0.3681,1024,0.3681
+msmarco,trec-dl-hard,prefix,first k dimensions (MRL-style truncation),0.3380,0.2813,0.3363,921,0.3707
+msmarco,trec-dl-hard,random,k random dimensions,0.3359,0.2088,0.3385,716,0.3734
+msmarco,trec-dl-hard,global-importance,one dimension ranking for every query: mean oracle target,0.3420,0.2490,0.3420,819,0.3704
+msmarco,trec-dl-hard,global-selector,one L2S selector trained on all environments together,0.3509,0.3146,0.3462,921,0.3700
+msmarco,trec-dl-hard,l2s:msmarco,Learning-to-Select: linear map trained by KL to the oracle,0.3640,0.3252,0.3509,819,0.3835
+msmarco,trec-dl-hard,variance,label-free geometric score q_d² · Var(x_d),0.3683,0.3558,0.3697,204,0.3724
+msmarco,trec-dl-hard,retrieval:msmarco,linear map trained on masked retrieval,0.3559,0.3009,0.3478,716,0.3750
+msmarco,trec-dl-hard,geometric:msmarco,fixed geometric prior + linear correction,0.3683,0.3558,0.3697,204,0.3724
+msmarco,trec-dl-hard,weighted:msmarco,learned weight on the prior + linear correction,0.3683,0.3558,0.3697,204,0.3724
