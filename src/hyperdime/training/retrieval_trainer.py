@@ -62,14 +62,18 @@ def train_retrieval_selector(
     config: RetrievalConfig,
     start: Mapping[str, Tensor] | None = None,
     prior: Tensor | None = None,
+    learn_prior_weight: bool = False,
 ) -> tuple[LinearSelector, list[dict[str, float]]]:
     """Train for ``config.steps`` steps from ``start`` (or a seeded initialization; with a corpus
-    ``prior`` variance, a ``GeometricSelector`` whose linear map starts at zero); returns the best
-    validation checkpoint on the CPU and one history row per evaluation (step 0 included)."""
+    ``prior`` variance, a ``GeometricSelector`` whose linear map starts at zero, and with
+    ``learn_prior_weight`` a learned scale on that prior); returns the best validation checkpoint
+    on the CPU and one history row per evaluation (step 0 included)."""
     device = torch.device(config.device)
     torch.manual_seed(config.seed)
     model = (
-        GeometricSelector(prior) if prior is not None else LinearSelector(train.queries.shape[1])
+        GeometricSelector(prior, learn_weight=learn_prior_weight)
+        if prior is not None
+        else LinearSelector(train.queries.shape[1])
     )
     if start is not None:
         model.load_state_dict(start)
@@ -233,4 +237,7 @@ def _evaluate(
     row = {"step": float(step), "val_rerank_ndcg10": ndcg, "soft_mass": float(mass), "beta": beta}
     if loss is not None:
         row["train_loss"] = loss
+    weight = getattr(model, "prior_weight", None)
+    if weight is not None:
+        row["prior_weight"] = float(weight.detach())
     return row
