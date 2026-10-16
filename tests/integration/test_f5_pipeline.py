@@ -301,3 +301,53 @@ def test_report_s2_and_decide_s2_run_and_leave_s1_unchanged(
     assert (tmp_path / "S1a" / "README.md").read_bytes() == (
         tmp_path / "S1b" / "README.md"
     ).read_bytes()
+
+
+@pytest.fixture(scope="module")
+def s3_comparison(s2_comparison: Path, tmp_path_factory: pytest.TempPathFactory) -> Path:
+    """A copy of the S2 stack for the S3 runs."""
+    out = tmp_path_factory.mktemp("s3") / "out"
+    shutil.copytree(s2_comparison, out)
+    return out
+
+
+def _s3_run(comparison: Comparison, out: Path) -> None:
+    recipe = ("train-selector", "--recipe")
+    for env in TOY_ENVS:
+        assert run_command(comparison.configs, out, *recipe, "weighted-grid", f"data={env}",
+                           "--steps", STEPS) == 0  # fmt: skip
+        for seed in SEEDS:
+            assert run_command(comparison.configs, out, *recipe, "weighted-seeded",
+                               f"data={env}", f"run.seed={seed}") == 0  # fmt: skip
+    assert (
+        run_command(
+            comparison.configs, out, "compare-selectors", "--envs", *TOY_ENVS, "--experiment", "S3"
+        )
+        == 0
+    )
+
+
+def test_s3_trains_a_learned_prior_weight_and_scores_every_selector(
+    s3_comparison: Path, comparison: Comparison, s2_comparison: Path, tmp_path: Path
+) -> None:
+    _s3_run(comparison, s3_comparison)
+    grid = latest_artifact(s3_comparison, "selectors/weighted-grid", "toya")
+    record = json.loads((grid / "selection.json").read_text())
+    assert {c["cell"]["init"] for c in record["cells"].values()} == {"weighted"}
+    _, model = load_selector(grid, record["selected"])
+    assert isinstance(model, GeometricSelector) and model.prior_weight is not None
+    run = latest_artifact(s3_comparison, "evaluation/S3", "all")
+    methods = {r.selector for r in load_records(EvaluationResult, run / "results-toyc-test.jsonl")}
+    assert {"variance", "weighted:toyc:s0", "geometric:toyc:s0", "retrieval:toyc:s0"} <= methods
+    adr = tmp_path / "ADR-0011.md"
+    assert main(["report", "S3", "--artifacts", str(s3_comparison),
+                 "--report-dir", str(tmp_path / "S3")]) == 0  # fmt: skip
+    assert main(["decide", "S3", "--artifacts", str(s3_comparison), "--adr", str(adr)]) == 0
+    assert "- **Status:** proposed" in adr.read_text()
+    for experiment, before in (("S1", comparison.out), ("S2", s2_comparison)):
+        assert main(["report", experiment, "--artifacts", str(s3_comparison),
+                     "--report-dir", str(tmp_path / f"{experiment}a")]) == 0  # fmt: skip
+        assert main(["report", experiment, "--artifacts", str(before),
+                     "--report-dir", str(tmp_path / f"{experiment}b")]) == 0  # fmt: skip
+        a, b = (tmp_path / f"{experiment}{x}" / "README.md" for x in "ab")
+        assert a.read_bytes() == b.read_bytes()

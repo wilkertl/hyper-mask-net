@@ -10,6 +10,7 @@ numbers are never typed into this file.
 | S1 | Does the same linear selector, trained on masked retrieval, beat Learning-to-Select over the 10%–90% budgets? | in-domain | — (ADR-0008) | F5 | reported | [reports/S1](../reports/S1/README.md), [ADR-0009](decisions/ADR-0009-s1-selector-objective.md) |
 | P1 | How much of the selector's gain does a label-free geometric score `q_d² · Var(x_d)` recover, and does effective dimensionality order the best budget? | in-domain | — (probe for S2) | F6 | reported | [reports/P1](../reports/P1/README.md) |
 | S2 | Does S1's retrieval selector, started from the geometric prior `q_d² · Var(x_d)`, beat the S1 selector without losing the prior's strength? | in-domain | — (ADR-0008) | F7 | reported | [reports/S2](../reports/S2/README.md), [ADR-0010](decisions/ADR-0010-s2-geometric-prior.md) |
+| S3 | Does one learned weight on the geometric prior give a selector never worse than the S1 selector, the S2 selector, or `variance`? | in-domain | — (ADR-0008) | F8, #59 | reported | [reports/S3](../reports/S3/README.md), [ADR-0011](decisions/ADR-0011-s3-prior-weight.md) |
 | E2 | Do environment descriptors predict properties of specialized selectors? | P0, P1 descriptors | G3 | M5.4 | planned | — |
 | E3 | Does HyperDIME narrow the global vs per-domain gap on unseen environments? | P0, P1 | G4 | E3 | planned | — |
 | E4 | Which descriptor groups and design choices matter? | P0, P1 | — | E4/E5 | planned | — |

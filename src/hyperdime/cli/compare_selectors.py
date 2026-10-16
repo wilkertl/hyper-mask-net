@@ -47,6 +47,12 @@ from hyperdime.training.inputs import EnvironmentInputs
 from hyperdime.training.selection import load_selector
 
 COMMAND = "compare-selectors"
+# Selector tracks scored beyond L2S and S1's retrieval selector; the last one is the candidate.
+EXPERIMENT_TRACKS: dict[str, tuple[str, ...]] = {
+    "S1": (),
+    "S2": ("geometric",),
+    "S3": ("geometric", "weighted"),
+}
 ENVIRONMENTS = ("scifact", "nfcorpus", "msmarco")
 SEEDS = (0, 1, 2)
 
@@ -58,8 +64,8 @@ def register(commands: Any) -> None:
     parser.add_argument("--seeds", nargs="+", type=int, default=list(SEEDS))
     parser.add_argument("--chunk-size", type=int, default=1_000_000)
     parser.add_argument(
-        "--experiment", choices=["S1", "S2"], default="S1",
-        help="S2 adds the geometric selectors (F7) and the variance method",
+        "--experiment", choices=list(EXPERIMENT_TRACKS), default="S1",
+        help="S2 adds the geometric selectors (F7) and the variance method; S3 the weighted (F8)",
     )  # fmt: skip
     parser.set_defaults(handler=run)
 
@@ -140,11 +146,13 @@ def _build(config: RunConfig, output: Path, args: argparse.Namespace) -> Path:
     device = resolve_device(config.run.device)
     envs = {name: SeededEnvironment(output, name, args.seeds) for name in args.envs}
     retrieval = {name: RetrievalSelectors(output, env, args.seeds) for name, env in envs.items()}
-    s2 = args.experiment == "S2"
-    geometric = {
-        name: RetrievalSelectors(output, env, args.seeds, track="geometric")
-        for name, env in envs.items()
-        if s2
+    tracks = EXPERIMENT_TRACKS[args.experiment]
+    extra_selectors = {
+        track: {
+            name: RetrievalSelectors(output, env, args.seeds, track=track)
+            for name, env in envs.items()
+        }
+        for track in tracks
     }
     global_dir = latest_artifact(output, "selectors/global", "all")
     global_model = load_selector(global_dir, "global")[1]
@@ -162,24 +170,23 @@ def _build(config: RunConfig, output: Path, args: argparse.Namespace) -> Path:
                 torch.from_numpy(
                     corpus_geometry(env.inputs.documents, args.chunk_size, device).variance
                 )
-                if s2
+                if tracks
                 else None
             )
             for set_name, matrix, ids, labels, threshold, depth in env.query_sets():
                 queries = env.vectors(matrix, ids)
                 l2s, new = env.scores(queries), retrieval[name].scores(queries)
                 extra: dict[str, Importance] = {}
-                geo: dict[int, Tensor] = {}
+                candidate: dict[int, Tensor] = new
                 if variance is not None:
-                    geo = geometric[name].scores(queries)
-                    extra = {
-                        "variance": variance_importance(queries, variance),
-                        **{f"geometric:{name}:s{seed}": v for seed, v in geo.items()},
-                        **{
-                            f"family:{family}:{name}": selector_importance(queries, model)
-                            for family, model in geometric[name].families.items()
-                        },
-                    }
+                    extra["variance"] = variance_importance(queries, variance)
+                for track, selectors in extra_selectors.items():
+                    candidate = selectors[name].scores(queries)
+                    extra.update({f"{track}:{name}:s{seed}": v for seed, v in candidate.items()})
+                    extra.update({
+                        f"family:{family}:{name}": selector_importance(queries, model)
+                        for family, model in selectors[name].families.items()
+                    })  # fmt: skip
                 methods: dict[str, Importance] = {
                     "full": None,
                     "prefix": prefix_importance(queries),
@@ -202,13 +209,13 @@ def _build(config: RunConfig, output: Path, args: argparse.Namespace) -> Path:
                 )  # fmt: skip
                 dump_records(evaluation.results, writer.path(f"results-{name}-{set_name}.jsonl"))
                 if set_name == "test":
-                    found_overlaps[name] = (
-                        overlaps(l2s, geo, name="geometric") if s2 else overlaps(l2s, new)
+                    found_overlaps[name] = overlaps(
+                        l2s, candidate, name=tracks[-1] if tracks else "retrieval"
                     )
         _write_json(writer, "overlap.json", found_overlaps)
         fit = {"l2s": fit_results(envs), "retrieval": fit_results(retrieval)}
-        if s2:
-            fit["geometric"] = fit_results(geometric)
+        for track, selectors in extra_selectors.items():
+            fit[track] = fit_results(selectors)
         _write_json(writer, "fit.json", fit)
         sources = {
             "global": global_dir.name,
@@ -217,7 +224,11 @@ def _build(config: RunConfig, output: Path, args: argparse.Namespace) -> Path:
                     "l2s": {k: v for k, v in env.sources.items() if k.startswith("seed-")},
                     **{k: v for k, v in env.sources.items() if not k.startswith("seed-")},
                     **retrieval[name].sources,
-                    **(geometric[name].sources if s2 else {}),
+                    **{
+                        key: value
+                        for selectors in extra_selectors.values()
+                        for key, value in selectors[name].sources.items()
+                    },
                 }
                 for name, env in envs.items()
             },

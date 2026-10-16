@@ -145,3 +145,21 @@ def test_a_prior_selector_starts_as_the_variance_method_and_learns_past_a_bad_pr
     )
     top = model(VALIDATION.queries).topk(PLANTED, dim=-1).indices
     assert ((top < PLANTED).sum(-1) >= PLANTED - 1).float().mean() >= 0.9
+
+
+def test_a_learned_prior_weight_drops_on_a_misleading_prior_and_is_recorded() -> None:
+    prior = TRAIN.documents.var(0, correction=0)
+    config = RetrievalConfig(**{**CONFIG.__dict__, "steps": 300, "eval_every": 100, "lr": 5e-2})
+    model, history = train_retrieval_selector(
+        TRAIN, VALIDATION, config, prior=prior, learn_prior_weight=True
+    )
+    assert [h["prior_weight"] for h in history][0] == 1.0
+    assert model.prior_weight.item() < 0.5
+
+
+def test_unweighted_histories_carry_no_prior_weight() -> None:
+    config = RetrievalConfig(**{**CONFIG.__dict__, "steps": 10, "eval_every": 10})
+    _, history = train_retrieval_selector(
+        TRAIN, VALIDATION, config, prior=TRAIN.documents.var(0, correction=0)
+    )
+    assert all("prior_weight" not in h for h in history)

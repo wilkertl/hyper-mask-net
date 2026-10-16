@@ -66,3 +66,14 @@ def test_a_prior_cell_is_refused_without_a_prior() -> None:
     cell = RetrievalCell("fixed-307", "prior", 1e-3, 0.05, 0.1, steps=1)
     with pytest.raises(ValueError, match="geometric prior"):
         train_retrieval_cells([cell], cast(RetrievalExamples, None), cast(RetrievalExamples, None))
+
+
+def test_the_s3_grid_has_16_weighted_cells() -> None:
+    cells = retrieval_cells(inits=("weighted",))
+    assert len(cells) == 16 and {c.init for c in cells} == {"weighted"}
+
+
+def test_a_weighted_cell_is_refused_without_a_prior() -> None:
+    cell = RetrievalCell("fixed-307", "weighted", 1e-3, 0.05, 0.1, steps=1)
+    with pytest.raises(ValueError, match="geometric prior"):
+        train_retrieval_cells([cell], cast(RetrievalExamples, None), cast(RetrievalExamples, None))

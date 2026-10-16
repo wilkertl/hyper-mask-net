@@ -25,14 +25,18 @@ class GeometricSelector(LinearSelector):
 
     The prior is fixed (a buffer computed from the corpus's document embeddings), so the only
     learned parameters are the L2S linear map, which starts at zero: an untrained geometric
-    selector ranks dimensions exactly as the ``variance`` method.
+    selector ranks dimensions exactly as the ``variance`` method. With ``learn_weight`` (S3) the
+    prior is scaled by one learned scalar ``prior_weight`` that starts at 1.
     """
 
     EPSILON = 1e-12
     variance: Tensor
 
-    def __init__(self, variance: Tensor) -> None:
+    def __init__(self, variance: Tensor, learn_weight: bool = False) -> None:
         super().__init__(variance.shape[0])
+        self.prior_weight: nn.Parameter | None = (
+            nn.Parameter(torch.ones(())) if learn_weight else None
+        )
         self.register_buffer("variance", variance.detach().float().clone())
         nn.init.zeros_(self.projection.weight)
         nn.init.zeros_(self.projection.bias)
@@ -40,4 +44,6 @@ class GeometricSelector(LinearSelector):
     def forward(self, query_embeddings: Tensor) -> Tensor:
         queries = query_embeddings.float()
         prior = torch.log(queries**2 * self.variance + self.EPSILON)
+        if self.prior_weight is not None:
+            prior = self.prior_weight * prior
         return F.log_softmax(prior + self.projection(queries), dim=-1)

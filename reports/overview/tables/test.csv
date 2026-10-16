@@ -1,0 +1,31 @@
+test,query set,method,strategy,mean 10%-90%,10% (k=102),30% (k=307),best budget,nDCG@10 at best
+msmarco,test,full,"full query, all 1024 dimensions",0.3800,0.3800,0.3800,1024,0.3800
+msmarco,test,prefix,first k dimensions (MRL-style truncation),0.3481,0.2598,0.3385,1024,0.3800
+msmarco,test,random,k random dimensions,0.3468,0.2397,0.3425,1024,0.3800
+msmarco,test,global-importance,one dimension ranking for every query: mean oracle target,0.3516,0.2435,0.3524,1024,0.3800
+msmarco,test,global-selector,one L2S selector trained on all environments together,0.3627,0.3064,0.3591,1024,0.3800
+msmarco,test,l2s:msmarco,Learning-to-Select: linear map trained by KL to the oracle,0.3607,0.3047,0.3572,1024,0.3800
+msmarco,test,variance,label-free geometric score q_d² · Var(x_d),0.3760,0.3584,0.3765,614,0.3806
+msmarco,test,retrieval:msmarco,linear map trained on masked retrieval,0.3658,0.3185,0.3645,1024,0.3800
+msmarco,test,geometric:msmarco,fixed geometric prior + linear correction,0.3760,0.3584,0.3765,614,0.3806
+msmarco,test,weighted:msmarco,learned weight on the prior + linear correction,0.3760,0.3584,0.3765,614,0.3806
+nfcorpus,test,full,"full query, all 1024 dimensions",0.3619,0.3619,0.3619,1024,0.3619
+nfcorpus,test,prefix,first k dimensions (MRL-style truncation),0.3363,0.2716,0.3263,1024,0.3619
+nfcorpus,test,random,k random dimensions,0.3309,0.2400,0.3183,921,0.3633
+nfcorpus,test,global-importance,one dimension ranking for every query: mean oracle target,0.3336,0.2471,0.3358,921,0.3620
+nfcorpus,test,global-selector,one L2S selector trained on all environments together,0.3462,0.3075,0.3436,1024,0.3619
+nfcorpus,test,l2s:nfcorpus,Learning-to-Select: linear map trained by KL to the oracle,0.3622,0.3132,0.3607,716,0.3751
+nfcorpus,test,variance,label-free geometric score q_d² · Var(x_d),0.3587,0.3443,0.3596,716,0.3630
+nfcorpus,test,retrieval:nfcorpus,linear map trained on masked retrieval,0.3622,0.3132,0.3607,716,0.3751
+nfcorpus,test,geometric:nfcorpus,fixed geometric prior + linear correction,0.3725,0.3540,0.3752,409,0.3797
+nfcorpus,test,weighted:nfcorpus,learned weight on the prior + linear correction,0.3674,0.3166,0.3681,614,0.3823
+scifact,test,full,"full query, all 1024 dimensions",0.7000,0.7000,0.7000,1024,0.7000
+scifact,test,prefix,first k dimensions (MRL-style truncation),0.6651,0.5520,0.6640,1024,0.7000
+scifact,test,random,k random dimensions,0.6610,0.5285,0.6556,921,0.7012
+scifact,test,global-importance,one dimension ranking for every query: mean oracle target,0.6821,0.5559,0.6922,716,0.7090
+scifact,test,global-selector,one L2S selector trained on all environments together,0.7105,0.6735,0.7238,409,0.7256
+scifact,test,l2s:scifact,Learning-to-Select: linear map trained by KL to the oracle,0.8166,0.8021,0.8353,409,0.8369
+scifact,test,variance,label-free geometric score q_d² · Var(x_d),0.6964,0.6721,0.6973,819,0.7027
+scifact,test,retrieval:scifact,linear map trained on masked retrieval,0.8282,0.8060,0.8458,409,0.8473
+scifact,test,geometric:scifact,fixed geometric prior + linear correction,0.7970,0.8358,0.8390,204,0.8401
+scifact,test,weighted:scifact,learned weight on the prior + linear correction,0.8340,0.8288,0.8517,307,0.8517
