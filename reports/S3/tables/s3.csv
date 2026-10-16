@@ -1,0 +1,3 @@
+criterion,value,threshold,met
+"SC-001 worse than none of the S1 selector, S2 selector, variance (Holm, 0.05)",none,none,yes
+"SC-002 better than the S1 selector (mean nDCG@10, 10%-90%, Holm, 0.05)",3 of 3 environments,>= 2 of 3,yes
