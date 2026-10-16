@@ -214,6 +214,10 @@ def load_selector(artifact_dir: Path, name: str) -> tuple[SelectorCheckpoint, Li
 
     record = load_record(SelectorCheckpoint, artifact_dir / f"{name}.json")
     state = load_file(str(artifact_dir / record.payload.path))
-    model = GeometricSelector(state["variance"]) if "variance" in state else LinearSelector()
+    model = (
+        GeometricSelector(state["variance"], learn_weight="prior_weight" in state)
+        if "variance" in state
+        else LinearSelector()
+    )
     model.load_state_dict(state)
     return record, model.eval()
