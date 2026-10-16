@@ -22,6 +22,7 @@ from hyperdime.reports.e0 import _csv, _fmt, _markdown, _yes
 from hyperdime.reports.e1 import NOTES, note
 
 HEADLINE_K = 307
+SEEDED = ("l2s", "retrieval", "geometric", "weighted")  # selectors with one result per seed
 DIM = 1024
 MIN_SEEDS = 3
 BASELINES = ("prefix", "random", "global-importance", "global-selector")
@@ -117,7 +118,7 @@ def unchanged_starts(s1: S1Results) -> list[str]:
     found = []
     for env in s1.environments:
         grid = s1.grids[env]
-        start = "l2s" if s1.candidate == "retrieval" else "prior"
+        start = {"retrieval": "l2s", "geometric": "prior", "weighted": "weighted"}[s1.candidate]
         if grid["cells"][grid["selected"]]["cell"]["init"] != start:
             continue
         best = [
@@ -149,7 +150,7 @@ def per_query(
     """Per-query metric of ``method`` at budget ``k``; ``l2s:<env>`` and ``retrieval:<env>`` are
     averaged over seeds per query (as in E1)."""
     names = [method]
-    if method.split(":")[0] in ("l2s", "retrieval", "geometric"):
+    if method.split(":")[0] in SEEDED:
         names = [f"{method}:s{s}" for s in s1.seeds]
     found = s1.results[key]
     queries = found[(names[0], k)].per_query
@@ -168,7 +169,7 @@ def summary(
 
 def method_name(name: str, env: str) -> str:
     """Seeded selectors are named per environment; baselines such as ``variance`` are not."""
-    return f"{name}:{env}" if name in ("l2s", "retrieval", "geometric") else name
+    return f"{name}:{env}" if name in SEEDED else name
 
 
 def compare(
