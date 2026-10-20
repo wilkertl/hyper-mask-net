@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HyperDIME · metric by retained dimensions</title>
+  <style>
+    :root { --bg:#f5f7f5; --panel:#fff; --text:#173037; --muted:#586a70; --line:#d5dfde; --accent:#0d6d6b; --grid:#e7edec; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif; }
+    header { background:#11363d; color:white; padding:2.5rem max(1.2rem,calc((100vw - 1180px)/2)); }
+    h1 { margin:.35rem 0 .6rem; font-size:clamp(1.8rem,4vw,2.8rem); letter-spacing:-.035em; line-height:1.1; }
+    h2 { font-size:1.25rem; margin:0; }
+    p { margin:.3rem 0 .75rem; }
+    .eyebrow { font-size:.77rem; font-weight:750; letter-spacing:.12em; text-transform:uppercase; color:#b9d8d5; }
+    header p { max-width:76ch; color:#d4e5e3; }
+    main { max-width:1180px; margin:auto; padding:1.5rem 1.2rem 3rem; }
+    .intro { max-width:95ch; color:var(--muted); margin-bottom:1.4rem; }
+    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; }
+    .card { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:1.1rem; min-width:0; box-shadow:0 2px 8px #103a3d08; }
+    .head { display:flex; align-items:baseline; gap:.6rem; margin-bottom:.25rem; }
+    .id { color:var(--accent); font:700 .8rem ui-monospace,SFMono-Regular,monospace; }
+    .sub { min-height:2.6em; color:var(--muted); font-size:.89rem; }
+    .controls { display:flex; flex-wrap:wrap; align-items:center; gap:.65rem; margin:.75rem 0; }
+    label { color:var(--muted); font-size:.83rem; font-weight:650; }
+    select { display:block; margin-top:.2rem; max-width:100%; min-width:11rem; padding:.35rem .55rem; border:1px solid #b9c9c7; border-radius:6px; background:#fff; color:var(--text); font:inherit; font-size:.86rem; }
+    .plot { width:100%; overflow-x:auto; }
+    svg { display:block; width:100%; min-width:410px; height:auto; }
+    .legend { display:flex; flex-wrap:wrap; gap:.35rem .7rem; min-height:2.4rem; padding:.4rem 0; }
+    .legend label { display:inline-flex; align-items:center; gap:.25rem; font-weight:500; cursor:pointer; }
+    .legend input { accent-color:var(--accent); }
+    .swatch { width:.65rem; height:.65rem; border-radius:50%; display:inline-block; }
+    .source { border-top:1px solid var(--line); padding-top:.55rem; font-size:.82rem; color:var(--muted); }
+    a { color:var(--accent); text-underline-offset:2px; }
+    .foot { color:var(--muted); margin-top:1.4rem; font-size:.87rem; }
+    @media(max-width:900px) { .grid { grid-template-columns:1fr; } .sub { min-height:0; } }
+    @media print { body { background:#fff; } header { background:#fff; color:var(--text); padding:1rem 0; } header p,.eyebrow { color:var(--muted); } main { padding:0; } .card { break-inside:avoid; box-shadow:none; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="eyebrow">HyperDIME · generated experiment charts</div>
+    <h1>Metric by retained dimensions</h1>
+    <p>Exact full-corpus retrieval across the reported E0, E1, P1, and S1–S3 experiments. The horizontal axis keeps 10%, 20%, …, 100% of the 1,024 query dimensions.</p>
+  </header>
+  <main>
+    <p class="intro">Choose a query set inside each chart and use its legend to focus on methods. At 100%, every method uses the full query. E0 provides full curves for TREC DL sets only; its SciFact, NFCorpus, and MS MARCO test report has selected-budget results, so no test-set curve is inferred.</p>
+    <div id="charts" class="grid"></div>
+    <p class="foot">Values come directly from the generated CSV tables linked in each chart. Percentages map to the repository's floored budgets: 102, 204, 307, 409, 512, 614, 716, 819, 921, and 1,024 dimensions. The E0 table's extra k=256 point is omitted to keep the requested 10% intervals. AP is available for E0 TREC DL; the other progression tables report nDCG@10.</p>
+  </main>
+  <script id="chart-data" type="application/json">{{CHART_DATA}}</script>
+  <script>
+    const DATA = JSON.parse(document.getElementById('chart-data').textContent);
+    const COLORS = ['#1768ac','#d4622a','#10846e','#884ab3','#a88a12','#c13f6e','#687782','#1d9eb1'];
+    const PCTS = [10,20,30,40,50,60,70,80,90,100];
+    const TYPES = {
+      E0: ['E0 · baseline reproduction','Learning-to-Select and oracle on TREC DL'],
+      E1: ['E1 · selector shift','In-domain and transferred selectors'],
+      P1: ['P1 · geometric probe','Corpus variance against learned selectors'],
+      S1: ['S1 · retrieval objective','Masked retrieval training against L2S'],
+      S2: ['S2 · fixed geometric prior','Retrieval selector initialized from variance'],
+      S3: ['S3 · learned prior weight','Learned scalar on the geometric prior']
+    };
+    const host = document.getElementById('charts');
+    const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const nice = s => s.replace('trec-dl-','TREC DL ').replace('trec-dl-hard','TREC DL HARD').replace('msmarco','MS MARCO').replace('nfcorpus','NFCorpus').replace('scifact','SciFact');
+    function relevant(exp, group, name) {
+      const env = group.split('|')[0];
+      if (exp === 'E0') return ['full','prefix','l2s','selected','oracle'].includes(name);
+      if (exp === 'E1') return ['full','prefix','global-selector'].includes(name) || name.startsWith('selector:');
+      const base = ['full','prefix',`l2s:${env}`];
+      if (exp === 'P1') return [...base,'variance',`retrieval:${env}`].includes(name);
+      if (exp === 'S1') return [...base,`retrieval:${env}`].includes(name);
+      if (exp === 'S2') return [...base,'variance',`retrieval:${env}`,`geometric:${env}`].includes(name);
+      return [...base,'variance',`retrieval:${env}`,`geometric:${env}`,`weighted:${env}`].includes(name);
+    }
+    function chart(exp, card) {
+      const group = card.querySelector('.query').value;
+      const metric = card.querySelector('.metric').value;
+      const all = DATA[exp].groups[group][metric] || [];
+      const lines = all.filter(r => relevant(exp,group,r.method));
+      const hidden = card.hiddenMethods || new Set();
+      const selected = lines.filter(r => !hidden.has(r.method));
+      const vals = selected.flatMap(r => r.values);
+      let lo = Math.min(...vals), hi = Math.max(...vals);
+      if (!Number.isFinite(lo) || !Number.isFinite(hi)) { lo=0; hi=1; }
+      const pad = Math.max((hi-lo)*.11,.012);
+      lo = Math.max(0,lo-pad); hi = Math.min(1,hi+pad);
+      if (hi-lo < .025) { lo=Math.max(0,lo-.02); hi=Math.min(1,hi+.02); }
+      const W=560,H=310,L=52,R=14,T=16,B=44, pw=W-L-R, ph=H-T-B;
+      const x=i => L+i*pw/9, y=v => T+(hi-v)*ph/(hi-lo);
+      let svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(TYPES[exp][0])}: ${esc(nice(group.replace('|',' / ')))}, ${esc(metric)} by retained dimensions"><title>${esc(TYPES[exp][0])} — ${esc(metric)}</title><desc>Values at 10 percent steps from the linked source table. Use legend checkboxes to hide or show methods.</desc>`;
+      for (let j=0;j<=4;j++) {
+        const v=lo+(hi-lo)*j/4, yy=y(v);
+        svg += `<line x1="${L}" y1="${yy}" x2="${W-R}" y2="${yy}" stroke="var(--grid)"/><text x="${L-7}" y="${yy+4}" text-anchor="end" fill="var(--muted)" font-size="11">${v.toFixed(2)}</text>`;
+      }
+      PCTS.forEach((pct,i) => { svg += `<text x="${x(i)}" y="${H-23}" text-anchor="middle" fill="var(--muted)" font-size="10">${pct}</text>`; });
+      svg += `<text x="${L+pw/2}" y="${H-3}" text-anchor="middle" fill="var(--muted)" font-size="11">Retained dimensions (%)</text><text x="13" y="${T+ph/2}" transform="rotate(-90 13 ${T+ph/2})" text-anchor="middle" fill="var(--muted)" font-size="11">${esc(metric)}</text>`;
+      selected.forEach(r => {
+        const idx=lines.indexOf(r), color=COLORS[idx%COLORS.length];
+        const points=r.values.map((v,i)=>`${x(i)},${y(v)}`).join(' ');
+        svg += `<polyline points="${points}" fill="none" stroke="${color}" stroke-width="2.2" stroke-linejoin="round"/>`;
+        r.values.forEach((v,i)=>{svg += `<circle cx="${x(i)}" cy="${y(v)}" r="3.1" fill="${color}"><title>${esc(r.method)} · ${PCTS[i]}% · ${metric} ${v.toFixed(4)}</title></circle>`;});
+      });
+      svg += '</svg>';
+      card.querySelector('.plot').innerHTML=svg;
+      card.querySelector('.legend').innerHTML=lines.map((r,i)=>`<label><input type="checkbox" data-method="${esc(r.method)}" ${hidden.has(r.method)?'':'checked'}><span class="swatch" style="background:${COLORS[i%COLORS.length]}"></span>${esc(r.method)}</label>`).join('');
+      card.querySelector('.source-table').href=DATA[exp].groups[group]._source[metric];
+    }
+    for (const exp of ['E0','E1','P1','S1','S2','S3']) {
+      const item=DATA[exp], groups=Object.keys(item.groups);
+      const card=document.createElement('section'); card.className='card'; card.id=exp;
+      const options=groups.map(g=>`<option value="${esc(g)}">${esc(nice(g.replace('|',' / ')))}</option>`).join('');
+      const metrics=item.metrics.map(m=>`<option value="${esc(m)}">${esc(m)}</option>`).join('');
+      card.innerHTML=`<div class="head"><span class="id">${exp}</span><h2>${esc(TYPES[exp][0].split(' · ')[1])}</h2></div><p class="sub">${esc(TYPES[exp][1])}</p><div class="controls"><label>Query set<select class="query">${options}</select></label><label>Metric<select class="metric">${metrics}</select></label></div><div class="plot"></div><div class="legend" aria-label="Toggle methods"></div><p class="source">Source: <a class="source-table" href="${esc(item.source)}">generated curve table</a> · <a href="${esc(item.report)}">experiment report</a></p>`;
+      host.append(card);
+      card.querySelector('.query').addEventListener('change',()=>{card.hiddenMethods=new Set(); chart(exp,card);});
+      card.querySelector('.metric').addEventListener('change',()=>{card.hiddenMethods=new Set(); chart(exp,card);});
+      card.querySelector('.legend').addEventListener('change',e=>{const name=e.target.dataset.method; if(!name)return; card.hiddenMethods ||= new Set(); if(e.target.checked)card.hiddenMethods.delete(name);else card.hiddenMethods.add(name); chart(exp,card);});
+      chart(exp,card);
+    }
+  </script>
+</body>
+</html>

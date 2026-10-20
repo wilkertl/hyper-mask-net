@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HyperDIME experiment settings</title>
+  <style>
+    :root { color-scheme: light; --ink:#17252c; --muted:#53656e; --line:#cbd8da; --paper:#f5f8f6; --card:#fff; --accent:#11646a; --pale:#e1f2ef; --warm:#9a5b16; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif; }
+    a { color:var(--accent); text-underline-offset:3px; }
+    header { background:#13383e; color:#fff; padding:3.5rem max(1.25rem,calc((100vw - 1100px)/2)); }
+    header p { max-width:65ch; color:#d0e8e5; }
+    h1 { font-size:clamp(2rem,4vw,3.2rem); line-height:1.1; margin:.4rem 0 1rem; letter-spacing:-.035em; }
+    .eyebrow { text-transform:uppercase; letter-spacing:.14em; font-size:.76rem; font-weight:750; }
+    main { max-width:1100px; margin:auto; padding:2rem 1.25rem 4rem; }
+    nav { display:flex; gap:.55rem; flex-wrap:wrap; margin-bottom:2rem; }
+    nav a { border:1px solid var(--line); border-radius:99px; background:#fff; padding:.35rem .75rem; text-decoration:none; font-size:.88rem; }
+    h2 { font-size:1.45rem; margin:0 0 .45rem; letter-spacing:-.02em; }
+    h3 { font-size:1rem; margin:1.2rem 0 .45rem; }
+    p { margin:.35rem 0 .8rem; }
+    .intro { border-left:4px solid var(--accent); padding:.2rem 0 .2rem 1rem; margin-bottom:2rem; max-width:83ch; }
+    .flow { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.6rem; margin:1.5rem 0 2.2rem; }
+    .flow span { background:var(--pale); border:1px solid #b4d7d1; border-radius:.55rem; padding:.7rem; font-weight:650; text-align:center; font-size:.89rem; }
+    .stage { background:var(--card); border:1px solid var(--line); border-radius:.8rem; padding:1.4rem 1.6rem; margin:1rem 0; box-shadow:0 2px 7px #16383d0b; }
+    .stage-heading { display:flex; align-items:baseline; gap:.8rem; }
+    .num { font:700 .8rem ui-monospace,SFMono-Regular,monospace; color:var(--accent); }
+    .tag { display:inline-block; border-radius:99px; background:var(--pale); color:#07545a; font-size:.76rem; font-weight:700; padding:.18rem .55rem; margin-left:.35rem; }
+    .tag.progress { background:#fff0db; color:#84500c; }
+    .table-wrap { overflow-x:auto; }
+    table { border-collapse:collapse; width:100%; font-size:.91rem; }
+    th,td { text-align:left; vertical-align:top; padding:.52rem .6rem; border-bottom:1px solid #e1e8e7; }
+    th { width:23%; color:#43555d; background:#f7faf9; font-weight:650; }
+    code { font: .88em ui-monospace,SFMono-Regular,Consolas,monospace; background:#eef3f2; border-radius:.2rem; padding:.08rem .24rem; overflow-wrap:anywhere; }
+    .source { color:var(--muted); font-size:.84rem; margin-top:1rem; }
+    .callout { background:#fff8eb; border:1px solid #e7cda0; border-radius:.55rem; padding:.8rem 1rem; }
+    footer { color:var(--muted); border-top:1px solid var(--line); padding-top:1rem; margin-top:2rem; font-size:.88rem; }
+    @media(max-width:700px) { .flow { grid-template-columns:repeat(2,minmax(0,1fr)); } .stage { padding:1rem; } th { width:34%; } }
+    @media print { body { background:#fff; } header { background:#fff; color:var(--ink); padding:1rem 0; } header p { color:var(--muted); } main { padding:0; } nav { display:none; } .stage { box-shadow:none; break-inside:avoid; } }
+  </style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">HyperDIME-Qwen · experiment methods</div>
+  <h1>Settings at every experiment stage</h1>
+  <p>A configuration and provenance guide to the completed selector experiments. It describes what enters each stage, the settings that control it, and how a choice is made.</p>
+</header>
+<main>
+  <div class="intro">
+    <p><strong>Scope.</strong> E0, E1, P1, and S1–S3 are reported in the <a href="experiment_registry.md">experiment registry</a>. The figures below are settings, not newly computed results. Source links point to the code, configuration, protocols, or generated reports that establish each setting. <a href="../reports/experiments-dimensions.html">View the experiment curves by retained dimensions.</a></p>
+    <p><strong>Invariant.</strong> Qwen3-Embedding-0.6B is frozen at 1024 dimensions. A selector masks only the query; the query is not normalized again, and document vectors and the index stay fixed.</p>
+  </div>
+  <nav aria-label="Stages">
+    <a href="#data">1 Data</a><a href="#embeddings">2 Embeddings</a><a href="#negatives">3 Negatives</a><a href="#baseline">4 Baseline</a><a href="#shift">5 Shift</a><a href="#selector">6 Selector track</a><a href="#comparison">7 Comparison</a><a href="#reporting">8 Reporting</a>
+  </nav>
+  <div class="flow" aria-label="Experiment pipeline">
+    <span>Data + splits</span><span>Frozen embeddings</span><span>Negative pools</span><span>Baseline selectors</span>
+    <span>Transfer analysis</span><span>New selector grids</span><span>Exact comparison</span><span>Reports + decisions</span>
+  </div>
+
+  <section class="stage" id="data">
+    <div class="stage-heading"><span class="num">01</span><h2>Prepare data</h2></div>
+    <p><code>hyperdime prepare-data</code> defines each retrieval environment and keeps training, validation, and test judgments separate.</p>
+    <div class="table-wrap"><table><tbody>
+      <tr><th>Environments</th><td>BEIR SciFact, NFCorpus, and MS MARCO. MS MARCO uses its full passage corpus; TREC DL 2019, DL 2020, and DL-HARD are extra evaluation query sets.</td></tr>
+      <tr><th>Splits</th><td>Training queries split 90% / 10% into train and validation. Split seed <code>0</code>. MS MARCO training queries capped at a seeded sample of <code>50,000</code>.</td></tr>
+      <tr><th>Access rule</th><td>Train labels build targets and negative pools; validation labels choose cells and checkpoints; test and TREC judgments score final rankings only.</td></tr>
+      <tr><th>Inputs / output</th><td>Pinned source and qrels revisions, environment instruction, split settings → prepared environment with a run manifest.</td></tr>
+    </tbody></table></div>
+    <p class="source">Sources: <a href="../configs/data/scifact.yaml">SciFact</a>, <a href="../configs/data/nfcorpus.yaml">NFCorpus</a>, <a href="../configs/data/msmarco.yaml">MS MARCO</a>, <a href="../src/hyperdime/data/environments.py">pinned environment registry</a>, <a href="../src/hyperdime/data/prepare.py">split implementation</a>, <a href="protocols.md">protocols</a>.</p>
+  </section>
+
+  <section class="stage" id="embeddings">
+    <div class="stage-heading"><span class="num">02</span><h2>Embed queries and documents</h2></div>
+    <p><code>hyperdime embed</code> computes reusable vectors once per environment.</p>
+    <div class="table-wrap"><table><tbody>
+      <tr><th>Model</th><td><code>Qwen/Qwen3-Embedding-0.6B</code>, revision <code>97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3</code>; frozen; <code>D=1024</code>.</td></tr>
+      <tr><th>Encoding</th><td>Last-token pooling, L2 normalization, maximum input length <code>512</code>. Queries use <code>Instruct: {instruction}\nQuery:{query}</code>; documents have no instruction prefix.</td></tr>
+      <tr><th>Precision and storage</th><td>Model config requests <code>bfloat16</code> compute on GPU, while CPU uses <code>float32</code>; cached embeddings use <code>float16</code> storage. Run settings request <code>auto</code> device.</td></tr>
+      <tr><th>CLI defaults</th><td>Local backend, batch size <code>128</code>, shard size <code>65,536</code>; a vLLM backend is also available. Actual backend, dtype, role, and instruction are recorded with the embeddings.</td></tr>
+    </tbody></table></div>
+    <p class="source">Sources: <a href="../configs/model/qwen3_0_6b.yaml">model config</a>, <a href="../configs/run/default.yaml">run config</a>, <a href="../src/hyperdime/embeddings/encoders.py">encoder settings</a>, <a href="../src/hyperdime/cli/embed.py">embed CLI</a>.</p>
+  </section>
+
+  <section class="stage" id="negatives">
+    <div class="stage-heading"><span class="num">03</span><h2>Mine hard negatives</h2></div>
+    <p><code>hyperdime mine-negatives</code> prepares the non-relevant examples used by selector training.</p>
+    <div class="table-wrap"><table><tbody>
+      <tr><th>Candidate search</th><td>Exact full-embedding ranking; inspect the top <code>1,000</code> documents for each train or validation query.</td></tr>
+      <tr><th>Pool</th><td>Sample <code>64</code> documents per query from candidates after excluding judged positives and the query's own document ID where applicable; seed <code>0</code>.</td></tr>
+      <tr><th>Isolation</th><td>Only train and validation queries are processed. Test judgments are not loaded for negative mining.</td></tr>
+    </tbody></table></div>
+    <p class="source">Sources: <a href="../src/hyperdime/data/negatives.py">negative pool implementation</a>, <a href="../src/hyperdime/cli/mine_negatives.py">CLI defaults</a>, <a href="decisions/ADR-0002-selector-training-follows-official-l2s.md">ADR-0002</a>.</p>
+  </section>
+
+  <section class="stage" id="baseline">
+    <div class="stage-heading"><span class="num">04</span><h2>Train baseline selectors <span class="tag">E0</span></h2></div>
+    <p><code>train-selector --recipe official | candidates | seeded</code> fits the Learning-to-Select (L2S) map to oracle importance. <code>train-global</code> fits a shared selector across environments.</p>
+    <div class="table-wrap"><table><tbody>
+      <tr><th>Target and model</th><td>Oracle target from <code>e_q ⊙ (p − n)</code>, softened by temperature. The selector is a linear <code>1024 × 1024</code> map plus bias, optimized by KL divergence to the target.</td></tr>
+      <tr><th>Optimizer</th><td>AdamW; learning rate <code>1e-4</code>, weight decay <code>1e-4</code>, batch size <code>32</code>. Default schedule is cosine; the validation-stopped family uses a constant rate and patience <code>5</code>.</td></tr>
+      <tr><th>Official grid</th><td>Temperatures <code>.005, .01, .02, .05, .1, .2</code> × epochs <code>10, 50, 200</code> (<code>18</code> cells).</td></tr>
+      <tr><th>Candidate grid</th><td>Wide grid: 10 temperatures from <code>.001</code> to <code>1</code> × epochs <code>3, 10, 50, 200, 500</code>. Plus validation-stopped and global-regularized families.</td></tr>
+      <tr><th>Choice and seeds</th><td>Choose on validation nDCG@10 at <code>k=307</code>, using exact full-corpus search. E1 uses the wide-grid family with seeds <code>0, 1, 2</code>.</td></tr>
+    </tbody></table></div>
+    <p class="source">Sources: <a href="../src/hyperdime/training/selection.py">baseline grids and selection</a>, <a href="../src/hyperdime/training/selector_trainer.py">trainer defaults</a>, <a href="../reports/E0/README.md">E0 report</a>, <a href="../reports/E1/README.md">E1 report</a>.</p>
+  </section>
+
+  <section class="stage" id="shift">
+    <div class="stage-heading"><span class="num">05</span><h2>Measure selector shift <span class="tag">E1</span></h2></div>
+    <p><code>hyperdime transfer-matrix</code> applies each trained environment selector to each environment, then compares both retrieval and chosen dimensions.</p>
+    <div class="table-wrap"><table><tbody>
+      <tr><th>Training cells</th><td>Validation-chosen wide-grid cells: MS MARCO <code>t=.5, 200 epochs</code>; NFCorpus <code>t=.2, 500 epochs</code>; SciFact <code>t=.1, 500 epochs</code>. Three independently trained seeds per environment.</td></tr>
+      <tr><th>Evaluation</th><td>Exact scoring across the full corpus, masks at each 10% budget, in-domain and cross-environment transfer. Compare overlap of top dimensions and importance profiles against within-environment seed variation.</td></tr>
+      <tr><th>Statistics</th><td>Average the three selector seed scores per query before paired tests. Test qrels appear only during evaluation.</td></tr>
+    </tbody></table></div>
+    <p class="source">Sources: <a href="../reports/E1/README.md">E1 report and selected cells</a>, <a href="../reports/E1/tables/transfer.csv">generated transfer table</a>, <a href="decisions/ADR-0007-g2-selector-shift.md">G2 decision</a>.</p>
+  </section>
+
+  <section class="stage" id="selector">
+    <div class="stage-heading"><span class="num">06</span><h2>Probe geometry and train the selector track <span class="tag">P1 · S1–S3</span></h2></div>
+    <p>P1 measures what document geometry alone can do. S1–S3 then train query selectors with a masked retrieval objective.</p>
+    <div class="table-wrap"><table><tbody>
+      <tr><th>P1 score</th><td>Keep dimensions by <code>q_d² × Var(x_d)</code>, with document variance computed without labels. Also report covariance participation ratio and energy in the mean.</td></tr>
+      <tr><th>S1</th><td>Linear selector trained with relaxed top-k masking and a retrieval loss over positives, hard negatives, and in-batch negatives. Initialization is scratch or the E1 L2S selector.</td></tr>
+      <tr><th>S2</th><td>Add the fixed prior <code>log(q_d² × Var(x_d) + ε)</code> to the learned linear score; begin with the linear map at zero.</td></tr>
+      <tr><th>S3</th><td>As S2, with one learned scalar on the geometric prior, initialized to <code>1</code>.</td></tr>
+      <tr><th>Grid</th><td>Fixed <code>k=307</code> or a budget drawn from the 10%–90% set; learning rates <code>1e-4, 1e-3</code>; score temperatures <code>.02, .05</code>; final mask temperatures <code>.1, .02</code>. S1 has <code>32</code> cells; S2 and S3 have <code>16</code> each.</td></tr>
+      <tr><th>Training defaults</th><td><code>20,000</code> steps, AdamW batch size <code>32</code>, weight decay <code>1e-4</code>; mask temperature decays geometrically from <code>1</code>; evaluate every <code>1,000</code> steps.</td></tr>
+      <tr><th>Choice</th><td>Seed-0 grids are chosen by exact full-corpus validation nDCG@10 averaged over nine budgets, subject to final soft mass ≥ <code>.9</code>. Selected cells are retrained with seeds <code>0, 1, 2</code>; each run keeps its best validation rerank checkpoint.</td></tr>
+    </tbody></table></div>
+    <h3>Validation-chosen cells used in the reports</h3>
+    <div class="table-wrap"><table><thead><tr><th>Experiment</th><th>MS MARCO</th><th>NFCorpus</th><th>SciFact</th></tr></thead><tbody>
+      <tr><th>S1</th><td><code>fixed-307-scratch-lr0.001-ts0.05-b0.1</code></td><td><code>fixed-307-l2s-lr0.0001-ts0.02-b0.1</code></td><td><code>multi-budget-l2s-lr0.0001-ts0.02-b0.02</code></td></tr>
+      <tr><th>S2</th><td><code>fixed-307-prior-lr0.0001-ts0.02-b0.1</code></td><td><code>multi-budget-prior-lr0.001-ts0.05-b0.1</code></td><td><code>multi-budget-prior-lr0.001-ts0.05-b0.02</code></td></tr>
+      <tr><th>S3</th><td><code>fixed-307-weighted-lr0.0001-ts0.02-b0.1</code></td><td><code>multi-budget-weighted-lr0.001-ts0.05-b0.1</code></td><td><code>multi-budget-weighted-lr0.001-ts0.02-b0.1</code></td></tr>
+    </tbody></table></div>
+    <p class="source">Sources: <a href="../src/hyperdime/training/retrieval_selection.py">grid and selection</a>, <a href="../src/hyperdime/training/retrieval_trainer.py">trainer defaults</a>, <a href="../reports/P1/README.md">P1</a>, <a href="../reports/S1/README.md">S1</a>, <a href="../reports/S2/README.md">S2</a>, <a href="../reports/S3/README.md">S3</a>.</p>
+  </section>
+
+  <section class="stage" id="comparison">
+    <div class="stage-heading"><span class="num">07</span><h2>Compare on held-out queries</h2></div>
+    <p><code>hyperdime compare-selectors --experiment S1 | S2 | S3</code> evaluates selected methods on the same held-out query sets.</p>
+    <div class="table-wrap"><table><tbody>
+      <tr><th>Mask and scoring</th><td>Keep the query's top-k dimensions; zero the others. Do not re-normalize. Rank unchanged document embeddings by exact inner product over the full corpus; FAISS is reserved for deployment analysis.</td></tr>
+      <tr><th>Budgets</th><td><code>k=102, 204, 307, 409, 512, 614, 716, 819, 921</code> (10%–90% of 1024, floored); <code>1024</code> is the full-vector reference.</td></tr>
+      <tr><th>Comparisons</th><td>Full dimensions, MRL prefix, random, global importance, L2S, corpus variance, and the experiment's trained selector where applicable.</td></tr>
+      <tr><th>Summary</th><td>Mean per-query nDCG@10 across the nine masked budgets. Seed scores are averaged per query before statistical testing.</td></tr>
+    </tbody></table></div>
+    <p class="source">Sources: <a href="../reports/overview/README.md">generated overview</a>, <a href="../src/hyperdime/cli/compare_selectors.py">comparison command</a>, <a href="protocols.md">metric and leakage rules</a>.</p>
+  </section>
+
+  <section class="stage" id="reporting">
+    <div class="stage-heading"><span class="num">08</span><h2>Generate reports and decisions</h2></div>
+    <p><code>hyperdime report &lt;experiment&gt;</code> reads result files and manifests; <code>hyperdime decide &lt;gate&gt;</code> records the gate criteria and evidence.</p>
+    <div class="table-wrap"><table><tbody>
+      <tr><th>Reported measures</th><td>Primary retrieval: nDCG@10, MRR@10, MRR@100, Recall@100. Selection: retained dimensions, overlap, importance entropy, oracle KL, and usage frequency where relevant.</td></tr>
+      <tr><th>Uncertainty</th><td>Paired per-query tests and confidence intervals; Holm correction for multiple comparisons. Reports state the protocol and identify contributing runs.</td></tr>
+      <tr><th>Provenance</th><td>Every run artifact has a manifest with command, configuration hash, source revision, seed, device, dtype, timestamps, and file hashes. Report tables are generated from result files; no experiment number is edited by hand.</td></tr>
+      <tr><th>Cost reporting</th><td>Offline adaptation is kept separate from online query encoding, selector, mask, and search costs.</td></tr>
+    </tbody></table></div>
+    <p class="source">Sources: <a href="protocols.md">reporting protocol</a>, <a href="../src/hyperdime/contracts/manifests.py">manifest contract</a>, <a href="../reports/overview/README.md">overview report</a>, <a href="experiment_registry.md">registry</a>.</p>
+  </section>
+
+  <p class="callout"><strong>Next stage under development.</strong> S4 (F9, <a href="../specs/010-budget-prior/spec.md">spec</a>) adds one prior weight per budget and an aligned weighted control, both kept by full-corpus validation nDCG@10 with a non-inferiority margin of <code>0.005</code> fixed before any run. It is implemented but not yet run, so the <a href="experiment_registry.md">experiment registry</a> marks it "implemented, not run"; the settings above cover completed reports only.</p>
+  <footer>Method settings compiled from repository files on 20 October 2026. For numerical outcomes, use the linked generated experiment reports and their result tables.</footer>
+</main>
+</body>
+</html>

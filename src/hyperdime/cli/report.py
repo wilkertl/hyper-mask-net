@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from hyperdime.reports import e0, e1, overview, p1, s1, s2, s3, s4
+from hyperdime.reports import dimensions, e0, e1, overview, p1, s1, s2, s3, s4
 
 COMMAND = "report"
 
@@ -15,18 +15,24 @@ COMMAND = "report"
 def register(commands: Any) -> None:
     parser = commands.add_parser(COMMAND, help="generate a report from result files")
     parser.add_argument(
-        "experiment", choices=["E0", "E1", "S1", "P1", "S2", "S3", "S4", "overview"]
+        "experiment", choices=["E0", "E1", "S1", "P1", "S2", "S3", "S4", "overview", "dimensions"]
     )
     parser.add_argument("--artifacts", type=Path, default=Path("artifacts"))
     parser.add_argument("--envs", nargs="+", default=["scifact", "nfcorpus", "msmarco"])
-    parser.add_argument("--report-dir", type=Path, help="default: reports/<experiment>")
+    parser.add_argument(
+        "--report-dir",
+        type=Path,
+        help="default: reports/<experiment>; for dimensions, the reports read and written to",
+    )
     parser.set_defaults(handler=run)
 
 
 def run(args: argparse.Namespace) -> int:
     try:
         report_dir = args.report_dir or Path("reports") / args.experiment
-        if args.experiment == "E0":
+        if args.experiment == "dimensions":
+            path = dimensions.write(args.report_dir or Path("reports"))
+        elif args.experiment == "E0":
             path = e0.write(args.artifacts, args.envs, report_dir)
         elif args.experiment == "E1":
             path = e1.write(args.artifacts, report_dir)
