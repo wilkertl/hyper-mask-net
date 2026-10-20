@@ -1,4 +1,4 @@
-"""``hyperdime decide G2|S1|S2|S3``: draft a decision and its proposed ADR from result files.
+"""``hyperdime decide G2|S1|S2|S3|S4``: draft a decision and its proposed ADR from result files.
 
 The record goes to ``decisions/<gate>/<run_id>/`` with a manifest; the ADR is written as
 "proposed" for the researcher, who decides. An ADR that is no longer proposed is never overwritten.
@@ -13,14 +13,14 @@ from typing import Any
 
 from hyperdime.contracts.hashing import NO_DATASET
 from hyperdime.contracts.manifests import ArtifactWriter, start_manifest
-from hyperdime.reports import e1, g2, s1, s2, s3
+from hyperdime.reports import e1, g2, s1, s2, s3, s4
 
 COMMAND = "decide"
 
 
 def register(commands: Any) -> None:
     parser = commands.add_parser(COMMAND, help="draft a gate decision and its ADR")
-    parser.add_argument("gate", choices=["G2", "S1", "S2", "S3"])
+    parser.add_argument("gate", choices=["G2", "S1", "S2", "S3", "S4"])
     parser.add_argument("--artifacts", type=Path, default=Path("artifacts"))
     parser.add_argument("--adr", type=Path, help="default: the gate's ADR under docs/decisions")
     parser.set_defaults(handler=run)
@@ -40,20 +40,27 @@ def run(args: argparse.Namespace) -> int:
             adr = args.adr or s2.DEFAULT_ADR
             results = s2.load(args.artifacts)
             record = s2.decision(results, adr)
-        else:
+        elif args.gate == "S3":
             adr = args.adr or s3.DEFAULT_ADR
             results = s3.load(args.artifacts)
             record = s3.decision(results, adr)
+        else:
+            adr = args.adr or s4.DEFAULT_ADR
+            results = s4.load(args.artifacts)
+            record = s4.decision(results, adr)
+        run = results.base.run if args.gate == "S4" else results.run
         manifest = start_manifest(
             COMMAND,
-            {"gate": args.gate, "evaluation": results.run, "adr": adr.as_posix()},
+            {"gate": args.gate, "evaluation": run, "adr": adr.as_posix()},
             dataset_hash=NO_DATASET,
             seed=0,
         )
         with ArtifactWriter(args.artifacts, f"decisions/{args.gate}", manifest) as writer:
             writer.write_record("gate_decision.json", record)
             directory = writer.commit()
-        {"G2": g2, "S1": s1, "S2": s2, "S3": s3}[args.gate].write_adr(results, record, adr)
+        {"G2": g2, "S1": s1, "S2": s2, "S3": s3, "S4": s4}[args.gate].write_adr(
+            results, record, adr
+        )
     except Exception as error:  # noqa: BLE001 - reported as exit 1
         print(f"error: {error}", file=sys.stderr)
         return 1

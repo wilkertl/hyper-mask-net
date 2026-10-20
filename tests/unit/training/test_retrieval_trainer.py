@@ -4,14 +4,16 @@ import pytest
 import torch
 from torch.nn import functional as F
 
-from hyperdime.baselines.learning_to_select import GeometricSelector
+from hyperdime.baselines.learning_to_select import BudgetGeometricSelector, GeometricSelector
 from hyperdime.training.examples import RetrievalExamples
 from hyperdime.training.retrieval_trainer import (
     BUDGETS,
     RetrievalConfig,
     beta_at,
     budget_schedule,
+    project_prior_weights,
     rerank_ndcg10,
+    train_retrieval_candidates,
     train_retrieval_selector,
 )
 
@@ -163,3 +165,97 @@ def test_unweighted_histories_carry_no_prior_weight() -> None:
         TRAIN, VALIDATION, config, prior=TRAIN.documents.var(0, correction=0)
     )
     assert all("prior_weight" not in h for h in history)
+
+
+MISLEADING = TRAIN.documents.var(0, correction=0)
+# A large rate drives a prior weight below zero on the misleading prior within a few steps.
+STEEP = RetrievalConfig(**{**CONFIG.__dict__, "steps": 60, "eval_every": 20, "lr": 0.5})
+
+
+@pytest.mark.parametrize("per_budget", [False, True])
+def test_projection_keeps_prior_weights_nonnegative_and_counts_its_steps(per_budget: bool) -> None:
+    kwargs = {"prior": MISLEADING, "learn_prior_weight": not per_budget,
+              "per_budget_prior": per_budget}  # fmt: skip
+    _, free = train_retrieval_selector(TRAIN, VALIDATION, STEEP, **kwargs)  # type: ignore[arg-type]
+    weights = lambda h: [v for key, v in h.items() if key.startswith("prior_weight")]  # noqa: E731
+    assert min(min(weights(h)) for h in free) < 0
+    projected = RetrievalConfig(**{**STEEP.__dict__, "nonnegative_prior": True})
+    model, history = train_retrieval_selector(TRAIN, VALIDATION, projected, **kwargs)  # type: ignore[arg-type]
+    assert all(min(weights(h)) >= 0 for h in history)
+    assert history[0]["projected_steps"] == 0 and history[-1]["projected_steps"] > 0
+    parameter = model.prior_weights if per_budget else model.prior_weight
+    assert bool((parameter >= 0).all())
+
+
+def test_projection_clamps_only_negative_prior_weights() -> None:
+    model = BudgetGeometricSelector(torch.ones(4), budgets=(1, 2, 3))
+    with torch.no_grad():
+        model.prior_weights.copy_(torch.tensor([-0.5, 0.0, 0.7]))
+    assert project_prior_weights(model)
+    assert model.prior_weights.tolist() == [0.0, 0.0, pytest.approx(0.7)]
+    assert not project_prior_weights(model)
+
+
+def test_the_budget_selector_is_trained_on_each_batchs_budget(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    seen: list[int | None] = []
+    forward = BudgetGeometricSelector.forward
+
+    def spy(self: BudgetGeometricSelector, queries: torch.Tensor, k: int | None = None):  # type: ignore[no-untyped-def]
+        if self.training:
+            seen.append(k)
+        return forward(self, queries, k)
+
+    monkeypatch.setattr(BudgetGeometricSelector, "forward", spy)
+    budgets = (PLANTED, 2 * PLANTED)
+    config = RetrievalConfig(**{**CONFIG.__dict__, "budgets": budgets, "eval_budgets": budgets,
+                                "steps": 12, "eval_every": 6})  # fmt: skip
+    train_retrieval_selector(TRAIN, VALIDATION, config, prior=MISLEADING, per_budget_prior=True)
+    assert seen == budget_schedule(12, budgets, config.seed)
+
+
+def test_an_untrained_budget_selector_starts_as_the_variance_method() -> None:
+    config = RetrievalConfig(**{**CONFIG.__dict__, "steps": 1, "eval_every": 1, "lr": 0.0})
+    _, history = train_retrieval_selector(
+        TRAIN, VALIDATION, config, prior=MISLEADING, per_budget_prior=True
+    )
+    assert history[0]["val_rerank_ndcg10"] == pytest.approx(
+        rerank_ndcg10(GeometricSelector(MISLEADING), VALIDATION, (PLANTED,))
+    )
+    assert [key for key in history[0] if key.startswith("prior_weight")] == ["prior_weight_k8"]
+
+
+def test_the_checkpoint_rule_is_rerank_or_validation() -> None:
+    assert RetrievalConfig().checkpoint_rule == "rerank"
+    with pytest.raises(ValueError, match="checkpoint_rule"):
+        RetrievalConfig(checkpoint_rule="test")  # type: ignore[arg-type]
+
+
+VALIDATION_RULE = RetrievalConfig(**{**CONFIG.__dict__, "steps": 30, "eval_every": 10,
+                                     "checkpoint_rule": "validation"})  # fmt: skip
+
+
+def test_the_validation_rule_returns_every_evaluated_state_as_a_candidate() -> None:
+    _, history, candidates = train_retrieval_candidates(TRAIN, VALIDATION, VALIDATION_RULE)
+    assert [step for step, _ in candidates] == [0, 10, 20, 30]
+    assert [h["step"] for h in history] == [0, 10, 20, 30]
+    assert all(v.device.type == "cpu" for _, state in candidates for v in state.values())
+
+
+def test_the_rerank_rule_trains_identically_and_returns_no_candidates() -> None:
+    model, history, _ = train_retrieval_candidates(TRAIN, VALIDATION, VALIDATION_RULE)
+    rerank = RetrievalConfig(**{**VALIDATION_RULE.__dict__, "checkpoint_rule": "rerank"})
+    same, same_history, none = train_retrieval_candidates(TRAIN, VALIDATION, rerank)
+    assert none == [] and same_history == history
+    assert all(torch.equal(model.state_dict()[k], same.state_dict()[k]) for k in model.state_dict())
+
+
+def test_the_defaults_leave_histories_without_the_new_keys() -> None:
+    config = RetrievalConfig(**{**CONFIG.__dict__, "steps": 10, "eval_every": 10})
+    _, history = train_retrieval_selector(
+        TRAIN, VALIDATION, config, prior=MISLEADING, learn_prior_weight=True
+    )
+    assert set(history[-1]) == {
+        "step", "val_rerank_ndcg10", "soft_mass", "beta", "train_loss", "prior_weight"
+    }  # fmt: skip

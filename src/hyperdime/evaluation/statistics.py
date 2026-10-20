@@ -18,6 +18,22 @@ def paired_randomization_test(
     return (hits + 1) / (n_permutations + 1)
 
 
+def noninferiority_test(
+    a: Sequence[float],
+    b: Sequence[float],
+    margin: float,
+    n_permutations: int = 10_000,
+    seed: int = 0,
+) -> float:
+    """One-sided sign-flip test of ``mean(a - b) <= -margin`` against ``> -margin``, on the shifted
+    differences ``a - b + margin``; returns ``(hits + 1) / (n + 1)`` (F9 research D7)."""
+    shifted = _diffs(a, b) + margin
+    observed = shifted.mean()
+    signs = np.random.default_rng(seed).choice([-1.0, 1.0], size=(n_permutations, shifted.size))
+    hits = int(((signs * shifted).mean(axis=1) >= observed - 1e-12).sum())
+    return (hits + 1) / (n_permutations + 1)
+
+
 def paired_bootstrap_ci(
     a: Sequence[float],
     b: Sequence[float],

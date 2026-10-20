@@ -4,7 +4,9 @@ The selector is the Learning-to-Select ``LinearSelector``; only the objective di
 masks a batch of training queries with a relaxed top-k of the selector's scores and minimizes
 ``masked_retrieval_loss`` against the queries' positives, hard negatives, and in-batch positives.
 Every ``eval_every`` steps the hard-masked selector reranks each validation query's own documents,
-and the checkpoint with the highest mean nDCG@10 over ``eval_budgets`` is kept.
+and the checkpoint with the highest mean nDCG@10 over ``eval_budgets`` is kept. Under the aligned
+``checkpoint_rule="validation"`` (F9 research D3) every evaluated state is also returned as a
+candidate, for ``retrieval_selection`` to score on the full corpus.
 """
 
 from __future__ import annotations
@@ -12,11 +14,16 @@ from __future__ import annotations
 import copy
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
+from typing import Literal
 
 import torch
 from torch import Tensor
 
-from hyperdime.baselines.learning_to_select import GeometricSelector, LinearSelector
+from hyperdime.baselines.learning_to_select import (
+    BudgetGeometricSelector,
+    GeometricSelector,
+    LinearSelector,
+)
 from hyperdime.selection.relaxed import soft_mass_on_topk, soft_top_k
 from hyperdime.selection.topk import resolve_k, top_k_mask
 from hyperdime.training.examples import RetrievalExamples
@@ -25,12 +32,19 @@ from hyperdime.training.losses import masked_retrieval_loss
 # The 10%-90% budgets of the 1024 dimensions; 100% is the full query.
 BUDGETS = tuple(resolve_k(step / 10, 1024) for step in range(1, 10))
 HEADLINE_K = resolve_k(0.3, 1024)
+CHECKPOINT_RULES = ("rerank", "validation")
+Candidates = list[tuple[int, dict[str, Tensor]]]
 
 
 @dataclass(frozen=True)
 class RetrievalConfig:
     """``budgets`` are the budgets drawn during training, one per batch (one for a fixed-budget
-    selector); ``eval_budgets`` those averaged when choosing the checkpoint."""
+    selector); ``eval_budgets`` those averaged when choosing the checkpoint.
+
+    ``checkpoint_rule`` ``rerank`` keeps the state with the best validation rerank score (F5–F8);
+    ``validation`` also returns every evaluated state as a candidate (F9 research D3).
+    ``nonnegative_prior`` projects prior weights to ``>= 0`` after each step (research D2).
+    """
 
     budgets: tuple[int, ...] = (HEADLINE_K,)
     eval_budgets: tuple[int, ...] = BUDGETS
@@ -43,6 +57,12 @@ class RetrievalConfig:
     eval_every: int = 1_000
     seed: int = 0
     device: str = "cpu"
+    checkpoint_rule: Literal["rerank", "validation"] = "rerank"
+    nonnegative_prior: bool = False
+
+    def __post_init__(self) -> None:
+        if self.checkpoint_rule not in CHECKPOINT_RULES:
+            raise ValueError(f"checkpoint_rule must be one of {CHECKPOINT_RULES}")
 
 
 def beta_at(step: int, steps: int, beta_end: float) -> float:
@@ -63,18 +83,40 @@ def train_retrieval_selector(
     start: Mapping[str, Tensor] | None = None,
     prior: Tensor | None = None,
     learn_prior_weight: bool = False,
+    per_budget_prior: bool = False,
 ) -> tuple[LinearSelector, list[dict[str, float]]]:
     """Train for ``config.steps`` steps from ``start`` (or a seeded initialization; with a corpus
-    ``prior`` variance, a ``GeometricSelector`` whose linear map starts at zero, and with
-    ``learn_prior_weight`` a learned scale on that prior); returns the best validation checkpoint
-    on the CPU and one history row per evaluation (step 0 included)."""
+    ``prior`` variance, a ``GeometricSelector`` whose linear map starts at zero, with
+    ``learn_prior_weight`` a learned scale on that prior, and with ``per_budget_prior`` a
+    ``BudgetGeometricSelector`` with one scale per training and evaluation budget); returns the
+    best validation rerank checkpoint on the CPU and one history row per evaluation (step 0
+    included)."""
+    model, history, _ = train_retrieval_candidates(
+        train, validation, config, start, prior, learn_prior_weight, per_budget_prior
+    )
+    return model, history
+
+
+def train_retrieval_candidates(
+    train: RetrievalExamples,
+    validation: RetrievalExamples,
+    config: RetrievalConfig,
+    start: Mapping[str, Tensor] | None = None,
+    prior: Tensor | None = None,
+    learn_prior_weight: bool = False,
+    per_budget_prior: bool = False,
+) -> tuple[LinearSelector, list[dict[str, float]], Candidates]:
+    """As ``train_retrieval_selector``, with the candidates of the ``validation`` checkpoint rule:
+    ``(step, state)`` on the CPU at every evaluation, step 0 included (empty under ``rerank``)."""
     device = torch.device(config.device)
     torch.manual_seed(config.seed)
-    model = (
-        GeometricSelector(prior, learn_weight=learn_prior_weight)
-        if prior is not None
-        else LinearSelector(train.queries.shape[1])
-    )
+    model: LinearSelector
+    if prior is None:
+        model = LinearSelector(train.queries.shape[1])
+    elif per_budget_prior:
+        model = BudgetGeometricSelector(prior, sorted({*config.budgets, *config.eval_budgets}))
+    else:
+        model = GeometricSelector(prior, learn_weight=learn_prior_weight)
     if start is not None:
         model.load_state_dict(start)
     model.to(device)
@@ -85,8 +127,15 @@ def train_retrieval_selector(
     schedule = budget_schedule(config.steps, config.budgets, config.seed)
     batches = _batches(len(train), config.batch_size, config.steps, config.seed)
     candidates = _rerank_candidates(validation)
-    history = [_evaluate(model, validation, candidates, config, step=0, beta=1.0, loss=None)]
+    projected = 0
+    history = [
+        _evaluate(model, validation, candidates, config, step=0, beta=1.0, loss=None,
+                  projected=projected)
+    ]  # fmt: skip
     best_score, best_state = history[0]["val_rerank_ndcg10"], copy.deepcopy(model.state_dict())
+    kept: Candidates = []
+    if config.checkpoint_rule == "validation":
+        kept.append((0, _cpu_state(model)))
     total, count = 0.0, 0
     for step, (rows, k) in enumerate(zip(batches, schedule, strict=True), start=1):
         beta = beta_at(step - 1, config.steps, config.beta_end)
@@ -96,15 +145,45 @@ def train_retrieval_selector(
         torch.autograd.backward(loss)
         optimizer.step()
         scheduler.step()
+        if config.nonnegative_prior and project_prior_weights(model):
+            projected += 1
         total, count = total + loss.item(), count + 1
         if step % config.eval_every == 0 or step == config.steps:
-            row = _evaluate(model, validation, candidates, config, step, beta, total / count)
+            row = _evaluate(
+                model, validation, candidates, config, step, beta, total / count, projected
+            )
             history.append(row)
             total, count = 0.0, 0
+            if config.checkpoint_rule == "validation":
+                kept.append((step, _cpu_state(model)))
             if row["val_rerank_ndcg10"] > best_score:
                 best_score, best_state = row["val_rerank_ndcg10"], copy.deepcopy(model.state_dict())
     model.load_state_dict(best_state)
-    return model.cpu().eval(), history
+    return model.cpu().eval(), history, kept
+
+
+def project_prior_weights(model: LinearSelector) -> bool:
+    """Clamp the prior weights (one, or one per budget) to ``>= 0`` (research D2); returns
+    whether any weight changed."""
+    changed = False
+    with torch.no_grad():
+        for name, weight in model.named_parameters():
+            if name in ("prior_weight", "prior_weights") and bool((weight < 0).any()):
+                weight.clamp_(min=0.0)
+                changed = True
+    return changed
+
+
+def scores_at(model: LinearSelector, queries: Tensor, k: int) -> Tensor:
+    """The selector's log-importance at budget ``k``; only a budget selector depends on it."""
+    found: Tensor = (
+        model(queries, k) if isinstance(model, BudgetGeometricSelector) else model(queries)
+    )
+    return found
+
+
+def _cpu_state(model: LinearSelector) -> dict[str, Tensor]:
+    return {key: value.detach().cpu().clone() for key, value in model.state_dict().items()}
 
 
 def rerank_ndcg10(
@@ -153,7 +232,7 @@ def _batch_loss(
     device: torch.device,
 ) -> Tensor:
     queries, documents, positives, weights, negatives = _gather(examples, rows, device)
-    mask = soft_top_k(model(queries), k, beta)
+    mask = soft_top_k(scores_at(model, queries, k), k, beta)
     return masked_retrieval_loss(
         queries, mask, documents, positives, weights, negatives, score_temperature
     )
@@ -183,14 +262,16 @@ def _rerank(
     for start in range(0, len(examples), batch):
         rows = torch.arange(start, min(start + batch, len(examples)))
         queries = examples.queries[rows].float().to(device)
-        importance = model(queries)
+        per_budget = isinstance(model, BudgetGeometricSelector)
+        importance = None if per_budget else model(queries)
         cand = candidates[rows]
         cand = cand[:, : int((cand >= 0).sum(1).max())]  # candidates are left-packed
         gains = _gains(examples, rows, cand).to(device)
         docs = examples.documents[cand.clamp(min=0)].float().to(device)
         cand = cand.to(device)
         for k in budgets:
-            masked = queries * top_k_mask(importance, k).float()
+            scores_k = model(queries, k) if importance is None else importance
+            masked = queries * top_k_mask(scores_k, k).float()
             logits = torch.einsum("bd,bcd->bc", masked, docs).masked_fill(cand < 0, float("-inf"))
             scores.append(_ndcg10(logits, gains))
     return float(torch.cat(scores).mean())
@@ -222,22 +303,46 @@ def _evaluate(
     step: int,
     beta: float,
     loss: float | None,
+    projected: int = 0,
 ) -> dict[str, float]:
     """One history row; the soft-mask mass uses at most 1,024 validation queries."""
     device = torch.device(config.device)
     ndcg = _rerank(model, validation, candidates, config.eval_budgets, device)
-    with torch.no_grad():
-        importance = model(validation.queries[:1024].float().to(device))
-        mass = torch.stack(
-            [
-                soft_mass_on_topk(soft_top_k(importance, k, beta), importance, k).mean()
-                for k in config.eval_budgets
-            ]
-        ).mean()
-    row = {"step": float(step), "val_rerank_ndcg10": ndcg, "soft_mass": float(mass), "beta": beta}
+    mass = soft_mass(model, validation.queries, config.eval_budgets, beta, device)
+    row = {"step": float(step), "val_rerank_ndcg10": ndcg, "soft_mass": mass, "beta": beta}
     if loss is not None:
         row["train_loss"] = loss
     weight = getattr(model, "prior_weight", None)
     if weight is not None:
         row["prior_weight"] = float(weight.detach())
+    if isinstance(model, BudgetGeometricSelector):
+        for k, value in zip(model.budgets.tolist(), model.prior_weights.tolist(), strict=True):
+            row[f"prior_weight_k{k}"] = value
+    if config.nonnegative_prior:
+        row["projected_steps"] = float(projected)
     return row
+
+
+@torch.no_grad()
+def soft_mass(
+    model: LinearSelector,
+    queries: Tensor,
+    budgets: Sequence[int],
+    beta: float,
+    device: torch.device | str = "cpu",
+) -> float:
+    """Mean over ``budgets`` of the relaxed mask's mass on the hard top-k at temperature ``beta``,
+    on at most 1,024 ``queries`` (the guard of F5 research D3)."""
+    queries = queries[:1024].float().to(device)
+    if isinstance(model, BudgetGeometricSelector):
+        found = [scores_at(model, queries, k) for k in budgets]
+    else:
+        found = [model(queries)] * len(budgets)
+    return float(
+        torch.stack(
+            [
+                soft_mass_on_topk(soft_top_k(importance, k, beta), importance, k).mean()
+                for importance, k in zip(found, budgets, strict=True)
+            ]
+        ).mean()
+    )

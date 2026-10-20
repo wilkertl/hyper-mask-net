@@ -1,4 +1,5 @@
-"""F5 commands end to end on the F4 toy stack: the retrieval grid, then seeded selectors."""
+"""F5–F9 commands end to end on the F4 toy stack: the retrieval grids, seeded selectors, and the
+S1–S4 comparisons, reports, and decisions."""
 
 import json
 import shutil
@@ -11,7 +12,7 @@ import torch
 from test_f4_pipeline import TOY_ENVS, f4_stack, run_command  # noqa: F401 - f4_stack is a fixture
 
 from hyperdime.artifacts import latest_artifact
-from hyperdime.baselines.learning_to_select import GeometricSelector
+from hyperdime.baselines.learning_to_select import BudgetGeometricSelector, GeometricSelector
 from hyperdime.cli.__main__ import main
 from hyperdime.cli.transfer_matrix import BUDGETS
 from hyperdime.contracts.manifests import read_manifest
@@ -351,3 +352,139 @@ def test_s3_trains_a_learned_prior_weight_and_scores_every_selector(
                      "--report-dir", str(tmp_path / f"{experiment}b")]) == 0  # fmt: skip
         a, b = (tmp_path / f"{experiment}{x}" / "README.md" for x in "ab")
         assert a.read_bytes() == b.read_bytes()
+
+
+class S4Stack(NamedTuple):
+    before: Path  # S1-S3 runs only
+    out: Path  # the same, plus S4's grids, seeds, and comparison
+
+
+def _s4_track(comparison: Comparison, out: Path, track: str, env: str) -> None:
+    recipe = ("train-selector", "--recipe")
+    assert run_command(comparison.configs, out, *recipe, f"{track}-grid", f"data={env}",
+                       "--steps", STEPS) == 0  # fmt: skip
+    for seed in SEEDS:
+        assert run_command(comparison.configs, out, *recipe, f"{track}-seeded", f"data={env}",
+                           f"run.seed={seed}") == 0  # fmt: skip
+
+
+@pytest.fixture(scope="module")
+def s4_stack(
+    comparison: Comparison, s2_comparison: Path, tmp_path_factory: pytest.TempPathFactory
+) -> S4Stack:
+    """S3's runs on a copy of the S2 stack, kept as ``before``; then both S4 tracks' grids and
+    seeds and compare-selectors --experiment S4 on another copy."""
+    before = tmp_path_factory.mktemp("s4-before") / "out"
+    shutil.copytree(s2_comparison, before)
+    _s3_run(comparison, before)
+    out = tmp_path_factory.mktemp("s4") / "out"
+    shutil.copytree(before, out)
+    for env in TOY_ENVS:
+        for track in ("budget", "weighted-aligned"):
+            _s4_track(comparison, out, track, env)
+    assert run_command(comparison.configs, out, "compare-selectors", "--envs", *TOY_ENVS,
+                       "--experiment", "S4") == 0  # fmt: skip
+    return S4Stack(before, out)
+
+
+@pytest.mark.parametrize(("track", "weights"), [("budget", 9), ("weighted-aligned", 1)])
+def test_the_s4_grids_keep_checkpoints_by_full_corpus_validation(
+    s4_stack: S4Stack, track: str, weights: int
+) -> None:
+    grid = latest_artifact(s4_stack.out, f"selectors/{track}-grid", "toya")
+    record = json.loads((grid / "selection.json").read_text())
+    assert len(record["cells"]) == 8 and record["checkpoint_rule"] == "validation"
+    assert record["candidate_queries"]["seed"] == 0 and record["candidate_queries"]["ids"]
+    for cell in record["cells"].values():
+        assert cell["cell"]["variant"] == "multi-budget" and cell["cell"]["init"] == track
+        assert set(cell["candidate_scores"]) == {"0", STEPS}
+        assert str(cell["kept_step"]) in cell["candidate_scores"]
+        assert len(cell["prior_weights"]) == weights and min(cell["prior_weights"]) >= 0
+    _, model = load_selector(grid, record["selected"])
+    assert isinstance(model, BudgetGeometricSelector) == (track == "budget")
+    seeded = latest_artifact(s4_stack.out, f"selectors/{track}-seeded/toya", "seed-2")
+    entry = json.loads((seeded / "selection.json").read_text())
+    assert entry["checkpoint_rule"] == "validation" and "kept_step" in entry["validation"]
+
+
+def test_s4_scores_the_budget_selector_and_writes_its_diagnostics(s4_stack: S4Stack) -> None:
+    run = latest_artifact(s4_stack.out, "evaluation/S4", "all")
+    records = load_records(EvaluationResult, run / "results-toyb-test.jsonl")
+    ks = {r.k for r in records if r.selector == "budget:toyb:s1"}
+    assert ks == set(BUDGETS)
+    assert {"weighted-aligned:toyb:s0", "weighted:toyb:s0", "variance"} <= {
+        r.selector for r in records
+    }
+    diagnostics = json.loads((run / "diagnostics.json").read_text())
+    entry = diagnostics["budget"]["toyb"]["seed-0"][str(BUDGETS[0])]
+    assert set(entry) == {"prior_share", "overlap_variance", "overlap_correction", "prior_weight"}
+    assert 0.0 <= entry["prior_share"] <= 1.0
+    ablation = json.loads((run / "ablation.json").read_text())
+    assert set(ablation["weighted-aligned"]["toyc"]["seed-2"]["307"]) == {"kept", "no-prior"}
+    sources = json.loads((run / "sources.json").read_text())
+    directory = latest_artifact(s4_stack.out, "selectors/budget-seeded/toya", "seed-0")
+    record = json.loads((directory / "selector.json").read_text())
+    assert sources["toya"]["budget"]["seed-0"] == {
+        "run": directory.name, "sha256": record["payload"]["sha256"]
+    }  # fmt: skip
+
+
+def test_report_s4_and_decide_s4_run_and_leave_s1_to_s3_unchanged(
+    s4_stack: S4Stack, tmp_path: Path
+) -> None:
+    adr = tmp_path / "ADR-0012.md"
+    assert main(["report", "S4", "--artifacts", str(s4_stack.out),
+                 "--report-dir", str(tmp_path / "S4")]) == 0  # fmt: skip
+    assert main(["report", "S4", "--artifacts", str(s4_stack.out),
+                 "--report-dir", str(tmp_path / "S4again")]) == 0  # fmt: skip
+    assert (tmp_path / "S4" / "README.md").read_bytes() == (
+        tmp_path / "S4again" / "README.md"
+    ).read_bytes()
+    assert main(["decide", "S4", "--artifacts", str(s4_stack.out), "--adr", str(adr)]) == 0
+    record = load_record(
+        GateDecision, latest_artifact(s4_stack.out, "decisions/S4", "") / "gate_decision.json"
+    )
+    assert record.gate == "S4" and "- **Status:** proposed" in adr.read_text()
+    for experiment in ("S1", "S2", "S3"):
+        for name, root in (("a", s4_stack.out), ("b", s4_stack.before)):
+            assert main(["report", experiment, "--artifacts", str(root),
+                         "--report-dir", str(tmp_path / f"{experiment}{name}")]) == 0  # fmt: skip
+        a, b = (tmp_path / f"{experiment}{x}" for x in "ab")
+        assert (a / "README.md").read_bytes() == (b / "README.md").read_bytes()
+        assert {p.name: p.read_bytes() for p in (a / "tables").iterdir()} == {
+            p.name: p.read_bytes() for p in (b / "tables").iterdir()
+        }
+
+
+def test_the_budget_grid_never_sees_test_judgments(
+    s4_stack: S4Stack, comparison: Comparison, tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    out = tmp_path / "out"
+    shutil.copytree(s4_stack.out, out)
+    original = latest_artifact(s4_stack.out, "selectors/budget-grid", "toya")
+    dataset = latest_artifact(out, "datasets", "toya")
+    (dataset / "qrels-test.jsonl").unlink()
+    (dataset / "qrels-evalset.jsonl").unlink()
+    capsys.readouterr()
+    assert run_command(comparison.configs, out, "train-selector", "--recipe", "budget-grid",
+                       "data=toya", "--steps", STEPS) == 0  # fmt: skip
+    rerun = Path(capsys.readouterr().out.strip().splitlines()[-1])
+    first = json.loads((original / "selection.json").read_text())
+    assert json.loads((rerun / "selection.json").read_text()) == first
+    for key in first["cells"]:
+        a = load_selector(original, key)[1].state_dict()
+        b = load_selector(rerun, key)[1].state_dict()
+        assert all(torch.equal(a[name], b[name]) for name in a)
+
+
+def test_compare_selectors_s4_refuses_a_budget_payload_that_changed(
+    s4_stack: S4Stack, comparison: Comparison, tmp_path: Path
+) -> None:
+    out = tmp_path / "out"
+    shutil.copytree(s4_stack.out, out)
+    payload = (
+        latest_artifact(out, "selectors/budget-seeded/toyc", "seed-1") / "selector.safetensors"
+    )
+    payload.write_bytes(payload.read_bytes()[:-1] + b"\0")
+    assert run_command(comparison.configs, out, "compare-selectors", "--envs", *TOY_ENVS,
+                       "--experiment", "S4") == 1  # fmt: skip
