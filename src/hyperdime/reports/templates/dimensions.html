@@ -41,7 +41,7 @@
   <header>
     <div class="eyebrow">HyperDIME · generated experiment charts</div>
     <h1>Metric by retained dimensions</h1>
-    <p>Exact full-corpus retrieval across the reported E0, E1, P1, and S1–S3 experiments. The horizontal axis keeps 10%, 20%, …, 100% of the 1,024 query dimensions.</p>
+    <p>Exact full-corpus retrieval across the reported E0, E1, P1, and S1–S4 experiments. The horizontal axis keeps 10%, 20%, …, 100% of the 1,024 query dimensions.</p>
   </header>
   <main>
     <p class="intro">Choose a query set inside each chart and use its legend to focus on methods. At 100%, every method uses the full query. E0 provides full curves for TREC DL sets only; its SciFact, NFCorpus, and MS MARCO test report has selected-budget results, so no test-set curve is inferred.</p>
@@ -59,7 +59,8 @@
       P1: ['P1 · geometric probe','Corpus variance against learned selectors'],
       S1: ['S1 · retrieval objective','Masked retrieval training against L2S'],
       S2: ['S2 · fixed geometric prior','Retrieval selector initialized from variance'],
-      S3: ['S3 · learned prior weight','Learned scalar on the geometric prior']
+      S3: ['S3 · learned prior weight','Learned scalar on the geometric prior'],
+      S4: ['S4 · prior weight per budget','One learned prior weight for each budget']
     };
     const host = document.getElementById('charts');
     const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -72,7 +73,8 @@
       if (exp === 'P1') return [...base,'variance',`retrieval:${env}`].includes(name);
       if (exp === 'S1') return [...base,`retrieval:${env}`].includes(name);
       if (exp === 'S2') return [...base,'variance',`retrieval:${env}`,`geometric:${env}`].includes(name);
-      return [...base,'variance',`retrieval:${env}`,`geometric:${env}`,`weighted:${env}`].includes(name);
+      if (exp === 'S3') return [...base,'variance',`retrieval:${env}`,`geometric:${env}`,`weighted:${env}`].includes(name);
+      return [...base,'variance',`geometric:${env}`,`weighted:${env}`,`weighted-aligned:${env}`,`budget:${env}`].includes(name);
     }
     function chart(exp, card) {
       const group = card.querySelector('.query').value;
@@ -107,7 +109,7 @@
       card.querySelector('.legend').innerHTML=lines.map((r,i)=>`<label><input type="checkbox" data-method="${esc(r.method)}" ${hidden.has(r.method)?'':'checked'}><span class="swatch" style="background:${COLORS[i%COLORS.length]}"></span>${esc(r.method)}</label>`).join('');
       card.querySelector('.source-table').href=DATA[exp].groups[group]._source[metric];
     }
-    for (const exp of ['E0','E1','P1','S1','S2','S3']) {
+    for (const exp of ['E0','E1','P1','S1','S2','S3','S4']) {
       const item=DATA[exp], groups=Object.keys(item.groups);
       const card=document.createElement('section'); card.className='card'; card.id=exp;
       const options=groups.map(g=>`<option value="${esc(g)}">${esc(nice(g.replace('|',' / ')))}</option>`).join('');

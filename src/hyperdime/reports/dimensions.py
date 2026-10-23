@@ -2,7 +2,7 @@
 
 Every value is read from a generated report table: E0's TREC DL tables (nDCG@10 and AP; its extra
 k = 256 point is left out to keep 10% steps) and the ``progression.csv`` tables of E1, P1, and
-S1-S3. The page itself (layout and plotting script) is a fixed template; only the data block is
+S1-S4. The page itself (layout and plotting script) is a fixed template; only the data block is
 generated, so regenerating from the same tables gives identical bytes.
 """
 
@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Any
 
 OUTPUT = "experiments-dimensions.html"
-PROGRESSIONS = ("E1", "P1", "S1", "S2", "S3")
+PROGRESSIONS = ("E1", "P1", "S1", "S2", "S3", "S4")
 E0_QUERY_SETS = ("trec-dl-2019", "trec-dl-2020", "trec-dl-hard")
 E0_METRICS = (("nDCG@10", "ndcg10"), ("AP", "ap"))
 E0_DROPPED = "k=256"
