@@ -75,8 +75,8 @@ regeneration, and S1–S3 reports unchanged.
 
 - [X] T024 Run `ruff check . && ruff format --check . && mypy && pytest` and `PYTHONPATH=tools python -m scrap tests`; act on `HIGH` recommendations for changed test files or state why not
 - [X] T025 Commit spec, research (margin δ) and code before any S4 run (research D8)
-- [ ] T026 Run on DataPolicy-4090 per quickstart (wait for ≥ 20 GB free GPU memory): both grids and seeds 0–2 per environment, `compare-selectors --experiment S4 --chunk-size 250000`, `report S4`, `decide S4 --adr docs/decisions/ADR-0012-s4-budget-prior.md`; record commit, grid and compare times against SC-003, and the run id here; check `git diff --exit-code reports/S1 reports/S2 reports/S3`
-- [ ] T027 [P] Update docs/architecture.md (budget selector, aligned checkpoint rule, `selection/diagnostics.py`), docs/experiment_registry.md (S4), and README.md with generated numbers only; commit `reports/S4/` and ADR-0012
+- [X] T026 Run on DataPolicy-4090 per quickstart (wait for ≥ 20 GB free GPU memory): both grids and seeds 0–2 per environment, `compare-selectors --experiment S4 --chunk-size 250000`, `report S4`, `decide S4 --adr docs/decisions/ADR-0012-s4-budget-prior.md`; record commit, grid and compare times against SC-003, and the run id here; check `git diff --exit-code reports/S1 reports/S2 reports/S3` *Done: commit `855d31b`, started 2026-10-21 16:10 once the GPU was free, finished 18:42 (UTC−3). Grids 400–1677 s each (SciFact 400/411 s, NFCorpus 503/537 s, MS MARCO 1661/1677 s for aligned/budget), `compare-selectors` 1677 s: SC-003 met. Run id `20261021T211322Z-0cdb96ab`; decision `artifacts/decisions/S4/20261021T214216Z-a86d786b`. S1–S3 reports regenerated unchanged.*
+- [X] T027 [P] Update docs/architecture.md (budget selector, aligned checkpoint rule, `selection/diagnostics.py`), docs/experiment_registry.md (S4), and README.md with generated numbers only; commit `reports/S4/` and ADR-0012 *Done: docs/architecture.md already described the F9 code; the registry and README now link the generated report and ADR-0012 (left `proposed` for the researcher), and `report dimensions` charts S4.*
 
 ## Dependencies
 

@@ -196,6 +196,8 @@ uv run hyperdime decide S4                           # GateDecision(gate="S4") a
 The budget selector scores `a_k · log(q_d² · Var(x_d) + ε) + (W q + b)_d` with one weight `a_k >= 0`
 per 10%–90% budget. Both tracks keep the checkpoint with the best full-corpus validation nDCG@10
 (step 0 included), and the non-inferiority margin δ = 0.005 was fixed before any run.
+The generated results are in [reports/S4](reports/S4/README.md) and the proposed
+[ADR-0012](docs/decisions/ADR-0012-s4-budget-prior.md).
 
 `uv run hyperdime report overview` writes [reports/overview](reports/overview/README.md): the
 end-to-end pipeline, every selector strategy, and their results from the latest S3 run.
