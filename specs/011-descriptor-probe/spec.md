@@ -15,9 +15,23 @@ specialized selector ranks the 1,024 dimensions, beyond what is shared by every 
 With three environments, an environment-level probe has three points. The unit of analysis is
 therefore the dimension: each environment gives 1,024 pairs (descriptor row `R_T[j]`, selector
 property `y_T[j]`), and the test is leave-one-environment-out (fit on two environments' 2,048
-rows, predict the held-out environment's 1,024). Rules below are fixed before any E2 run.
+rows, predict the held-out environment's 1,024). H2 says geometry explains *part* of the
+change, so the decisive probe starts from the profile the environments share and asks whether
+descriptor differences predict the held-out environment's deviation from it. A check that such a
+deviation exists beyond seed noise runs first. Rules below are fixed before any E2 run.
 
 ## User Scenarios & Testing *(mandatory)*
+
+### User Story 0 - Is there a shift to explain? (Priority: P1)
+
+Before any descriptor exists, the researcher reads, per held-out environment, how well the
+shared profile (B1, the mean of the other two environments' target profiles) predicts its
+target, next to the seed noise ceiling (how well the seed-averaged target agrees with a
+replicate of itself). The gap between the two is what descriptors can explain.
+
+**Independent Test**: on synthetic environments with identical profiles plus seed noise, B1
+reaches the ceiling and the check reports no room; with an added environment-specific
+component, it reports the gap; it reads no labels and no descriptor.
 
 ### User Story 1 - A per-dimension space descriptor (Priority: P1)
 
@@ -51,16 +65,21 @@ existing selector checkpoints, on validation queries without their labels:
   queries keeping the dimension in their top k), averaged over the nine 10%–90% budgets. S1 has
   no geometric prior, so the target is not built from the variance descriptor itself.
 - **Secondary targets**: the same per budget; the S1 selector's mean score per dimension; the
-  selection frequency of the linear part `W q + b` of the S4 budget selector.
+  selection frequency of the linear part `W q + b` of the S4 budget selector; the S1 selector's
+  bias `b` (the query-independent part of its scores, closest to what a Hyper Head would
+  generate).
 
 **Independent Test**: on a synthetic selector the frequency matches a hand count; it sums to k
 per budget; targets read no labels; averaging seeds averages their profiles.
 
 ### User Story 3 - Experiment E2 (Priority: P1)
 
-The researcher runs, for each held-out environment, simple linear probes from each descriptor
-set to the target, compares them with two baselines, and reads `reports/E2/` and a drafted
-ADR-0013 with the G3 reading.
+The researcher runs, for each held-out environment and descriptor set, two simple linear
+probes: the **shift probe** (decisive), which predicts the held-out target as the shared profile
+plus a correction learned from how descriptors and targets differ between the training
+environments; and the **direct probe** (secondary), which predicts the target from the
+descriptor alone. Both are compared with two baselines; the researcher reads `reports/E2/` and a
+drafted ADR-0013 with the G3 reading.
 
 **Independent Test**: on synthetic environments where the target is a known linear function of
 one descriptor column plus noise, the probe beats both baselines and the permutation test
@@ -92,27 +111,35 @@ never enters fitting, model choice, or normalization.
 - **FR-003**: Descriptor sets form a fixed ladder: (1) variance only, (2) A, (3) A + E,
   (4) A + E + tails, (5) + B + C, (6) + D. Sets 1–4 are P0, 5–6 are P1; every result is labeled
   with its protocol.
-- **FR-004**: The probe is ridge regression on the target's ranks. Feature standardization and
-  the ridge penalty (chosen from {0.1, 1, 10, 100, 1000} by the inner two-fold
-  leave-one-environment-out on the training environments) use the training environments only.
+- **FR-004**: Probes are ridge regressions on the target's ranks; feature standardization and
+  the ridge penalty (from {0.1, 1, 10, 100, 1000}) use the training environments only.
+  - **Shift probe (decisive)**: fitted on the training environments' deviations from their mean
+    (target ranks and descriptors); the held-out prediction is the rank of B1 plus the fitted
+    correction applied to the held-out descriptor's deviation from the training mean. Penalty by
+    generalized cross-validation on the training deviations.
+  - **Direct probe (secondary)**: from the descriptor to the target ranks; penalty by the inner
+    two-fold leave-one-environment-out on the training environments.
 - **FR-005**: Baselines, per held-out environment: (B1) dimension identity, the mean of the two
   training environments' target profiles, which is what a selector shared by all environments
   predicts; (B2) the held-out environment's own `variance`-method selection frequency, averaged
   over the nine budgets (label-free).
-- **FR-006**: Controls: a permutation test that independently permutes descriptor rows within
-  each environment and refits (1,000 permutations, seeded); a residual probe that predicts the
-  held-out target's deviation from B1 from the descriptor's deviation from the training mean,
-  reported as the direct test of "geometry explains the shift"; the seed noise ceiling, the mean
-  pairwise Spearman between seeds' target profiles per environment; standardized probe
-  coefficients per feature.
+- **FR-006**: Controls: a permutation test per probe that independently permutes descriptor
+  rows within each environment and refits, penalty choice included (1,000 permutations, seeded);
+  the seed noise ceiling per environment (mean pairwise Spearman between seeds' profiles,
+  stepped up to three seeds by Spearman–Brown); standardized probe coefficients per feature.
+- **FR-006a (shift check, first)**: per held-out environment, B1's Spearman and the noise
+  ceiling, from targets alone. If the ceiling exceeds B1 by less than 0.05 in at least 2 of 3
+  environments, the report states that no environment-specific shift beyond seed noise is
+  measurable, the descriptor steps are not required, and the G3 draft reads "not supported: no
+  shift to explain".
 - **FR-007**: Environment-level context, descriptive only: S4's learned `a_k` per environment,
   E1's transfer degradation per pair, and environment summaries (participation ratio, mean
   energy, descriptor means).
 - **FR-008**: Existing code paths, artifacts, and reports (E0, E1, P1, S1–S4) stay unchanged and
   regenerate byte-identically.
-- **FR-009**: The E2 report is generated from result files only: protocol per row, the ladder
-  per fold and seed, both baselines, permutation p-values, the residual probe, the noise ceiling,
-  coefficients, the environment-level table, a note that these environments shaped S1–S4, and a
+- **FR-009**: The E2 report is generated from result files only: protocol per row, the shift
+  check, the ladder per fold, seed, and probe form, both baselines, permutation p-values, the
+  noise ceiling, coefficients, the environment-level table, a note that these environments shaped S1–S4, and a
   drafted ADR-0013 with the G3 reading. It regenerates byte-identically.
 
 ### Key Entities
@@ -120,25 +147,25 @@ never enters fitting, model choice, or normalization.
 - **Space descriptor**: per environment and protocol, a `1024 × h` table with feature names and
   groups, from embeddings only.
 - **Selector target profile**: per environment, seed, and target kind, a value per dimension.
-- **Probe result**: per held-out environment, descriptor set, target, and seed: Spearman on the
-  held-out environment, baselines, permutation p-value, chosen penalty, coefficients.
+- **Probe result**: per held-out environment, descriptor set, probe form (shift or direct),
+  target, and seed: Spearman on the held-out environment, baselines, permutation p-value, chosen penalty, coefficients.
 
 ## Success Criteria *(mandatory)*
 
 Spearman correlation between predicted and actual primary-target profiles on the held-out
 environment's 1,024 dimensions, per fold; target averaged over seeds unless stated.
 
-- **SC-001 (G3, provisional)**: at least one descriptor set has Spearman above both B1 and B2 on
-  at least 2 of the 3 held-out environments, with permutation p ≤ 0.05 after Holm correction over
-  the six descriptor sets within each fold, and stays above both baselines for each of the three
-  seeds' targets in those environments.
+- **SC-001 (G3, provisional)**: at least one descriptor set's **shift probe** has Spearman above
+  both B1 and B2 on at least 2 of the 3 held-out environments, with permutation p ≤ 0.05 after
+  Holm correction over the descriptor sets evaluated within each fold, and stays above both
+  baselines for each of the three seeds' targets in those environments.
 - **SC-002**: the protocol of the best passing set is reported: G3 is read as holding under P0 if
   a P0 set (1–4) passes SC-001, otherwise under P1 if set 5 or 6 does.
 - **SC-003**: building all three descriptors finishes within 3 hours, and the full probe
   (6 sets × 3 folds × targets × 1,000 permutations) within 1 hour, on DataPolicy-4090.
 
-Secondary, reported but not decisive: the residual probe, per-budget and secondary targets,
-the noise ceiling, and the environment-level table.
+Secondary, reported but not decisive: the direct probe, per-budget and secondary targets
+(including the S1 bias), the noise ceiling, and the environment-level table.
 
 ## Assumptions
 
@@ -151,5 +178,8 @@ the noise ceiling, and the environment-level table.
   remain three. The report states this.
 - Out of scope: new environments (#60), the space encoder and Hyper Head (gate G4), labeled
   contrast (protocol P2), and redundancy-aware selectors (an S-track experiment).
+- Delivery is in two stages: stage 1 is the shift check, the P0 descriptor (sets 1–4), the
+  probes, the report, and the decision; stage 2 adds the P1 groups (sets 5–6). A G3 reading after
+  stage 1 covers P0 only, and the report says which sets were evaluated.
 - The descriptor stays provisional (`schema_version` 0); freezing `SpaceDescriptorV1` (M5.5)
   follows a G3 reading on more environments.

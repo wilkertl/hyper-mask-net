@@ -3,6 +3,21 @@
 Every decision is fixed before any E2 run. Code references are to `agent/F9-budget-prior`
 (`5916e37`).
 
+## D0. Shift check first
+
+- **Decision**: `probe-descriptors --experiment E2 --targets-only` computes the targets (D6) and,
+  per held-out environment, B1's Spearman with the seed-averaged primary target and the noise
+  ceiling (D6). Gap = ceiling − B1. If the gap is below 0.05 in at least 2 of 3 environments, the
+  run records `no_shift = true`; `report E2` and `decide G3` then read G3 as "not supported: no
+  environment-specific shift beyond seed noise", and descriptors are not required. It reads no
+  labels and no descriptor, and runs on existing checkpoints.
+- **Rationale**: E1 measured shift on L2S selectors; S1's retrieval selectors may share more of
+  their profile. If B1 already reaches the ceiling, no descriptor can beat it, and building
+  groups A–E would spend the feature for nothing. The 0.05 threshold is fixed now, before any
+  target is computed.
+- **Alternatives**: no check (risks an uninterpretable failure); a significance test of the gap
+  (three folds, one profile each; the ceiling already carries the noise).
+
 ## D1. Unit of analysis and folds
 
 - **Decision**: one row per (environment, dimension), 3 × 1,024 rows. Three leave-one-environment-
@@ -96,11 +111,13 @@ Every decision is fixed before any E2 run. Code references are to `agent/F9-budg
     frequency `selection_frequency(scores, k)` at each of the nine budgets, divided by k (so each
     budget's profile sums to 1), averaged over the budgets; then averaged
     over seeds 0–2. Per-seed profiles are kept for SC-001's seed condition and the noise ceiling;
-  - **secondary**: the per-budget profiles; the S1 mean log-importance per dimension; the
-    selection frequency, averaged over budgets, of the correction `W q + b` alone of the latest
-    `selectors/budget-seeded` (S4) seeds;
-  - **noise ceiling**: per environment, the mean pairwise Spearman between the three seeds'
-    primary profiles.
+  - **secondary**: the per-budget profiles; the S1 mean log-importance per dimension; the S1
+    bias `b` (the `projection.bias` of each seed, averaged; query-independent, read from the
+    checkpoint without queries); the selection frequency, averaged over budgets, of the
+    correction `W q + b` alone of the latest `selectors/budget-seeded` (S4) seeds;
+  - **noise ceiling**: per environment, the mean pairwise Spearman `ρ` between the three seeds'
+    primary profiles, stepped up to the three-seed average by Spearman–Brown, `3ρ / (1 + 2ρ)`,
+    because the target and B1 are three-seed averages.
 
   Seeded selectors are checked against their grid's selection and payload hashes as
   `compare-selectors` does.
@@ -111,7 +128,7 @@ Every decision is fixed before any E2 run. Code references are to `agent/F9-budg
   builds on; reported in E1 already); S4's full importance (contains `a_k · log(q² Var)`, so a
   variance descriptor would predict it by construction).
 
-## D7. Probe
+## D7. Direct probe (secondary)
 
 - **Decision**: ridge regression from standardized features to the rank-transformed target
   (average ranks within each environment, scaled to [0, 1]). Standardization means and standard
@@ -142,21 +159,37 @@ Every decision is fixed before any E2 run. Code references are to `agent/F9-budg
 
 ## D9. Permutation test and Holm
 
-- **Decision**: per fold and descriptor set, 1,000 permutations (seed 0): independently permute
-  the descriptor rows within each environment (training and held-out), redo the whole fit (inner
-  penalty choice included), record the held-out Spearman. One-sided p = `(1 + #{null ≥ observed})
-  / 1001`. Holm over the six sets within each fold.
+- **Decision**: per fold, descriptor set, and probe form (shift, direct), 1,000 permutations
+  (seed 0): independently permute the descriptor rows within each environment (training and
+  held-out), redo the whole fit (penalty choice included), record the held-out Spearman.
+  One-sided p = `(1 + #{null ≥ observed}) / 1001`. Holm over the descriptor sets evaluated
+  within each fold, separately per probe form; SC-001 reads the shift form.
 - **Rationale**: tests the descriptor–dimension pairing, the core of H2; refitting keeps the null
   honest. Within-fold Holm matches SC-001, which counts folds.
 
-## D10. Residual probe
+## D10. Shift probe (decisive)
 
-- **Decision**: the same ridge, predicting `rank(y_T) − rank(B1)` (held-out deviation from the
-  shared profile, ranks as D7) from `R_T[j] − mean of the training environments' R[j]`; scored by
-  Spearman between predicted and actual deviations. Reported per set and fold with its own
-  permutation p; not part of SC-001.
-- **Rationale**: the most direct form of "geometry explains the shift": it removes what all
-  environments share before asking what the descriptor explains.
+- **Decision**: with ranks `r_E` (D7, scaled to [0, 1]) and standardized descriptors `R_E` for
+  the fold's two training environments, and `r̄`, `R̄` their means:
+  - fit ridge `Δr ≈ ΔR · β` on the training deviations `r_E − r̄`, `R_E − R̄` (2,048 rows; with two
+    environments these are the contrast `(r_1 − r_2) / 2` and its negative, so the fit learns how
+    the two training environments' descriptor differences track their target differences);
+  - predict the held-out environment as `rank(B1) + (R_T − R̄) · β` (`rank(B1)` = ranks of `r̄`),
+    scored by Spearman against its target, so it is compared on the same scale as B1 and B2;
+  - penalty by generalized cross-validation on the 1,024 contrast rows (the inner two-fold of D1
+    is not possible with deviations from two environments); no intercept (deviations are
+    centred).
+
+  Permutation (D9) permutes descriptor rows within each environment before the deviations are
+  formed and refits, GCV included. With `β = 0` the prediction is B1, so the probe can only beat
+  B1 through descriptor differences.
+- **Rationale**: H2 claims geometry explains part of the shift, not the whole profile. Starting
+  from the shared profile removes what dimension identity explains (risk R2) and asks only
+  whether descriptor differences predict where the held-out selector departs from it. This is the
+  decisive form (SC-001); the direct probe (D7) is reported as the stronger, secondary claim.
+- **Alternatives**: B1 as a feature of the direct probe (mixes scales, and the probe can lean on
+  identity alone); predicting the deviation and scoring Spearman of deviations only (not
+  comparable with B1 and B2 on one scale; reported as a secondary column).
 
 ## D11. Environment-level context
 
@@ -172,7 +205,7 @@ Every decision is fixed before any E2 run. Code references are to `agent/F9-budg
     `descriptor-P0.json` + `.npy` (groups A, E), `descriptor-P1.json` + `.npy` (A, B, C, D, E),
     `covariance.npy` (diagnostic), `inputs.json`, and a manifest.
   - `hyperdime probe-descriptors --experiment E2 [--envs ...] [--seeds 0 1 2]
-    [--permutations 1000]` reads the latest descriptor per environment and the S1/S4 seeded
+    [--permutations 1000] [--targets-only]` (D0 with `--targets-only`) reads the latest descriptor per environment and the S1/S4 seeded
     selectors, writes `evaluation/E2/all/<run_id>/` with `targets-<env>.npy` (+ JSON index),
     `probe.jsonl`, `coefficients.json`, `context.json`, `inputs.json`.
   - `hyperdime report E2` writes `reports/E2/`; `hyperdime decide G3 [--adr ...]` writes
@@ -180,15 +213,25 @@ Every decision is fixed before any E2 run. Code references are to `agent/F9-budg
 - **Rationale**: same pattern as P1 and S1–S4: artifacts only through `ArtifactWriter`, reports
   only from artifacts, decisions drafted, never decided.
 
-## D13. Cost
+## D13. Two stages
+
+- **Decision**: stage 1 delivers D0, D2–D4 (P0, sets 1–4), D6–D12, the report, and the
+  decision; stage 2 adds D5 (P1, sets 5–6). `describe-space --protocol P0` writes only
+  `descriptor-P0`; `--protocol P1` (the default once stage 2 lands) writes both. The probe runs
+  the sets its descriptors allow, Holm covers the sets evaluated, and the report lists them. A G3
+  reading from stage 1 is a P0 reading (SC-002).
+- **Rationale**: P0 is the strongest zero-shot claim and needs no retrieval; P1 carries the
+  circularity risk (R3) and the MS MARCO retrieval pass. Stage 1 alone answers G3 under P0.
+
+## D14. Cost
 
 - **Decision**: `describe-space` on MS MARCO is two streamed passes over 8.8M × 1024 float16
   (as `probe-geometry`, minutes on the 4090), a 1M-row quantile sample (≈ 8 GB float64; done in
   column blocks of 128), and 10,000 queries' exact top-20 (one more streamed pass). The probe is
-  CPU: 6 sets × 3 folds × (1 + 1,000 permutations) × 5 inner penalties × 2 targets of a closed-form
+  CPU: 6 sets × 3 folds × 2 forms × (1 + 1,000 permutations) × 5 penalties of a closed-form
   ridge on ≤ 2,048 × 60, well under SC-003's hour.
 
-## D14. Test-set reuse and the reading
+## D15. Test-set reuse and the reading
 
 - **Decision**: the report and ADR state that S1–S4 were shaped on these environments and that
   targets come from selectors tuned on them, so E2's reading is exploratory; G3 is confirmed by

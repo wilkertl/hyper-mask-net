@@ -8,10 +8,14 @@ Build a per-dimension space descriptor `R_T` (`1024 × h`) for each environment 
 document marginals and tails, and redundancy (P0); query marginals, query–document products, and
 pseudo-relevance contrast from unlabeled training queries (P1) (research D2–D5). Derive per-
 dimension targets from existing selectors on validation queries without their labels: the S1
-selector's selection frequency averaged over budgets (primary), per-budget and S4-correction
-variants (secondary) (D6). Probe with ridge regression, leave-one-environment-out over the three
-environments, a six-step descriptor ladder, two baselines (dimension identity, `variance`), a
-refitting permutation test with Holm, and a residual probe of the shift (D1, D7–D10). Experiment
+selector's selection frequency averaged over budgets (primary), per-budget, S1-bias, and
+S4-correction variants (secondary) (D6). A shift check runs first, from targets alone: if the
+shared profile already reaches the seed noise ceiling, there is nothing to explain (D0). The
+decisive shift probe starts from the shared profile and learns, leave-one-environment-out, how
+descriptor differences predict target differences; a direct probe from descriptors alone is
+secondary. Both run over a six-step descriptor ladder against two baselines (dimension identity,
+`variance`), with a refitting permutation test and Holm (D1, D7–D10). Delivered in two stages:
+P0 first (sets 1–4, a complete G3 reading under P0), then P1 (sets 5–6) (D13). Experiment
 E2 ends with `reports/E2/` and a drafted ADR-0013 reading G3 as exploratory (D14). Stacked on F9;
 runs on DataPolicy-4090.
 
@@ -69,7 +73,7 @@ src/hyperdime/space/streaming.py           # new: streamed moments, tails, Gram 
 src/hyperdime/space/redundancy.py          # new: correlation and PC-share features (D4)
 src/hyperdime/space/interaction.py         # new: groups B, C, D from calibration queries (D5)
 src/hyperdime/space/descriptor.py          # new: builds P0/P1 SpaceDescriptors, feature names
-src/hyperdime/evaluation/descriptor_probe.py  # new: ranks, ridge, folds, baselines, permutation, residual (D1, D7–D10)
+src/hyperdime/evaluation/descriptor_probe.py  # new: ranks, ridge, folds, baselines, shift check, probes, permutation (D0, D1, D7–D10)
 src/hyperdime/evaluation/targets.py        # new: selector target profiles, noise ceiling (D6)
 src/hyperdime/cli/describe_space.py        # new command
 src/hyperdime/cli/probe_descriptors.py     # new command
@@ -87,8 +91,13 @@ M5), probe and targets in `hyperdime.evaluation`; existing modules only gain reg
 ## Risks
 
 - **R2, identity**: dimensions keep their identity across environments, so descriptors can
-  predict targets by encoding which dimension it is; B1 measures that and SC-001 requires beating
-  it. The residual probe isolates the environment-specific part.
+  predict targets by encoding which dimension it is; the shift probe starts from B1 and can only
+  move away from it through descriptor differences (D10).
+- **No shift**: S1's profiles may be mostly shared; the shift check (D0) reads that first, from
+  existing checkpoints, before any descriptor code runs.
+- **Two training environments per fold**: the shift probe learns from one contrast (training
+  environment 1 against 2), so it generalizes only if descriptor–target co-variation is shared
+  across pairs; that is H2's claim, and three folds test it three times.
 - **Three folds**: SC-001 counts 2 of 3; one odd environment (MS MARCO's scale) decides a lot.
   The report shows each fold and the noise ceiling, so a low ceiling explains a low score.
 - **Pooled normalization**: corpora differ in scale (MS MARCO vs SciFact); pooled training

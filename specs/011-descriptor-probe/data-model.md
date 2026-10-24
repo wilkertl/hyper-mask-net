@@ -43,11 +43,20 @@ zero-variance dimension gives finite values (skew, kurt, tail3, correlations = 0
 | `s1/seed-<n>/mean` | `[1024]` | mean over the nine budgets (primary, per seed) |
 | `s1/mean` | `[1024]` | mean over seeds of `s1/seed-<n>/mean` (primary) |
 | `s1/seed-<n>/log_importance` | `[1024]` | mean log-importance over queries |
+| `s1/bias`, `s1/seed-<n>/bias` | `[1024]` | `projection.bias` of the S1 selector (secondary) |
 | `s4_correction/seed-<n>/mean`, `s4_correction/mean` | `[1024]` | same as primary for `W q + b` of the S4 budget selector |
 | `variance/mean` | `[1024]` | `variance`-method frequency, averaged over budgets (baseline B2) |
 
 The JSON index records the query count, the selector run ids and payload hashes, and the noise
-ceiling per target (mean pairwise Spearman between seeds).
+ceiling per target (mean pairwise Spearman `ρ` between seeds and its three-seed step-up
+`3ρ / (1 + 2ρ)`).
+
+## Shift check (`check.json`, research D0)
+
+Per held-out environment: B1's Spearman with the seed-averaged primary target, the noise ceiling,
+the gap, and `no_shift` (gap < 0.05 in at least 2 of 3 environments). Written by every
+`probe-descriptors` run; a `--targets-only` run writes only targets, `check.json`, and
+`inputs.json`.
 
 ## Probe result (`probe.jsonl`, one line each)
 
@@ -58,10 +67,10 @@ ceiling per target (mean pairwise Spearman between seeds).
 | `seed` | `mean` · `0` · `1` · `2` | seed-averaged or one seed's target |
 | `set` | 1–6 or `B1` · `B2` | descriptor set or baseline |
 | `protocol` | `P0` · `P1` · `—` | of the set |
-| `form` | `direct` · `residual` | D7 or D10 |
+| `form` | `shift` · `direct` | D10 (decisive) or D7 |
 | `spearman` | float | on the held-out 1,024 dimensions |
-| `penalty` | float · null | chosen by inner folds |
-| `p`, `p_holm` | float · null | permutation p (D9), Holm over the six sets within the fold (direct, seed `mean`, primary target only) |
+| `penalty` | float · null | chosen by GCV (shift) or inner folds (direct) |
+| `p`, `p_holm` | float · null | permutation p (D9), Holm over the sets evaluated within the fold and form (seed `mean`, primary target only) |
 | `n_permutations` | int | 1,000 for primary rows, 0 otherwise |
 
 `coefficients.json`: per fold and set, standardized coefficients by feature name (seed `mean`,
@@ -69,7 +78,8 @@ primary target). `context.json`: research D11's environment-level table inputs.
 
 ## Report tables (`reports/E2/tables/`)
 
-`criteria.csv` (SC-001/SC-002 per fold and set), `ladder.csv` (Spearman per fold, set, form),
+`check.csv` (D0), `criteria.csv` (SC-001/SC-002 per fold and set, shift form), `ladder.csv`
+(Spearman per fold, set, form),
 `seeds.csv` (per-seed direct Spearman with both baselines), `secondary.csv` (per-budget and S4
 targets), `ceiling.csv`, `coefficients.csv`, `context.csv`. `README.md` and the tables regenerate
 byte-identically.
@@ -77,6 +87,7 @@ byte-identically.
 ## GateDecision G3
 
 `gate = "G3"`, criteria SC-001 (value: number of folds where a set passes; threshold ≥ 2 of 3)
-and SC-002 (protocol of the best passing set), evidence keys as in S4 (`ladder`, `ceiling`,
-`residual`, `test_set_reuse`); drafted ADR-0013 status "proposed", never overwriting a
+and SC-002 (protocol of the best passing set), evidence keys as in S4 (`check`, `ladder`,
+`ceiling`, `direct`, `test_set_reuse`); with `no_shift`, SC-001 reads "not
+supported: no shift to explain"; drafted ADR-0013 status "proposed", never overwriting a
 non-proposed ADR.
