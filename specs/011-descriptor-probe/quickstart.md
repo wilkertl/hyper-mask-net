@@ -4,7 +4,7 @@
 
 ```bash
 ruff check . && ruff format --check . && mypy && pytest
-pytest tests/unit/space tests/unit/evaluation -q
+pytest tests/unit/test_space_*.py tests/unit/evaluation -q
 pytest tests/integration/test_f10_pipeline.py -q      # synthetic environments end to end
 PYTHONPATH=tools python -m scrap tests
 ```

@@ -80,7 +80,7 @@ src/hyperdime/cli/probe_descriptors.py     # new command
 src/hyperdime/cli/__main__.py              # register both
 src/hyperdime/cli/report.py, cli/decide.py # + E2, + G3
 src/hyperdime/reports/e2.py                # new: E2 report, G3 criteria, ADR-0013 draft
-tests/unit/space/, tests/unit/evaluation/, tests/unit/reports/
+tests/unit/test_space_*.py, tests/unit/evaluation/, tests/unit/reports/
 tests/integration/test_f10_pipeline.py     # synthetic environments end to end
 docs/architecture.md, docs/experiment_registry.md, README.md
 ```
