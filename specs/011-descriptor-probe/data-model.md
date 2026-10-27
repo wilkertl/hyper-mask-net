@@ -18,7 +18,7 @@ row per dimension (`[1024, h]`).
 | D | `contrast_` | `k5, k10, k20` | `q_j · (mean top-K − mean background)` | P1 |
 
 `descriptor-P0` holds A (with tails) and E (18 columns, `num_queries = 0`); `descriptor-P1` holds
-all groups (53 columns, `num_queries` = calibration size). Invariants (tested): unchanged under
+all groups (43 columns: 18 P0, 12 B, 10 C, 3 D; `num_queries` = calibration size). Invariants (tested): unchanged under
 document or query row permutation; rows permute with dimensions; streamed equals one-pass; a
 zero-variance dimension gives finite values (skew, kurt, tail3, correlations = 0).
 

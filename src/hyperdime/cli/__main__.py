@@ -14,6 +14,7 @@ from hyperdime.cli import (
     evaluate,
     mine_negatives,
     prepare_data,
+    probe_descriptors,
     probe_geometry,
     report,
     train_global,
@@ -35,6 +36,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     transfer_matrix.register(commands)
     compare_selectors.register(commands)
     probe_geometry.register(commands)
+    probe_descriptors.register(commands)
     report.register(commands)
     decide.register(commands)
     args = parser.parse_args(argv)
