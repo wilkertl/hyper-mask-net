@@ -34,6 +34,7 @@ SCORE_TEMPERATURES = (0.02, 0.05)
 BETA_ENDS = (0.1, 0.02)
 STEPS = 20_000
 SOFT_MASS_GUARD = 0.9
+PRIOR_INITS = ("prior", "weighted")
 
 
 @dataclass(frozen=True)
@@ -106,17 +107,19 @@ def train_retrieval_cells(
     start: Mapping[str, Tensor] | None = None,
     prior: Tensor | None = None,
 ) -> list[TrainedRetrieval]:
-    """Train every cell; ``l2s`` cells start from ``start`` and ``prior`` cells from the corpus
-    variance ``prior``, which they need."""
+    """Train every cell; ``l2s`` cells start from ``start``, and ``prior`` (S2) and ``weighted``
+    (S3, with a learned weight on the prior) cells from the corpus variance ``prior``."""
     trained = []
     for cell in cells:
+        uses_prior = cell.init in PRIOR_INITS
         if cell.init == "l2s" and start is None:
             raise ValueError(f"{cell.key} starts from an L2S selector; none was given")
-        if cell.init == "prior" and prior is None:
+        if uses_prior and prior is None:
             raise ValueError(f"{cell.key} starts from the geometric prior; none was given")
         model, history = train_retrieval_selector(
             train, validation, cell.config(seed, device),
-            start if cell.init == "l2s" else None, prior if cell.init == "prior" else None,
+            start if cell.init == "l2s" else None, prior if uses_prior else None,
+            learn_prior_weight=cell.init == "weighted",
         )  # fmt: skip
         trained.append(TrainedRetrieval(cell, model, history))
     return trained

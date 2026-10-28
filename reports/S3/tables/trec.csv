@@ -1,0 +1,19 @@
+test,query set,against,summary,reference,weighted,diff,ci_low,ci_high,p,note
+msmarco,trec-dl-2019,S1 selector,mean 10%-90%,0.6457,0.6577,+0.0120,-0.0006,+0.0250,0.0758,see note: msmarco
+msmarco,trec-dl-2019,S1 selector,k = 307,0.6349,0.6540,+0.0191,-0.0004,+0.0391,0.0648,see note: msmarco
+msmarco,trec-dl-2019,S2 selector,mean 10%-90%,0.6577,0.6577,+0.0000,+0.0000,+0.0000,1.0000,see note: msmarco
+msmarco,trec-dl-2019,S2 selector,k = 307,0.6540,0.6540,+0.0000,+0.0000,+0.0000,1.0000,see note: msmarco
+msmarco,trec-dl-2019,variance,mean 10%-90%,0.6577,0.6577,+0.0000,-0.0000,+0.0000,1.0000,see note: msmarco
+msmarco,trec-dl-2019,variance,k = 307,0.6540,0.6540,+0.0000,-0.0000,+0.0000,1.0000,see note: msmarco
+msmarco,trec-dl-2020,S1 selector,mean 10%-90%,0.6588,0.6700,+0.0111,-0.0007,+0.0235,0.0797,see note: msmarco
+msmarco,trec-dl-2020,S1 selector,k = 307,0.6522,0.6738,+0.0216,+0.0028,+0.0422,0.0410,see note: msmarco
+msmarco,trec-dl-2020,S2 selector,mean 10%-90%,0.6700,0.6700,+0.0000,+0.0000,+0.0000,1.0000,see note: msmarco
+msmarco,trec-dl-2020,S2 selector,k = 307,0.6738,0.6738,+0.0000,+0.0000,+0.0000,1.0000,see note: msmarco
+msmarco,trec-dl-2020,variance,mean 10%-90%,0.6700,0.6700,+0.0000,-0.0000,+0.0000,1.0000,see note: msmarco
+msmarco,trec-dl-2020,variance,k = 307,0.6738,0.6738,+0.0000,-0.0000,+0.0000,1.0000,see note: msmarco
+msmarco,trec-dl-hard,S1 selector,mean 10%-90%,0.3559,0.3683,+0.0124,-0.0007,+0.0255,0.0699,see note: msmarco
+msmarco,trec-dl-hard,S1 selector,k = 307,0.3478,0.3697,+0.0219,+0.0022,+0.0421,0.0407,see note: msmarco
+msmarco,trec-dl-hard,S2 selector,mean 10%-90%,0.3683,0.3683,+0.0000,+0.0000,+0.0000,1.0000,see note: msmarco
+msmarco,trec-dl-hard,S2 selector,k = 307,0.3697,0.3697,+0.0000,+0.0000,+0.0000,1.0000,see note: msmarco
+msmarco,trec-dl-hard,variance,mean 10%-90%,0.3683,0.3683,+0.0000,+0.0000,+0.0000,1.0000,see note: msmarco
+msmarco,trec-dl-hard,variance,k = 307,0.3697,0.3697,+0.0000,-0.0000,+0.0000,1.0000,see note: msmarco

@@ -9,7 +9,8 @@ artifact per seed under ``selectors/seeded/<env>/seed-<n>/``.
 on validation (F5 research D6); ``--recipe retrieval-seeded`` retrains that cell with
 ``run.seed`` under ``selectors/retrieval-seeded/<env>/seed-<n>/``. ``--recipe geometric-grid``
 and ``geometric-seeded`` do the same for S2's selectors that start from the corpus's geometric
-prior (F7), under ``selectors/geometric-grid|geometric-seeded``.
+prior (F7), under ``selectors/geometric-grid|geometric-seeded``, and ``weighted-grid`` and
+``weighted-seeded`` for S3's, with a learned weight on that prior (F8).
 """
 
 from __future__ import annotations
@@ -32,6 +33,7 @@ from hyperdime.space.geometry import corpus_geometry
 from hyperdime.training.inputs import EnvironmentInputs, load_examples, load_inputs
 from hyperdime.training.retrieval_selection import (
     INITS,
+    PRIOR_INITS,
     STEPS,
     RetrievalCell,
     best_retrieval,
@@ -57,11 +59,12 @@ from hyperdime.training.selection import (
 COMMAND = "train-selector"
 RECIPES = [
     "official", "candidates", "seeded", "retrieval-grid", "retrieval-seeded", "geometric-grid",
-    "geometric-seeded",
+    "geometric-seeded", "weighted-grid", "weighted-seeded",
 ]  # fmt: skip
-SEEDED_RECIPES = ("seeded", "retrieval-seeded", "geometric-seeded")
-# Retrieval-objective tracks: S1 starts from scratch or L2S, S2 from the geometric prior.
-TRACK_INITS = {"retrieval": INITS, "geometric": ("prior",)}
+SEEDED_RECIPES = ("seeded", "retrieval-seeded", "geometric-seeded", "weighted-seeded")
+# Retrieval-objective tracks: S1 starts from scratch or L2S, S2 from the geometric prior, S3 from
+# the prior with a learned weight on it.
+TRACK_INITS = {"retrieval": INITS, "geometric": ("prior",), "weighted": ("weighted",)}
 
 
 def register(commands: Any) -> None:
@@ -287,7 +290,7 @@ def _retrieval_grid(
     start_record, start = None, None
     if any(cell.init == "l2s" for cell in cells):
         start_record, start = _l2s_start(output, inputs.environment, config.run.seed)
-    prior = _prior(inputs, device, args.chunk_size) if track == "geometric" else None
+    prior = _prior(inputs, device, args.chunk_size) if track != "retrieval" else None
     trained = train_retrieval_cells(
         cells, train, validation, seed=config.run.seed, device=device, start=start, prior=prior
     )
@@ -329,7 +332,7 @@ def _retrieval_seeded(
     start_record, start = None, None
     if cell.init == "l2s":
         start_record, start = _l2s_start(output, inputs.environment, config.run.seed)
-    prior = _prior(inputs, device, args.chunk_size) if cell.init == "prior" else None
+    prior = _prior(inputs, device, args.chunk_size) if cell.init in PRIOR_INITS else None
     train, validation = load_examples(inputs, "train"), load_examples(inputs, "validation")
     (trained,) = train_retrieval_cells(
         [cell], train, validation, seed=config.run.seed, device=device, start=start, prior=prior

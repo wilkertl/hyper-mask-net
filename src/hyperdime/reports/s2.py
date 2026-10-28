@@ -28,16 +28,21 @@ def load(root: Path) -> s1.S1Results:
     return s1.load(root, experiment="S2", candidate=CANDIDATE)
 
 
-def comparisons(results: s1.S1Results, query_set: str = "test") -> list[dict[str, Any]]:
+def comparisons(
+    results: s1.S1Results,
+    query_set: str = "test",
+    candidate: str = CANDIDATE,
+    against: dict[str, str] = AGAINST,
+) -> list[dict[str, Any]]:
     """The geometric selector against each reference, per environment and summary; Holm over
     the environments for each reference and summary (test sets only)."""
     rows = []
-    for label, reference in AGAINST.items():
+    for label, reference in against.items():
         for which in s1.SUMMARIES:
             found = [
                 {
                     **s1.compare(
-                        results, (env, query_set), which, new_name=CANDIDATE, old_name=reference
+                        results, (env, query_set), which, new_name=candidate, old_name=reference
                     ),
                     "against": label,
                 }  # fmt: skip
@@ -77,8 +82,10 @@ def criteria(results: s1.S1Results) -> list[dict[str, Any]]:
     ]
 
 
-def _rows(rows: list[dict[str, Any]], holm_column: bool) -> list[list[str]]:
-    head = ["test", "query set", "against", "summary", "reference", "geometric", "diff", "ci_low",
+def _rows(
+    rows: list[dict[str, Any]], holm_column: bool, candidate: str = CANDIDATE
+) -> list[list[str]]:
+    head = ["test", "query set", "against", "summary", "reference", candidate, "diff", "ci_low",
             "ci_high", "p"]  # fmt: skip
     table = [head + (["p_holm"] if holm_column else []) + ["note"]]
     for r in rows:
@@ -90,7 +97,11 @@ def _rows(rows: list[dict[str, Any]], holm_column: bool) -> list[list[str]]:
     return table
 
 
-def progression(results: s1.S1Results) -> list[list[str]]:
+def progression(
+    results: s1.S1Results, selectors: tuple[str, ...] = ("retrieval", CANDIDATE)
+) -> list[list[str]]:
+    """Every method by budget; ``selectors`` are the seeded selectors after L2S, the candidate
+    last, followed by the candidate grid's family bests."""
     header = [f"{round(100 * k / DIM)}% (k={k})" for k in [*results.budgets, DIM]]
     table = [["test", "query set", "method", *header, "note"]]
     for key in sorted(results.results):
@@ -101,8 +112,7 @@ def progression(results: s1.S1Results) -> list[list[str]]:
             *s1.BASELINES,
             "variance",
             f"l2s:{env}",
-            f"retrieval:{env}",
-            f"{CANDIDATE}:{env}",
+            *(f"{selector}:{env}" for selector in selectors),
         ]
         methods += [f"family:{f}:{env}" for f in sorted(results.grids[env]["family_best"])]
         for method in methods:
@@ -111,8 +121,9 @@ def progression(results: s1.S1Results) -> list[list[str]]:
     return table
 
 
-def vs_full(results: s1.S1Results) -> list[list[str]]:
-    names = ("variance", "retrieval", CANDIDATE)
+def vs_full(
+    results: s1.S1Results, names: tuple[str, ...] = ("variance", "retrieval", CANDIDATE)
+) -> list[list[str]]:
     table = [["test", "query set", "budget", "full", *(f"{n} - full" for n in names)]]
     for key in sorted(results.results):
         full = _mean(s1.per_query(results, key, "full", DIM))
@@ -123,19 +134,21 @@ def vs_full(results: s1.S1Results) -> list[list[str]]:
     return table
 
 
-def overlap(results: s1.S1Results) -> list[list[str]]:
-    table = [["environment", "budget", "geometric vs L2S", "L2S seeds", "geometric seeds"]]
+def overlap(results: s1.S1Results, candidate: str = CANDIDATE) -> list[list[str]]:
+    table = [["environment", "budget", f"{candidate} vs L2S", "L2S seeds", f"{candidate} seeds"]]
     for env in results.environments:
         for k, values in sorted(results.overlap[env].items(), key=lambda item: int(item[0])):
-            table.append([env, k, _fmt(values["geometric_l2s"]), _fmt(values["l2s_seeds"]),
-                          _fmt(values["geometric_seeds"])])  # fmt: skip
+            table.append([env, k, _fmt(values[f"{candidate}_l2s"]), _fmt(values["l2s_seeds"]),
+                          _fmt(values[f"{candidate}_seeds"])])  # fmt: skip
     return table
 
 
-def fit(results: s1.S1Results) -> list[list[str]]:
+def fit(
+    results: s1.S1Results, selectors: tuple[str, ...] = ("l2s", "retrieval", CANDIDATE)
+) -> list[list[str]]:
     table = [["environment", "selector", "mean gain over global importance", "p", "p_holm", "fits"]]
     for env in results.environments:
-        for selector in ("l2s", "retrieval", CANDIDATE):
+        for selector in selectors:
             r = results.fit[selector][env]
             table.append([env, selector, _fmt(r["mean_gain"], "+"), _fmt(r["p_value"]),
                           _fmt(r["p_holm"]), _yes(r["fits"])])  # fmt: skip
