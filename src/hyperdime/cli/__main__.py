@@ -9,6 +9,7 @@ from collections.abc import Sequence
 from hyperdime.cli import (
     compare_selectors,
     decide,
+    describe_space,
     diagnose,
     embed,
     evaluate,
@@ -36,6 +37,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     transfer_matrix.register(commands)
     compare_selectors.register(commands)
     probe_geometry.register(commands)
+    describe_space.register(commands)
     probe_descriptors.register(commands)
     report.register(commands)
     decide.register(commands)

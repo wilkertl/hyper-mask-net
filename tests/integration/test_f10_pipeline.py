@@ -83,3 +83,76 @@ def test_probe_descriptors_refuses_two_environments(targets_run: Stack) -> None:
 
 def test_probe_descriptors_refuses_a_missing_seed(targets_run: Stack) -> None:
     assert _probe(targets_run, "--envs", *TOY_ENVS, "--targets-only", "--seeds", "0", "1", "7") == 1
+
+
+@pytest.fixture(scope="module")
+def probe_run(targets_run: Stack) -> Stack:
+    """A P0 descriptor per environment (still without any judgment), then the full probe."""
+    for env in TOY_ENVS:
+        assert run_command(targets_run.configs, targets_run.out, "describe-space",
+                           f"data={env}", "--protocol", "P0", "--chunk-size", "5") == 0  # fmt: skip
+    assert _probe(targets_run, "--envs", *TOY_ENVS, "--permutations", "5") == 0
+    return targets_run
+
+
+def test_describe_space_writes_a_p0_descriptor_without_any_judgment(probe_run: Stack) -> None:
+    directory = latest_artifact(probe_run.out, "descriptors", TOY_ENVS[0])
+    record = json.loads((directory / "descriptor-P0.json").read_text())
+    assert record["protocol"] == "P0" and record["num_queries"] == 0
+    assert record["groups"] == ["A", "E"] and len(record["feature_names"]) == 18
+    values = np.load(directory / "descriptor-P0.npy")
+    assert values.shape == (1024, 18) and np.isfinite(values).all()
+    assert np.load(directory / "covariance.npy").shape == (1024, 1024)
+    inputs = json.loads((directory / "inputs.json").read_text())
+    assert inputs["protocol"] == "P0" and inputs["quantile_rows"] == inputs["num_documents"]
+    assert not list(probe_run.out.glob("datasets/*/*/qrels-*.jsonl"))
+
+
+def test_describe_space_refuses_embeddings_of_another_dataset(
+    probe_run: Stack, tmp_path: Path
+) -> None:
+    out = tmp_path / "out"
+    shutil.copytree(probe_run.out / "datasets", out / "datasets")
+    shutil.copytree(probe_run.out / "embeddings" / TOY_ENVS[0], out / "embeddings" / TOY_ENVS[1])
+    shutil.copytree(probe_run.out / "embeddings" / TOY_ENVS[0], out / "embeddings" / TOY_ENVS[0])
+    code = run_command(probe_run.configs, out, "describe-space", f"data={TOY_ENVS[1]}")
+    assert code == 1 and not (out / "descriptors").exists()
+
+
+def test_the_full_probe_writes_rows_coefficients_and_context(probe_run: Stack) -> None:
+    run = latest_artifact(probe_run.out, "evaluation/E2", "all")
+    rows = [json.loads(line) for line in (run / "probe.jsonl").read_text().splitlines()]
+    primary = [r for r in rows if r["target"] == "s1" and r["seed"] == "mean"]
+    assert {r["set"] for r in primary} == {"B1", "B2", "1", "2", "3", "4"}
+    assert all(r["n_permutations"] == 5 for r in primary if r["form"] != "—")
+    assert {r["heldout"] for r in rows} == set(TOY_ENVS)
+    context = json.loads((run / "context.json").read_text())
+    assert set(context) == set(TOY_ENVS) and len(context[TOY_ENVS[0]]["s4_prior_weights"]) == 9
+    inputs = json.loads((run / "inputs.json").read_text())
+    assert {d["protocol"] for d in inputs["descriptors"].values()} == {"P0"}
+    assert set(json.loads((run / "coefficients.json").read_text())) == set(TOY_ENVS)
+
+
+def test_report_e2_and_decide_g3_read_the_full_run(probe_run: Stack, tmp_path: Path) -> None:
+    report_dir, adr = tmp_path / "E2", tmp_path / "ADR-0013.md"
+    args = ["--artifacts", str(probe_run.out)]
+    assert main(["report", "E2", *args, "--report-dir", str(report_dir)]) == 0
+    first = (report_dir / "README.md").read_bytes()
+    assert b"## G3 criteria" in first and (report_dir / "tables" / "criteria.csv").is_file()
+    assert main(["report", "E2", *args, "--report-dir", str(report_dir)]) == 0
+    assert (report_dir / "README.md").read_bytes() == first
+    assert main(["decide", "G3", *args, "--adr", str(adr)]) == 0
+    decision = latest_artifact(probe_run.out, "decisions", "G3")
+    assert json.loads((decision / "gate_decision.json").read_text())["gate"] == "G3"
+    assert "- **Status:** proposed" in adr.read_text()
+
+
+def test_the_probe_refuses_a_descriptor_of_other_embeddings(
+    probe_run: Stack, tmp_path: Path
+) -> None:
+    out = tmp_path / "out"
+    shutil.copytree(probe_run.out, out)
+    for path in out.glob(f"descriptors/{TOY_ENVS[0]}/*/inputs.json"):
+        path.write_text(json.dumps({**json.loads(path.read_text()), "embeddings": "other"}))
+    stack = Stack(probe_run.configs, out)
+    assert _probe(stack, "--envs", *TOY_ENVS, "--permutations", "2") == 1
