@@ -1,0 +1,13 @@
+held-out,set,name,protocol,shift spearman,B1,B2,p,Holm p,above both,every seed above both,passes
+scifact,1,variance,P0,0.4376,0.4354,0.5381,0.0010,0.0040,no,no,no
+nfcorpus,1,variance,P0,0.5634,0.5590,0.6246,0.0010,0.0040,no,no,no
+msmarco,1,variance,P0,0.5657,0.5391,0.6687,0.0010,0.0040,no,no,no
+scifact,2,A,P0,0.4391,0.4354,0.5381,0.0020,0.0040,no,no,no
+nfcorpus,2,A,P0,0.5622,0.5590,0.6246,0.0010,0.0040,no,no,no
+msmarco,2,A,P0,0.5641,0.5391,0.6687,0.0010,0.0040,no,no,no
+scifact,3,A+E,P0,0.4420,0.4354,0.5381,0.0010,0.0040,no,no,no
+nfcorpus,3,A+E,P0,0.5543,0.5590,0.6246,0.9660,1.0000,no,no,no
+msmarco,3,A+E,P0,0.5639,0.5391,0.6687,0.0010,0.0040,no,no,no
+scifact,4,A+E+tails,P0,0.4413,0.4354,0.5381,0.0010,0.0040,no,no,no
+nfcorpus,4,A+E+tails,P0,0.5540,0.5590,0.6246,0.9760,1.0000,no,no,no
+msmarco,4,A+E+tails,P0,0.5648,0.5391,0.6687,0.0010,0.0040,no,no,no
