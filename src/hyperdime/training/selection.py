@@ -17,7 +17,11 @@ import numpy as np
 import torch
 from torch import Tensor
 
-from hyperdime.baselines.learning_to_select import GeometricSelector, LinearSelector
+from hyperdime.baselines.learning_to_select import (
+    BudgetGeometricSelector,
+    GeometricSelector,
+    LinearSelector,
+)
 from hyperdime.contracts.hashing import file_sha256
 from hyperdime.contracts.manifests import ArtifactWriter
 from hyperdime.contracts.schemas import PayloadRef, SelectorCheckpoint, load_record
@@ -214,10 +218,12 @@ def load_selector(artifact_dir: Path, name: str) -> tuple[SelectorCheckpoint, Li
 
     record = load_record(SelectorCheckpoint, artifact_dir / f"{name}.json")
     state = load_file(str(artifact_dir / record.payload.path))
-    model = (
-        GeometricSelector(state["variance"], learn_weight="prior_weight" in state)
-        if "variance" in state
-        else LinearSelector()
-    )
+    model: LinearSelector
+    if "budgets" in state:
+        model = BudgetGeometricSelector(state["variance"], tuple(state["budgets"].tolist()))
+    elif "variance" in state:
+        model = GeometricSelector(state["variance"], learn_weight="prior_weight" in state)
+    else:
+        model = LinearSelector()
     model.load_state_dict(state)
     return record, model.eval()

@@ -10,7 +10,7 @@ from collections.abc import Sequence
 import torch
 from torch import Tensor
 
-from hyperdime.baselines.learning_to_select import LinearSelector
+from hyperdime.baselines.learning_to_select import BudgetGeometricSelector, LinearSelector
 
 
 def prefix_importance(queries: Tensor) -> Tensor:
@@ -39,6 +39,18 @@ def selector_importance(queries: Tensor, model: LinearSelector, batch: int = 819
     """A trained Learning-to-Select selector's log-importance."""
     with torch.no_grad():
         return torch.cat([model(queries[i : i + batch]) for i in range(0, len(queries), batch)])
+
+
+def budget_importance(
+    queries: Tensor, model: BudgetGeometricSelector, batch: int = 8192
+) -> dict[int, Tensor]:
+    """A budget selector's log-importance at each of its budgets (S4), as ``evaluate_methods``
+    takes it: the budget set by the evaluation picks the scores, never the selector."""
+    with torch.no_grad():
+        return {
+            k: torch.cat([model(queries[i : i + batch], k) for i in range(0, len(queries), batch)])
+            for k in model.budgets.tolist()
+        }
 
 
 def oracle_scores(queries: Tensor, positive: Tensor, negative: Tensor) -> Tensor:

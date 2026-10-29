@@ -1,0 +1,19 @@
+environment,track,seed,kept step,rerank-best step,subset nDCG@10 at kept step,soft mass at final temperature
+msmarco,weighted-aligned,0,3000,0,0.3550,0.9139
+msmarco,weighted-aligned,1,1000,0,0.3550,0.9136
+msmarco,weighted-aligned,2,1000,0,0.3546,0.9136
+msmarco,budget,0,4000,0,0.3549,0.9138
+msmarco,budget,1,1000,0,0.3549,0.9136
+msmarco,budget,2,10000,0,0.3548,0.9148
+nfcorpus,weighted-aligned,0,7000,7000,0.3584,0.9373
+nfcorpus,weighted-aligned,1,14000,5000,0.3563,0.9378
+nfcorpus,weighted-aligned,2,4000,1000,0.3576,0.9384
+nfcorpus,budget,0,8000,8000,0.3636,0.9868
+nfcorpus,budget,1,12000,12000,0.3623,0.9866
+nfcorpus,budget,2,10000,11000,0.3636,0.9865
+scifact,weighted-aligned,0,17000,17000,0.8323,0.9373
+scifact,weighted-aligned,1,7000,5000,0.8326,0.9373
+scifact,weighted-aligned,2,13000,12000,0.8297,0.9379
+scifact,budget,0,13000,11000,0.8397,0.9370
+scifact,budget,1,15000,8000,0.8382,0.9377
+scifact,budget,2,12000,16000,0.8364,0.9372

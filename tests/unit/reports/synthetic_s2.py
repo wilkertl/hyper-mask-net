@@ -50,10 +50,13 @@ def build_track(
     *,
     others: Sequence[str] = ("retrieval",),
     unchanged: Sequence[str] = (),
+    extra_sources: Mapping[str, Mapping[str, object]] | None = None,
+    files: Mapping[str, object] | None = None,
 ) -> Path:
     """``candidate`` (the last seeded track) scores ``over[reference][env]`` above each reference
     (seeded tracks in ``others``, or ``variance``) per query; in ``unchanged`` environments no seed
-    improves on step 0; candidate histories carry a ``prior_weight`` when ``init`` is weighted."""
+    improves on step 0; candidate histories carry a ``prior_weight`` when ``init`` is weighted.
+    ``extra_sources`` adds entries to each environment's sources, ``files`` more result files."""
     sources: dict[str, object] = {"global": "global-run"}
     for env in ENVS:
         cells = {
@@ -88,6 +91,7 @@ def build_track(
             candidate: seeded,
             **{t: {f"seed-{s}": f"{t}-{env}-{s}" for s in SEEDS} for t in others},
             "l2s": {f"seed-{s}": f"seeded-{env}-{s}" for s in SEEDS},
+            **(extra_sources or {}).get(env, {}),
         }  # fmt: skip
     gen = torch.Generator().manual_seed(0)
     base = (torch.rand(QUERIES, generator=gen) * 0.6 + 0.3).tolist()
@@ -134,6 +138,7 @@ def build_track(
             ("overlap.json", overlap),
             ("fit.json", fit),
             ("inputs.json", sources),
+            *(files or {}).items(),
         ):
             writer.path(name).write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
         return writer.commit()

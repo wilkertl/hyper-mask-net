@@ -1,0 +1,3 @@
+criterion,value,threshold,met
+"SC-001 non-inferior to aligned S3, S2 selector, variance (margin 0.005, one-sided, Holm, 0.025)",none fails,none fails,yes
+"SC-002 better than aligned S3 (mean nDCG@10, 10%-90%, Holm, 0.05)",2 of 3 environments,>= 1 of 3,yes

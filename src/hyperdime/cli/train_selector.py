@@ -10,7 +10,10 @@ on validation (F5 research D6); ``--recipe retrieval-seeded`` retrains that cell
 ``run.seed`` under ``selectors/retrieval-seeded/<env>/seed-<n>/``. ``--recipe geometric-grid``
 and ``geometric-seeded`` do the same for S2's selectors that start from the corpus's geometric
 prior (F7), under ``selectors/geometric-grid|geometric-seeded``, and ``weighted-grid`` and
-``weighted-seeded`` for S3's, with a learned weight on that prior (F8).
+``weighted-seeded`` for S3's, with a learned weight on that prior (F8). ``budget-grid`` and
+``budget-seeded`` train S4's selector with one prior weight per budget, and
+``weighted-aligned-grid`` and ``weighted-aligned-seeded`` its control, S3's selector on the same
+8 cells; both keep checkpoints by full-corpus validation nDCG@10 (F9 research D3–D6).
 """
 
 from __future__ import annotations
@@ -32,11 +35,14 @@ from hyperdime.data.environments import spec_for
 from hyperdime.space.geometry import corpus_geometry
 from hyperdime.training.inputs import EnvironmentInputs, load_examples, load_inputs
 from hyperdime.training.retrieval_selection import (
+    CANDIDATE_SEED,
     INITS,
     PRIOR_INITS,
     STEPS,
     RetrievalCell,
+    TrainedRetrieval,
     best_retrieval,
+    choose_candidates,
     family_bests,
     retrieval_cells,
     retrieval_summary,
@@ -59,12 +65,20 @@ from hyperdime.training.selection import (
 COMMAND = "train-selector"
 RECIPES = [
     "official", "candidates", "seeded", "retrieval-grid", "retrieval-seeded", "geometric-grid",
-    "geometric-seeded", "weighted-grid", "weighted-seeded",
+    "geometric-seeded", "weighted-grid", "weighted-seeded", "budget-grid", "budget-seeded",
+    "weighted-aligned-grid", "weighted-aligned-seeded",
 ]  # fmt: skip
-SEEDED_RECIPES = ("seeded", "retrieval-seeded", "geometric-seeded", "weighted-seeded")
+SEEDED_RECIPES = (
+    "seeded", "retrieval-seeded", "geometric-seeded", "weighted-seeded", "budget-seeded",
+    "weighted-aligned-seeded",
+)  # fmt: skip
 # Retrieval-objective tracks: S1 starts from scratch or L2S, S2 from the geometric prior, S3 from
-# the prior with a learned weight on it.
-TRACK_INITS = {"retrieval": INITS, "geometric": ("prior",), "weighted": ("weighted",)}
+# the prior with a learned weight on it; S4 with a weight per budget, against S3's selector under
+# the same aligned rules.
+TRACK_INITS = {
+    "retrieval": INITS, "geometric": ("prior",), "weighted": ("weighted",),
+    "budget": ("budget",), "weighted-aligned": ("weighted-aligned",),
+}  # fmt: skip
 
 
 def register(commands: Any) -> None:
@@ -294,15 +308,13 @@ def _retrieval_grid(
     trained = train_retrieval_cells(
         cells, train, validation, seed=config.run.seed, device=device, start=start, prior=prior
     )
-    score_on_validation_budgets(
-        trained, inputs.supervision, inputs.documents, inputs.doc_ids,
-        environment=inputs.environment, device=device, chunk_size=args.chunk_size,
-    )  # fmt: skip
+    aligned = _score(trained, inputs, device, args.chunk_size)
     chosen = best_retrieval(trained)
     return {
         "recipe": f"{track}-grid",
         "objective": "retrieval",
         **({"prior": "corpus variance q_d^2 Var(x_d)"} if prior is not None else {}),
+        **aligned,
         "seed": config.run.seed,
         "cells": retrieval_summary(trained),
         "selected": chosen.cell.key,
@@ -337,13 +349,11 @@ def _retrieval_seeded(
     (trained,) = train_retrieval_cells(
         [cell], train, validation, seed=config.run.seed, device=device, start=start, prior=prior
     )
-    score_on_validation_budgets(
-        [trained], inputs.supervision, inputs.documents, inputs.doc_ids,
-        environment=inputs.environment, device=device, chunk_size=args.chunk_size,
-    )  # fmt: skip
+    aligned = _score([trained], inputs, device, args.chunk_size)
     return {
         "recipe": f"{track}-seeded",
         "objective": "retrieval",
+        **aligned,
         "cell": asdict(cell),
         "seed": config.run.seed,
         "validation": retrieval_summary([trained])[cell.key],
@@ -352,3 +362,25 @@ def _retrieval_seeded(
         "histories": {cell.key: trained.history},
         "model": trained.model,
     }
+
+
+def _score(
+    trained: list[TrainedRetrieval], inputs: EnvironmentInputs, device: str, chunk_size: int
+) -> dict[str, Any]:
+    """Keep the aligned cells' best candidates on the validation subset, then score every kept
+    state on all validation queries; returns the S4 keys of ``selection.json`` (none for F5–F8)."""
+    found: dict[str, Any] = {}
+    if any(t.cell.aligned for t in trained):
+        ids = choose_candidates(
+            trained, inputs.supervision, inputs.documents, inputs.doc_ids,
+            environment=inputs.environment, device=device, chunk_size=chunk_size,
+        )  # fmt: skip
+        found = {
+            "checkpoint_rule": "validation",
+            "candidate_queries": {"seed": CANDIDATE_SEED, "ids": ids},
+        }
+    score_on_validation_budgets(
+        trained, inputs.supervision, inputs.documents, inputs.doc_ids,
+        environment=inputs.environment, device=device, chunk_size=chunk_size,
+    )  # fmt: skip
+    return found

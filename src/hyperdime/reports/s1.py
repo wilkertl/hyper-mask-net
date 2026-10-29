@@ -22,7 +22,8 @@ from hyperdime.reports.e0 import _csv, _fmt, _markdown, _yes
 from hyperdime.reports.e1 import NOTES, note
 
 HEADLINE_K = 307
-SEEDED = ("l2s", "retrieval", "geometric", "weighted")  # selectors with one result per seed
+# Selectors with one result per seed.
+SEEDED = ("l2s", "retrieval", "geometric", "weighted", "weighted-aligned", "budget")
 DIM = 1024
 MIN_SEEDS = 3
 BASELINES = ("prefix", "random", "global-importance", "global-selector")

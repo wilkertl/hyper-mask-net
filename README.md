@@ -179,8 +179,33 @@ uv run hyperdime decide S3                           # GateDecision(gate="S3") a
 The weighted selector scores `a · log(q_d² · Var(x_d) + ε) + (W q + b)_d`, with the scalar `a`
 learned from 1, so training can turn the prior down where the ranking must be reshaped.
 
+## A prior weight per budget, experiment S4 (F9)
+
+```bash
+for env in scifact nfcorpus msmarco; do
+  for track in budget weighted-aligned; do
+    uv run hyperdime train-selector --recipe $track-grid data=$env     # 8 multi-budget cells
+    for seed in 0 1 2; do uv run hyperdime train-selector --recipe $track-seeded data=$env run.seed=$seed; done
+  done
+done
+uv run hyperdime compare-selectors --experiment S4   # budget vs aligned S3, S3, S2, variance, S1, L2S
+uv run hyperdime report S4                           # reports/S4: non-inferiority, weights, diagnostics
+uv run hyperdime decide S4                           # GateDecision(gate="S4") and a proposed ADR-0012
+```
+
+The budget selector scores `a_k · log(q_d² · Var(x_d) + ε) + (W q + b)_d` with one weight `a_k >= 0`
+per 10%–90% budget. Both tracks keep the checkpoint with the best full-corpus validation nDCG@10
+(step 0 included), and the non-inferiority margin δ = 0.005 was fixed before any run.
+The generated results are in [reports/S4](reports/S4/README.md) and the proposed
+[ADR-0012](docs/decisions/ADR-0012-s4-budget-prior.md).
+
 `uv run hyperdime report overview` writes [reports/overview](reports/overview/README.md): the
 end-to-end pipeline, every selector strategy, and their results from the latest S3 run.
+`uv run hyperdime report dimensions` writes
+[reports/experiments-dimensions.html](reports/experiments-dimensions.html), an interactive chart of
+each experiment's metric at 10%–100% of the dimensions, read from the reports' generated tables.
+[docs/experiments-settings.html](docs/experiments-settings.html) lists the settings of every
+experiment stage with links to the code and configs that set them; it carries no result number.
 
 ## Embedding service
 

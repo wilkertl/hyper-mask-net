@@ -21,6 +21,13 @@ def test_an_s1_decision_round_trips() -> None:
     assert GateDecision.model_validate_json(record.model_dump_json()) == record
 
 
+@pytest.mark.parametrize("gate", ["S2", "S3", "S4"])
+def test_later_experiments_reuse_the_record(gate: str) -> None:
+    record = GateDecision(**{**S1, "gate": gate})
+    assert GateDecision.model_validate_json(record.model_dump_json()) == record
+
+
 def test_an_unknown_experiment_is_still_rejected() -> None:
-    with pytest.raises(ValidationError):
-        GateDecision(**{**S1, "gate": "E9"})
+    for gate in ("E9", "S9"):
+        with pytest.raises(ValidationError):
+            GateDecision(**{**S1, "gate": gate})
