@@ -40,7 +40,7 @@ for r in E0 E1 P1 S1 S2 S3 S4; do hyperdime report $r; done
 git diff --exit-code reports/E0 reports/E1 reports/P1 reports/S1 reports/S2 reports/S3 reports/S4
 ```
 
-Stage 2 reruns `describe-space --protocol P1` and the probe. Expected: `reports/E2/README.md`
+Stage 2 reruns `describe-space` (P1, the default) and the probe. Expected: `reports/E2/README.md`
 with the shift check, the criteria table (per fold: the best set's shift-probe Spearman against
 B1 and B2, its Holm p, the per-seed check), the ladder by protocol and probe form,
 the noise ceilings, coefficients, the environment-level table, and the note that these

@@ -9,11 +9,13 @@ directory printed on stdout. Existing commands and their outputs are unchanged.
 - Reads, through `space.inputs.load_unlabeled` only: the latest F2 dataset manifest and
   `queries.jsonl` of `<env>` (query ids and splits), and its embeddings. Never opens a qrels file.
 - Computes research D3–D4 (two streamed document passes, the quantile sample); with `--protocol
-  P1` also D5 (the calibration queries' exact top-20 and background sample). `P0` until stage 2
-  lands, then `P1` by default (D13).
+  P1` also D5 (the calibration queries' exact top-20 and background sample). `P1` is the
+  default (D13); `--protocol P0` writes only `descriptor-P0`.
 - Writes `descriptors/<env>/<run_id>/`: `descriptor-P0.json` + `descriptor-P0.npy`,
-  `descriptor-P1.json` + `descriptor-P1.npy` (P1 only; `SpaceDescriptor` records), `covariance.npy`
-  (diagnostic), `inputs.json` (dataset and embeddings run ids, sample sizes, seeds).
+  `descriptor-P1.json` + `descriptor-P1.npy` (P1 only; `SpaceDescriptor` records; under P1 the
+  P0 descriptor is its first 18 columns), `covariance.npy` (diagnostic), `inputs.json` (dataset
+  and embeddings run ids, sample sizes, seeds; under P1 a `calibration` block: split, query
+  count, seed, hash of the query ids, top depth, background size and seed).
 - Refuses (exit 1) if the embeddings were not made from the dataset (manifest hash).
 
 ## `hyperdime probe-descriptors --experiment E2 [--envs ...] [--seeds 0 1 2] [--permutations 1000] [--targets-only]`
@@ -46,9 +48,12 @@ directory printed on stdout. Existing commands and their outputs are unchanged.
 - `space.streaming.document_moments(documents, chunk_size, device) -> Moments`,
   `space.streaming.tail_share(documents, moments, chunk_size, device) -> ndarray`.
 - `space.redundancy.redundancy_features(covariance) -> dict[str, ndarray]`.
-- `space.interaction.interaction_features(queries, documents, top, background) -> dict[str, ndarray]`.
-- `space.descriptor.build_descriptors(inputs, ...) -> tuple[ndarray, ndarray, list[str], list[str]]`,
-  `space.descriptor.FEATURES` (names and groups in order).
+- `space.interaction.interaction_features(queries, documents, top, background) -> ndarray`
+  (`[D, 13]` in `INTERACTION_FEATURES` order), `calibration_queries(splits, size)`,
+  `background_rows(query_ids, doc_ids, size, seed)`, `top_rows(queries, documents, chunk_size, device)`.
+- `space.descriptor.build_descriptors(documents, doc_ids, protocol, ..., queries, query_ids)
+  -> tuple[ndarray, ndarray, list[str], list[str]]`, `space.descriptor.marginal_columns`,
+  `space.descriptor.FEATURES` (per protocol, names and groups in order), `PROTOCOLS`.
 - `evaluation.targets.target_profiles(selectors, queries, budgets) -> dict[str, ndarray]`.
 - `evaluation.descriptor_probe.average_ranks`, `ridge_fit`, `ridge_predict`, `gcv_penalty`,
   `shift_probe`, `direct_probe`, `shift_check`, `spearman_brown`, `permutation_p`, `LADDER`.

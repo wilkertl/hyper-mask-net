@@ -92,10 +92,11 @@ Every decision is fixed before any E2 run. Code references are to `agent/F9-budg
   - **B**: D3's statistics over calibration query embeddings (no tail sample needed).
   - **Retrieval**: each calibration query's top-20 documents by exact full-query inner product
     (`exact_search_streamed`, chunks of 250,000).
-  - **Background**: 100 documents per query by a seeded draw (with replacement across queries,
-    without within a query; all documents when fewer than 100).
+  - **Background**: 100 documents per query by a draw seeded by the query id (with replacement
+    across queries, without within a query, over the documents in id order so row order does
+    not change it; all documents when fewer than 100).
   - **C**: over the products `q_j · d_j`, separately for (query, background document) pairs and
-    (query, top-10 document) pairs: mean, std, q05, q50, q95 per dimension (20 columns).
+    (query, top-10 document) pairs: mean, std, q05, q50, q95 per dimension (10 columns).
   - **D**: `contrast_K[j]` = mean over queries of `q_j · (mean_{top-K} d_j − mean_{background}
     d_j)` for K ∈ {5, 10, 20}; with fewer than K retrieved documents, the available ones.
 - **Rationale**: B, C, D are the plan's P1 groups; pseudo-relevance from the full query uses no

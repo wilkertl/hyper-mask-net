@@ -117,8 +117,9 @@ validation or test query and no qrels read.
 
 ## Phase 8: Polish
 
-- [ ] T039 [P] Run `/speckit-analyze` consistency check across spec, plan, and tasks; fix drift in specs/011-descriptor-probe/
-- [ ] T040 Final `ruff check . && ruff format --check . && mypy && pytest`, SCRAP, `git diff --stat`, and the pull request description (files changed, decisions D0–D15, risks, stage reached)
+- [x] T039 [P] Run `/speckit-analyze` consistency check across spec, plan, and tasks; fix drift in specs/011-descriptor-probe/
+  - Drift fixed: research D5 counted group C as 20 columns (it is 10) and now states the background draw is seeded by query id over documents in id order; contracts/cli.md still said P0 was the default and listed `interaction_features` as returning a dict, and now lists the stage-2 library names and the `calibration` block of `inputs.json`; quickstart's stage-2 command.
+- [x] T040 Final `ruff check . && ruff format --check . && mypy && pytest`, SCRAP, `git diff --stat`, and the pull request description (files changed, decisions D0–D15, risks, stage reached)
 
 ## Dependencies
 
