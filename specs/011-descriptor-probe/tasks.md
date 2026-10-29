@@ -52,7 +52,8 @@ component → the gap; no labels, no descriptor.
 - [X] T011 [P] [US0] Tests in tests/unit/reports/test_e2.py: `report E2` on a `--targets-only` run writes `reports/E2/README.md` and `tables/check.csv` (per held-out environment: B1 Spearman, ceiling, gap, and the `no_shift` reading) and states that descriptors were not evaluated; identical bytes on rerun
 - [X] T012 [US0] Implement the check-only path of src/hyperdime/reports/e2.py and add `E2` to src/hyperdime/cli/report.py (depends on T010, T011)
 - [X] T013 [US0] Run `ruff check . && ruff format --check . && mypy && pytest` and `PYTHONPATH=tools python -m scrap tests`; commit (`feat(evaluation): add E2 targets and the shift check`) before the run
-- [ ] T014 [US0] Run on DataPolicy-4090: `hyperdime probe-descriptors --experiment E2 --targets-only` then `hyperdime report E2`; record commit, run id, and time here; copy `reports/E2/` locally. **Stop rule**: if `no_shift` is true, skip to T030 (`decide G3` reads "not supported: no shift to explain") and do not start US1
+- [x] T014 [US0] Run on DataPolicy-4090: `hyperdime probe-descriptors --experiment E2 --targets-only` then `hyperdime report E2`; record commit, run id, and time here; copy `reports/E2/` locally. **Stop rule**: if `no_shift` is true, skip to T030 (`decide G3` reads "not supported: no shift to explain") and do not start US1
+  - Run 2026-10-28 on DataPolicy-4090 (ceia40901): commit `e7627ad`, probe-descriptors `20261029T002359Z-c352e11b`, 8 s; `report E2` 1 s. `no_shift` is false (room in all three folds; see `reports/E2/README.md`), so stage 1 continues with US1.
 
 **Checkpoint**: the shift check is read; stage 1 continues only if there is room.
 
