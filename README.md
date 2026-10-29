@@ -204,7 +204,7 @@ The generated results are in [reports/S4](reports/S4/README.md) and the proposed
 ```bash
 uv run hyperdime probe-descriptors --experiment E2 --targets-only   # shift check first
 for env in scifact nfcorpus msmarco; do
-  uv run hyperdime describe-space data=$env --protocol P0          # groups A and E, no queries, no qrels
+  uv run hyperdime describe-space data=$env                       # P1: groups A-E (and P0: A, E); training queries, no qrels
 done
 uv run hyperdime probe-descriptors --experiment E2                  # shift and direct probes, 1,000 permutations
 uv run hyperdime report E2                                          # reports/E2: check, criteria, ladder

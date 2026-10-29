@@ -156,3 +156,51 @@ def test_the_probe_refuses_a_descriptor_of_other_embeddings(
         path.write_text(json.dumps({**json.loads(path.read_text()), "embeddings": "other"}))
     stack = Stack(probe_run.configs, out)
     assert _probe(stack, "--envs", *TOY_ENVS, "--permutations", "2") == 1
+
+
+@pytest.fixture(scope="module")
+def p1_run(probe_run: Stack, tmp_path_factory: pytest.TempPathFactory) -> Stack:
+    """A copy of the P0 run (still without any judgment), a P1 descriptor per environment by
+    default, then the full probe again."""
+    stack = Stack(probe_run.configs, tmp_path_factory.mktemp("f10-p1") / "out")
+    shutil.copytree(probe_run.out, stack.out)
+    for env in TOY_ENVS:
+        assert run_command(stack.configs, stack.out, "describe-space", f"data={env}",
+                           "--chunk-size", "5") == 0  # fmt: skip
+    assert _probe(stack, "--envs", *TOY_ENVS, "--permutations", "5") == 0
+    return stack
+
+
+def test_describe_space_writes_a_p1_descriptor_by_default(p1_run: Stack) -> None:
+    directory = latest_artifact(p1_run.out, "descriptors", TOY_ENVS[0])
+    record = json.loads((directory / "descriptor-P1.json").read_text())
+    assert record["protocol"] == "P1" and record["groups"] == ["A", "B", "C", "D", "E"]
+    assert len(record["feature_names"]) == 43
+    calibration = json.loads((directory / "inputs.json").read_text())["calibration"]
+    assert calibration["split"] == "train" and record["num_queries"] == calibration["num_queries"]
+    assert not list(p1_run.out.glob("datasets/*/*/qrels-*.jsonl"))
+
+
+def test_the_p0_columns_of_p1_equal_the_p0_descriptor(probe_run: Stack, p1_run: Stack) -> None:
+    directory = latest_artifact(p1_run.out, "descriptors", TOY_ENVS[0])
+    values = np.load(directory / "descriptor-P1.npy")
+    assert values.shape == (1024, 43) and np.isfinite(values).all()
+    assert np.array_equal(np.load(directory / "descriptor-P0.npy"), values[:, :18])
+    stage_one = latest_artifact(probe_run.out, "descriptors", TOY_ENVS[0])
+    assert np.allclose(values[:, :18], np.load(stage_one / "descriptor-P0.npy"), atol=1e-12)
+
+
+def test_the_probe_runs_the_p1_sets_on_p1_descriptors(p1_run: Stack) -> None:
+    run = latest_artifact(p1_run.out, "evaluation/E2", "all")
+    rows = [json.loads(line) for line in (run / "probe.jsonl").read_text().splitlines()]
+    primary = [r for r in rows if r["target"] == "s1" and r["seed"] == "mean"]
+    assert {r["set"] for r in primary} == {"B1", "B2", "1", "2", "3", "4", "5", "6"}
+    assert {r["protocol"] for r in primary if r["set"] in ("5", "6")} == {"P1"}
+    inputs = json.loads((run / "inputs.json").read_text())
+    assert {d["protocol"] for d in inputs["descriptors"].values()} == {"P1"}
+
+
+def test_report_e2_lists_the_p1_sets(p1_run: Stack, tmp_path: Path) -> None:
+    args = ["--artifacts", str(p1_run.out), "--report-dir", str(tmp_path / "E2")]
+    assert main(["report", "E2", *args]) == 0
+    assert "+D" in (tmp_path / "E2" / "README.md").read_text()
