@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from hyperdime.reports import dimensions, e0, e1, overview, p1, s1, s2, s3, s4
+from hyperdime.reports import dimensions, e0, e1, e2, overview, p1, s1, s2, s3, s4
 
 COMMAND = "report"
 
@@ -15,7 +15,8 @@ COMMAND = "report"
 def register(commands: Any) -> None:
     parser = commands.add_parser(COMMAND, help="generate a report from result files")
     parser.add_argument(
-        "experiment", choices=["E0", "E1", "S1", "P1", "S2", "S3", "S4", "overview", "dimensions"]
+        "experiment",
+        choices=["E0", "E1", "E2", "S1", "P1", "S2", "S3", "S4", "overview", "dimensions"],
     )
     parser.add_argument("--artifacts", type=Path, default=Path("artifacts"))
     parser.add_argument("--envs", nargs="+", default=["scifact", "nfcorpus", "msmarco"])
@@ -36,6 +37,8 @@ def run(args: argparse.Namespace) -> int:
             path = e0.write(args.artifacts, args.envs, report_dir)
         elif args.experiment == "E1":
             path = e1.write(args.artifacts, report_dir)
+        elif args.experiment == "E2":
+            path = e2.write(args.artifacts, report_dir)
         elif args.experiment == "S1":
             path = s1.write(args.artifacts, report_dir)
         elif args.experiment == "P1":

@@ -1,0 +1,4 @@
+held-out,B1 spearman,seed spearman,ceiling,gap,room (gap >= 0.05)
+scifact,0.4354,0.6022,0.8195,+0.3841,yes
+nfcorpus,0.5590,0.9221,0.9726,+0.4136,yes
+msmarco,0.5391,0.9950,0.9983,+0.4592,yes
