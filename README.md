@@ -199,6 +199,24 @@ per 10%–90% budget. Both tracks keep the checkpoint with the best full-corpus 
 The generated results are in [reports/S4](reports/S4/README.md) and the proposed
 [ADR-0012](docs/decisions/ADR-0012-s4-budget-prior.md).
 
+## Space descriptors and selector shift, experiment E2 (F10)
+
+```bash
+uv run hyperdime probe-descriptors --experiment E2 --targets-only   # shift check first
+for env in scifact nfcorpus msmarco; do
+  uv run hyperdime describe-space data=$env                       # P1: groups A-E (and P0: A, E); training queries, no qrels
+done
+uv run hyperdime probe-descriptors --experiment E2                  # shift and direct probes, 1,000 permutations
+uv run hyperdime report E2                                          # reports/E2: check, criteria, ladder
+uv run hyperdime decide G3                                          # GateDecision(gate="G3") and a proposed ADR-0013
+```
+
+The unit is the dimension and each environment is held out in turn. The decisive shift probe
+starts from the profile the training environments share (B1) and asks whether descriptor
+differences predict where the held-out S1 selector departs from it; B2 is the `variance` method.
+The generated results are in [reports/E2](reports/E2/README.md) and the proposed
+[ADR-0013](docs/decisions/ADR-0013-g3-space-signal.md).
+
 `uv run hyperdime report overview` writes [reports/overview](reports/overview/README.md): the
 end-to-end pipeline, every selector strategy, and their results from the latest S3 run.
 `uv run hyperdime report dimensions` writes

@@ -32,10 +32,11 @@ class CorpusGeometry:
         return mean_square / (mean_square + float(self.variance.sum()))
 
 
-def corpus_geometry(
+def corpus_covariance(
     documents: np.ndarray, chunk_size: int = 250_000, device: str = "cpu"
-) -> CorpusGeometry:
-    """Mean, variance, and covariance eigenvalues of ``documents`` (rows), streamed in chunks."""
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """The mean ``(D,)`` and population covariance ``[D, D]`` of ``documents`` (rows), from a
+    streamed float64 Gram matrix."""
     count, dim = documents.shape
     total = torch.zeros(dim, dtype=torch.float64)
     gram = torch.zeros(dim, dim, dtype=torch.float64)
@@ -45,8 +46,18 @@ def corpus_geometry(
         total += chunk.sum(dim=0).double().cpu()
         gram += (chunk.T @ chunk).double().cpu()
     mean = total / count
-    covariance = gram / count - torch.outer(mean, mean)
+    return mean, gram / count - torch.outer(mean, mean)
+
+
+def corpus_geometry(
+    documents: np.ndarray, chunk_size: int = 250_000, device: str = "cpu"
+) -> CorpusGeometry:
+    """Mean, variance, and covariance eigenvalues of ``documents`` (rows), streamed in chunks."""
+    mean, covariance = corpus_covariance(documents, chunk_size, device)
     eigenvalues = torch.linalg.eigvalsh(covariance).flip(0)
     return CorpusGeometry(
-        count, mean.numpy(), torch.diagonal(covariance).numpy().copy(), eigenvalues.numpy()
+        documents.shape[0],
+        mean.numpy(),
+        torch.diagonal(covariance).numpy().copy(),
+        eigenvalues.numpy(),
     )
