@@ -1,0 +1,82 @@
+{
+  "conventions": {
+    "common": "float64 exact dot products of stored vectors, lower-row ties in F2 order, linear gain, ideal over all positives",
+    "official": "float32 cosine on renormalized rows, torch.topk ties in length-sorted order, top-2000 then top-1000 list, gain 2^g-1, ideal over the retrieved list"
+  },
+  "deciles": {
+    "1024": {
+      "common_mean": 0.3393685596334345,
+      "max_abs_difference": 0.6973975865011866,
+      "official_mean": 0.35401841229081005,
+      "queries_differing": 251
+    },
+    "103": {
+      "common_mean": 0.6040934784891806,
+      "max_abs_difference": 0.14887018835552956,
+      "official_mean": 0.6048528363271172,
+      "queries_differing": 45
+    },
+    "205": {
+      "common_mean": 0.6117871067943165,
+      "max_abs_difference": 0.14645228950140876,
+      "official_mean": 0.6126848790955695,
+      "queries_differing": 40
+    },
+    "308": {
+      "common_mean": 0.603623882718675,
+      "max_abs_difference": 0.16270512964002737,
+      "official_mean": 0.6046156933182798,
+      "queries_differing": 40
+    },
+    "410": {
+      "common_mean": 0.5871589509297206,
+      "max_abs_difference": 0.16270512964002737,
+      "official_mean": 0.5880992213484655,
+      "queries_differing": 48
+    },
+    "512": {
+      "common_mean": 0.5650074648721533,
+      "max_abs_difference": 0.17723928678404777,
+      "official_mean": 0.5661189229127277,
+      "queries_differing": 53
+    },
+    "615": {
+      "common_mean": 0.5357031805133566,
+      "max_abs_difference": 0.15273167234071972,
+      "official_mean": 0.5370355327889706,
+      "queries_differing": 63
+    },
+    "717": {
+      "common_mean": 0.4985932478114429,
+      "max_abs_difference": 0.5307212739772436,
+      "official_mean": 0.5009362939450289,
+      "queries_differing": 94
+    },
+    "820": {
+      "common_mean": 0.45722060545632925,
+      "max_abs_difference": 0.5307212739772436,
+      "official_mean": 0.46086892176919764,
+      "queries_differing": 125
+    },
+    "922": {
+      "common_mean": 0.40996257657486546,
+      "max_abs_difference": 0.5307212739772436,
+      "official_mean": 0.41568306559241963,
+      "queries_differing": 167
+    }
+  },
+  "full_vector_parity_at_1024": true,
+  "project_grid_means": {
+    "102": 0.6035761256766902,
+    "1024": 0.3393685596334345,
+    "204": 0.6109264313934932,
+    "307": 0.6039849808811184,
+    "409": 0.5874065007286324,
+    "512": 0.5650074648721533,
+    "614": 0.5365956570423721,
+    "716": 0.49906775935896036,
+    "819": 0.45774780580792235,
+    "921": 0.4102261266474438
+  },
+  "queries": 1810
+}

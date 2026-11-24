@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "run_id": "20261112T213411Z-417072aa",
+  "command": "p3-bench probe",
+  "git_commit": "unknown",
+  "git_dirty": null,
+  "config_hash": "c343c61847f736e12fab9d013e20cf2d6c061ceb09073950eac06cfe9cb11f10",
+  "config": {
+    "corpus": "scifact",
+    "labels_run": "20261112T213355Z-56dd9646",
+    "caps": [
+      8,
+      32,
+      128
+    ],
+    "sizes": [
+      16,
+      64,
+      256
+    ]
+  },
+  "dataset_hash": "e4b1fa65c7f04a480d8cd9845e63e055ac6777c4c0ff95f1227e8f6551ff4896",
+  "model_revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+  "seed": 20261112,
+  "determinism": {
+    "PYTHONHASHSEED": "0"
+  },
+  "device": "cuda:0",
+  "dtype": "float32",
+  "versions": {
+    "python": "3.12.15",
+    "torch": "2.11.0+cu128",
+    "numpy": "2.5.4",
+    "hyperdime": "0.0.1"
+  },
+  "started_at": "2026-11-12T21:34:11.713517Z",
+  "finished_at": "2026-11-12T21:45:10.431166Z",
+  "artifacts": [
+    {
+      "name": "probe.json",
+      "sha256": "cd386c42fc9301d3de87a4e14395315f4bb9545b4901d30c327b1d7d3b93db11"
+    }
+  ]
+}

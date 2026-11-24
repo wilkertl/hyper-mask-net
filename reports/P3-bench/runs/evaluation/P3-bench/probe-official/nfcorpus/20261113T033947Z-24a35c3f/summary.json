@@ -1,0 +1,17 @@
+{
+  "dataset_run": "20261012T034240Z-f6be20fc",
+  "device": "cuda:0",
+  "embedding_run": "20261012T034249Z-757da0cd",
+  "fallback_queries": 0,
+  "final_train_loss": null,
+  "n_fit": 256,
+  "n_valid": 256,
+  "peak_gpu_allocated_mib": 37.64697265625,
+  "peak_gpu_reserved_mib": 52.0,
+  "peak_rss_mib": 1281.0859375,
+  "seconds": {
+    "labels": 0.2824454379733652,
+    "total": 0.3504716999595985,
+    "train": 0.0
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "run_id": "20261112T230451Z-0e8e46b6",
+  "command": "p3-bench train-arm",
+  "git_commit": "unknown",
+  "git_dirty": null,
+  "config_hash": "6fd94a968868e1077b1e460868910f24559322505a98350de586a9afaaa92b56",
+  "config": {
+    "corpus": "scifact",
+    "target": "contrastive",
+    "seed": 1,
+    "epochs": 200,
+    "official_run": "20261112T214624Z-7ec05061",
+    "teachers_run": "20261112T223656Z-07608c76",
+    "targets_sha256": "7a1ad1b9bcbb05ddf32b9d0ae082217eaeb431b039441644d6651423381ce9fa"
+  },
+  "dataset_hash": "e4b1fa65c7f04a480d8cd9845e63e055ac6777c4c0ff95f1227e8f6551ff4896",
+  "model_revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+  "seed": 1,
+  "determinism": {
+    "PYTHONHASHSEED": "0"
+  },
+  "device": "cuda:0",
+  "dtype": "float32",
+  "versions": {
+    "python": "3.12.15",
+    "torch": "2.11.0+cu128",
+    "numpy": "2.5.4",
+    "hyperdime": "0.0.1"
+  },
+  "started_at": "2026-11-12T23:04:51.665787Z",
+  "finished_at": "2026-11-12T23:04:53.553398Z",
+  "artifacts": [
+    {
+      "name": "state_dict.pt",
+      "sha256": "6cec2d069a453fc9fddcd083cec7dbfe62509cc96f18a24630ef030ddb267efc"
+    },
+    {
+      "name": "summary.json",
+      "sha256": "7dd316c527f806d3cb8f83cc00f1426981d2059642e0e582144fcc7bda6185ee"
+    }
+  ]
+}

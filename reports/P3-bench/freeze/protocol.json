@@ -1,0 +1,13 @@
+{
+  "created_at": "2026-11-12T21:31:50.397996+00:00",
+  "files": {
+    "docs/decisions/ADR-0018-p3-selector-benchmark.md": "613da804d3294823eacfad41d79dcac02e9697266a7bda6d934002c6e575044c",
+    "specs/013-p3-selector-benchmark/plan.md": "ced73f2d747f2407546f4bbf2560306b5b3b6ba58112fe019f65632a00d0554b",
+    "specs/013-p3-selector-benchmark/research.md": "b0941cedd092fc79ff34956e52a313e972c3392b85b907710d7175b2b0cbf940",
+    "specs/013-p3-selector-benchmark/spec.md": "b297c43d738243680c62fe2d61cc6381b93ba8f31e5a8c8c97d5a164695527f6",
+    "specs/013-p3-selector-benchmark/tasks.md": "5b41c0e8dba011f1f0aef6a10926bd1938d26747af98b202b3f3051a110b9e6b"
+  },
+  "kind": "protocol",
+  "l2s_commit": "55f010f5f3e82a6d171ce0909793e72f9c066ec7",
+  "split_manifest_sha256": "e4b1fa65c7f04a480d8cd9845e63e055ac6777c4c0ff95f1227e8f6551ff4896"
+}

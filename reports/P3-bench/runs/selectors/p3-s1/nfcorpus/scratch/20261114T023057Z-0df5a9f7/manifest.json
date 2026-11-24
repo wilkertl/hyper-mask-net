@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "run_id": "20261114T023057Z-0df5a9f7",
+  "command": "p3-bench train-s1",
+  "git_commit": "unknown",
+  "git_dirty": null,
+  "config_hash": "9e1dad4c0a2a4d7e109a761b7b67615be129dde08d03085242cfef934431c000",
+  "config": {
+    "corpus": "nfcorpus",
+    "arm": "scratch",
+    "official_run": "20261114T022621Z-669b02f6",
+    "cells": [
+      {
+        "lr": 0.0001,
+        "score_temperature": 0.02,
+        "beta_end": 0.02
+      },
+      {
+        "lr": 0.0001,
+        "score_temperature": 0.02,
+        "beta_end": 0.1
+      },
+      {
+        "lr": 0.0001,
+        "score_temperature": 0.05,
+        "beta_end": 0.02
+      },
+      {
+        "lr": 0.0001,
+        "score_temperature": 0.05,
+        "beta_end": 0.1
+      },
+      {
+        "lr": 0.001,
+        "score_temperature": 0.02,
+        "beta_end": 0.02
+      },
+      {
+        "lr": 0.001,
+        "score_temperature": 0.02,
+        "beta_end": 0.1
+      },
+      {
+        "lr": 0.001,
+        "score_temperature": 0.05,
+        "beta_end": 0.02
+      },
+      {
+        "lr": 0.001,
+        "score_temperature": 0.05,
+        "beta_end": 0.1
+      }
+    ],
+    "tune_ids_sha256": "5752f754df9cb6ed5c8ed99c43aa3d8036f3181557ac2528b6f41b0cd247054f",
+    "resource_record_sha256": "0086064c55d54f653e0a33eb0a349d7918737b51520d46064a092a408223147b"
+  },
+  "dataset_hash": "e4b1fa65c7f04a480d8cd9845e63e055ac6777c4c0ff95f1227e8f6551ff4896",
+  "model_revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+  "seed": 42,
+  "determinism": {
+    "PYTHONHASHSEED": "0"
+  },
+  "device": "cuda:0",
+  "dtype": "float32",
+  "versions": {
+    "python": "3.12.15",
+    "torch": "2.11.0+cu128",
+    "numpy": "2.5.4",
+    "hyperdime": "0.0.1"
+  },
+  "started_at": "2026-11-14T02:30:57.869903Z",
+  "finished_at": "2026-11-14T02:42:10.722927Z",
+  "artifacts": [
+    {
+      "name": "cell-0.pt",
+      "sha256": "4bf39c84d3215aa1574810e67d32961929af4f6cb6251c8985203285fe1fb1fb"
+    },
+    {
+      "name": "cell-1.pt",
+      "sha256": "45e3a0d3f01d314b9ab3762ef5b5a12bf08d5e35884611f78cee6897e2363ffa"
+    },
+    {
+      "name": "cell-2.pt",
+      "sha256": "76e3271b714b9be48a2234eb521484149a53b2d004913f24f8e767adf689b6dd"
+    },
+    {
+      "name": "cell-3.pt",
+      "sha256": "571ccd375aedd35fdb7713ef4c6f0ea367b84a6fad1742686f7b8c853165ef87"
+    },
+    {
+      "name": "cell-4.pt",
+      "sha256": "e4ff73dbcfbec170531a52180db9ad87f3531edc85d8f346000783987180d366"
+    },
+    {
+      "name": "cell-5.pt",
+      "sha256": "0489481a9478b95d6dafe1031e82249d8724e5f206e5fc65c161da37ba89ca58"
+    },
+    {
+      "name": "cell-6.pt",
+      "sha256": "b4cb099eac519024bdf7ab245aec268c39d7ea27287f4f7e6d4ac07850d6d76b"
+    },
+    {
+      "name": "cell-7.pt",
+      "sha256": "7099c73459d3fc346893714f2690ac7f838aabd787fa71484c9c955b1f83f64e"
+    },
+    {
+      "name": "selected-seed0.pt",
+      "sha256": "59b470a763e743f53c781650148d87286843a23966d437babbc4fe2b5790b3f6"
+    },
+    {
+      "name": "selected-seed1.pt",
+      "sha256": "57557ed1361d089796b99830d7aacc4cc99a52de9dc2da2f5c84dc17084dfc99"
+    },
+    {
+      "name": "selected-seed2.pt",
+      "sha256": "f2658b7e8c52f7f21afb9966663cca1facc2f333ef2943ab5158c006a880bf91"
+    },
+    {
+      "name": "selected-seed42.pt",
+      "sha256": "87869e6045c1ad802937946c0f8a2a25b1e93ad1e7384e585af893f75e042e96"
+    },
+    {
+      "name": "selection.json",
+      "sha256": "a6d91b8e97e5f3d68917a3c0e89a4364c441f14652ed70d634e5b867d5ba33e4"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "budget_hours": 8.0,
+  "corpus": "scifact",
+  "created_at": "2026-11-12T21:46:13.990162+00:00",
+  "fixed_seconds": {
+    "evaluation": 1.4183539029664416,
+    "s1_training": 759.2933116853237,
+    "s1_tune_scoring": 2.797848794892707,
+    "secondary_seeds": 2.6229832452119126
+  },
+  "kind": "resources",
+  "probe_json_sha256": "cd386c42fc9301d3de87a4e14395315f4bb9545b4901d30c327b1d7d3b93db11",
+  "probe_manifest_sha256": "381d93e027adb47543e834261686d42b5d57a32b4a8df6053617aea4912f236c",
+  "probe_queries_searched": 256,
+  "probe_run": "20261112T213411Z-417072aa",
+  "projected_hours_by_cap": {
+    "8": 0.9220406671154312,
+    "32": 0.9220406671154312,
+    "128": 0.9220406671154312
+  },
+  "realized": {
+    "scifact": {
+      "n_eval": 121,
+      "n_fit": 565,
+      "n_rg": 565,
+      "n_tune": 121,
+      "shortlist": null,
+      "step_cap": 8
+    }
+  },
+  "rule": "smallest cap with >= 95% of searches stopping before it",
+  "safety_factor": 1.5,
+  "stop_share_by_cap": {
+    "8": 1.0,
+    "32": 1.0,
+    "128": 1.0
+  }
+}

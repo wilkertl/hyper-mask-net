@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "run_id": "20261113T033930Z-90c4a87f",
+  "command": "p3-bench split-provenance",
+  "git_commit": "unknown",
+  "git_dirty": null,
+  "config_hash": "5450af5d881f57770bdbacdcbc2fa6afcd9c140aa4296ecb465206607bad2d2d",
+  "config": {
+    "corpus": "nfcorpus",
+    "split_manifest_sha256": "e4b1fa65c7f04a480d8cd9845e63e055ac6777c4c0ff95f1227e8f6551ff4896"
+  },
+  "dataset_hash": "e4b1fa65c7f04a480d8cd9845e63e055ac6777c4c0ff95f1227e8f6551ff4896",
+  "model_revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+  "seed": 20261112,
+  "determinism": {
+    "PYTHONHASHSEED": "0"
+  },
+  "device": "cpu",
+  "dtype": "float32",
+  "versions": {
+    "python": "3.12.15",
+    "torch": "2.11.0+cu128",
+    "numpy": "2.5.4",
+    "hyperdime": "0.0.1"
+  },
+  "started_at": "2026-11-13T03:39:30.657418Z",
+  "finished_at": "2026-11-13T03:39:30.658422Z",
+  "artifacts": [
+    {
+      "name": "verification.json",
+      "sha256": "621e58c6aeef347d4629c18c4564e9a88d7a30b3ab202baa2170bbd4e4bdbd2c"
+    }
+  ]
+}

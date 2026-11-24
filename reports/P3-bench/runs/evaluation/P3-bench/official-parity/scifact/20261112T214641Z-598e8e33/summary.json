@@ -1,0 +1,82 @@
+{
+  "conventions": {
+    "common": "float64 exact dot products of stored vectors, lower-row ties in F2 order, linear gain, ideal over all positives",
+    "official": "float32 cosine on renormalized rows, torch.topk ties in length-sorted order, top-2000 then top-1000 list, gain 2^g-1, ideal over the retrieved list"
+  },
+  "deciles": {
+    "1024": {
+      "common_mean": 0.742857989658004,
+      "max_abs_difference": 0.0,
+      "official_mean": 0.742857989658004,
+      "queries_differing": 0
+    },
+    "103": {
+      "common_mean": 0.9921496822730749,
+      "max_abs_difference": 0.0,
+      "official_mean": 0.9921496822730749,
+      "queries_differing": 0
+    },
+    "205": {
+      "common_mean": 0.9920702569879837,
+      "max_abs_difference": 0.0,
+      "official_mean": 0.9920702569879837,
+      "queries_differing": 0
+    },
+    "308": {
+      "common_mean": 0.9917995898320116,
+      "max_abs_difference": 0.0,
+      "official_mean": 0.9917995898320116,
+      "queries_differing": 0
+    },
+    "410": {
+      "common_mean": 0.989776197247586,
+      "max_abs_difference": 0.0,
+      "official_mean": 0.989776197247586,
+      "queries_differing": 0
+    },
+    "512": {
+      "common_mean": 0.9874144508235813,
+      "max_abs_difference": 0.0,
+      "official_mean": 0.9874144508235813,
+      "queries_differing": 0
+    },
+    "615": {
+      "common_mean": 0.9832602220725503,
+      "max_abs_difference": 1.1102230246251565e-16,
+      "official_mean": 0.9832602220725503,
+      "queries_differing": 0
+    },
+    "717": {
+      "common_mean": 0.9736855941500869,
+      "max_abs_difference": 1.1102230246251565e-16,
+      "official_mean": 0.9736855941500869,
+      "queries_differing": 0
+    },
+    "820": {
+      "common_mean": 0.9591914527695151,
+      "max_abs_difference": 2.220446049250313e-16,
+      "official_mean": 0.9591914527695151,
+      "queries_differing": 0
+    },
+    "922": {
+      "common_mean": 0.9090654959800811,
+      "max_abs_difference": 0.0,
+      "official_mean": 0.9090654959800811,
+      "queries_differing": 0
+    }
+  },
+  "full_vector_parity_at_1024": true,
+  "project_grid_means": {
+    "102": 0.9914784574490413,
+    "1024": 0.742857989658004,
+    "204": 0.9919281698891309,
+    "307": 0.9917995898320116,
+    "409": 0.9897891820440383,
+    "512": 0.9874144508235813,
+    "614": 0.98330778031999,
+    "716": 0.9738276812489397,
+    "819": 0.9594772328103442,
+    "921": 0.9106147110510372
+  },
+  "queries": 565
+}

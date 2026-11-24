@@ -1,0 +1,143 @@
+{
+  "offline": {
+    "contrastive@0": {
+      "device": "cuda:0",
+      "selection_candidates": 1,
+      "training_seconds": 1.980968520976603,
+      "upstream": "teacher mask generation (shared by every teacher arm)",
+      "upstream_seconds": 1422.8201321039815,
+      "wall_seconds": 1.98976
+    },
+    "contrastive@1": {
+      "device": "cuda:0",
+      "selection_candidates": 1,
+      "training_seconds": 1.8808434170205146,
+      "upstream": "teacher mask generation (shared by every teacher arm)",
+      "upstream_seconds": 1422.8201321039815,
+      "wall_seconds": 1.887611
+    },
+    "contrastive@2": {
+      "device": "cuda:0",
+      "selection_candidates": 1,
+      "training_seconds": 1.8802148009999655,
+      "upstream": "teacher mask generation (shared by every teacher arm)",
+      "upstream_seconds": 1422.8201321039815,
+      "wall_seconds": 1.887495
+    },
+    "contrastive@42": {
+      "device": "cuda:0",
+      "selection_candidates": 1,
+      "training_seconds": 1.8725650370470248,
+      "upstream": "teacher mask generation (shared by every teacher arm)",
+      "upstream_seconds": 1422.8201321039815,
+      "wall_seconds": 1.880603
+    },
+    "full": {
+      "selection_candidates": 0,
+      "training_note": "untrained",
+      "training_seconds": 0.0
+    },
+    "global-mask": {
+      "selection_candidates": 0,
+      "training_note": "derived from the rank-guided masks",
+      "training_seconds": 0.0
+    },
+    "l2s-official@42": {
+      "device": "cuda:0",
+      "selection_candidates": 1,
+      "training_seconds": 1.349280191003345,
+      "upstream": "official label generation",
+      "upstream_seconds": 0.31450539600336924,
+      "wall_seconds": 1.868383
+    },
+    "positive@0": {
+      "device": "cuda:0",
+      "selection_candidates": 1,
+      "training_seconds": 1.8482433650060557,
+      "upstream": "teacher mask generation (shared by every teacher arm)",
+      "upstream_seconds": 1422.8201321039815,
+      "wall_seconds": 1.85559
+    },
+    "positive@1": {
+      "device": "cuda:0",
+      "selection_candidates": 1,
+      "training_seconds": 2.090258361015003,
+      "upstream": "teacher mask generation (shared by every teacher arm)",
+      "upstream_seconds": 1422.8201321039815,
+      "wall_seconds": 2.097544
+    },
+    "positive@2": {
+      "device": "cuda:0",
+      "selection_candidates": 1,
+      "training_seconds": 1.8807805499527603,
+      "upstream": "teacher mask generation (shared by every teacher arm)",
+      "upstream_seconds": 1422.8201321039815,
+      "wall_seconds": 1.888193
+    },
+    "positive@42": {
+      "device": "cuda:0",
+      "selection_candidates": 1,
+      "training_seconds": 1.8812601349782199,
+      "upstream": "teacher mask generation (shared by every teacher arm)",
+      "upstream_seconds": 1422.8201321039815,
+      "wall_seconds": 1.888547
+    },
+    "rank-guided@0": {
+      "device": "cuda:0",
+      "selection_candidates": 1,
+      "training_seconds": 1.8790449959924445,
+      "upstream": "teacher mask generation (shared by every teacher arm)",
+      "upstream_seconds": 1422.8201321039815,
+      "wall_seconds": 1.88723
+    },
+    "rank-guided@1": {
+      "device": "cuda:0",
+      "selection_candidates": 1,
+      "training_seconds": 1.851252026972361,
+      "upstream": "teacher mask generation (shared by every teacher arm)",
+      "upstream_seconds": 1422.8201321039815,
+      "wall_seconds": 1.861429
+    },
+    "rank-guided@2": {
+      "device": "cuda:0",
+      "selection_candidates": 1,
+      "training_seconds": 1.894953346985858,
+      "upstream": "teacher mask generation (shared by every teacher arm)",
+      "upstream_seconds": 1422.8201321039815,
+      "wall_seconds": 1.902517
+    },
+    "rank-guided@42": {
+      "device": "cuda:0",
+      "selection_candidates": 1,
+      "training_seconds": 1.8425802100100555,
+      "upstream": "teacher mask generation (shared by every teacher arm)",
+      "upstream_seconds": 1422.8201321039815,
+      "wall_seconds": 1.850088
+    },
+    "s1-official-init": {
+      "device": "cuda:0",
+      "selection_candidates": 168,
+      "training_note": "8 cells at seed 42; seed 0-2 retrains are in the wall time only",
+      "training_seconds": 349.73691038403194,
+      "wall_seconds": 481.675102
+    },
+    "s1-scratch": {
+      "device": "cuda:0",
+      "selection_candidates": 168,
+      "training_note": "8 cells at seed 42; seed 0-2 retrains are in the wall time only",
+      "training_seconds": 354.56628699501744,
+      "wall_seconds": 488.82869
+    },
+    "variance": {
+      "selection_candidates": 0,
+      "training_note": "untrained",
+      "training_seconds": 0.0
+    }
+  },
+  "online": {
+    "masked_scoring_seconds_per_query": 0.00016057442578585324,
+    "masked_scoring_source": "fit-only cost probe, exact float64 full-corpus scoring",
+    "selector_forward_seconds_per_query": 9.433599916519597e-05,
+    "selector_forward_source": "measured at report time on cpu, synthetic input"
+  }
+}

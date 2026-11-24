@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "run_id": "20261124T221549Z-efd5834a",
+  "command": "p3-bench teacher-report",
+  "git_commit": "4f977e2b667be9be835be2ed5c889746c804a18d",
+  "git_dirty": true,
+  "config_hash": "83562c52c2f9b0d7c9c891224c85ba36491fb54c72532a2b3663fc9fbedf8ccb",
+  "config": {
+    "corpus": "scifact",
+    "teachers_run": "20261112T223656Z-07608c76",
+    "summary_sha256": "c1f0a398ebcfcd4f05c3bdad6fbc9f974aebf595939d67b5c9e88feca9da0ec3"
+  },
+  "dataset_hash": "e4b1fa65c7f04a480d8cd9845e63e055ac6777c4c0ff95f1227e8f6551ff4896",
+  "model_revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+  "seed": 20261112,
+  "determinism": {
+    "PYTHONHASHSEED": null
+  },
+  "device": "cpu",
+  "dtype": "float32",
+  "versions": {
+    "python": "3.13.15",
+    "torch": "2.14.1+cpu",
+    "numpy": "2.5.4",
+    "hyperdime": "0.0.1"
+  },
+  "started_at": "2026-11-24T22:15:49.670363Z",
+  "finished_at": "2026-11-24T22:15:49.672070Z",
+  "artifacts": [
+    {
+      "name": "README.md",
+      "sha256": "dc3c751f6c98db6668907c294fcd01635560a362c1205816a042bfec65a12c22"
+    },
+    {
+      "name": "gains.json",
+      "sha256": "38e0b9de817f645c4bec37c0d4a3e58baecccb040f5718dc069a72c7385a0bed"
+    }
+  ]
+}

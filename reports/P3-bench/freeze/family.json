@@ -1,0 +1,1 @@
+{"members": ["scifact:positive", "scifact:contrastive", "scifact:rank-guided", "nfcorpus:positive", "nfcorpus:contrastive", "msmarco:positive", "msmarco:contrastive", "msmarco:rank-guided"], "note": "ADR-0018 family after the NFCorpus escalation record (remove-rank-guided): m = 8. Written before any NFCorpus or MS MARCO evaluation label was read."}

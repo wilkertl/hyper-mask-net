@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "run_id": "20261114T022810Z-24f79ec6",
+  "command": "p3-bench teachers",
+  "git_commit": "unknown",
+  "git_dirty": null,
+  "config_hash": "823f967276ff3a02d139265a95812e3e41b78ea5c4b69501a16fc31bbb2ad807",
+  "config": {
+    "corpus": "nfcorpus",
+    "official_run": "20261114T022621Z-669b02f6",
+    "step_cap": null,
+    "teachers": [
+      "positive",
+      "contrastive"
+    ],
+    "resource_record_sha256": "0086064c55d54f653e0a33eb0a349d7918737b51520d46064a092a408223147b",
+    "escalation_record_sha256": "2becfab747a26e508083499c7c22d653da195c17f52c506939db162b8736bc60"
+  },
+  "dataset_hash": "e4b1fa65c7f04a480d8cd9845e63e055ac6777c4c0ff95f1227e8f6551ff4896",
+  "model_revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+  "seed": 20261112,
+  "determinism": {
+    "PYTHONHASHSEED": "0"
+  },
+  "device": "cuda:0",
+  "dtype": "float32",
+  "versions": {
+    "python": "3.12.15",
+    "torch": "2.11.0+cu128",
+    "numpy": "2.5.4",
+    "hyperdime": "0.0.1"
+  },
+  "started_at": "2026-11-14T02:28:10.544648Z",
+  "finished_at": "2026-11-14T02:28:11.896473Z",
+  "artifacts": [
+    {
+      "name": "masks_contrastive.npy",
+      "sha256": "90a8a5cbf6e0e38e9a081156aa5ffc0991b2ba442c9e2cc2edffaa0a1364f9e5"
+    },
+    {
+      "name": "masks_positive.npy",
+      "sha256": "7d4dd1329a54e7d8e5814e627afc9fe6a1ea471bfb9fb40817c127935ef2dd17"
+    },
+    {
+      "name": "searches.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "name": "summary.json",
+      "sha256": "f346e0ea46195dd65e6d6294a467cb71f447b48067ba5f1b04399685201cf2bd"
+    },
+    {
+      "name": "targets_contrastive.pt",
+      "sha256": "fc0ebbd900b217622c469d34a58501b8d7354d9976b8b95a1adfe13fd2e38b85"
+    },
+    {
+      "name": "targets_positive.pt",
+      "sha256": "32414956e7c7660772475c398053c133d5d23c4d570f1d443d04096e88d998e7"
+    },
+    {
+      "name": "valid_query_ids.json",
+      "sha256": "a90567e7154fa775f7d770a5b35944cd0df29b2b4e99b01f36936692c9e05534"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "budget_hours": 16.0,
+  "corpus": "nfcorpus",
+  "created_at": "2026-11-13T05:27:06.830772+00:00",
+  "fixed_seconds": {
+    "evaluation": 33.639461841188044,
+    "s1_training": 891.147063691169,
+    "s1_tune_scoring": 66.35729459083669,
+    "secondary_seeds": 62.20996367890939
+  },
+  "kind": "resources",
+  "probe_json_sha256": "5f80d57a0f5b817000a97953c90dd01304cdddb43d1d46d2f6525032313151ca",
+  "probe_manifest_sha256": "28a6e5259d95d25f72cea1e9db8c53943bfce6ce3502ef767b9e8558764828dc",
+  "probe_queries_searched": 1,
+  "probe_run": "20261113T034023Z-340e4903",
+  "projected_hours_by_cap": {
+    "8": 378.60243021791445,
+    "32": 1499.4286523315377,
+    "128": 4824.353459860793
+  },
+  "realized": {
+    "nfcorpus": {
+      "n_eval": 388,
+      "n_fit": 1810,
+      "n_rg": 1810,
+      "n_tune": 388,
+      "shortlist": null,
+      "step_cap": null
+    }
+  },
+  "rule": "escalate: minimum coverage over budget",
+  "safety_factor": 1.5,
+  "stop_share_by_cap": {
+    "8": 0.0,
+    "32": 0.05555555555555555,
+    "128": 0.6111111111111112
+  }
+}

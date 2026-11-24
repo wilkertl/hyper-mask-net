@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "run_id": "20261112T231423Z-833ccb08",
+  "command": "p3-bench train-s1",
+  "git_commit": "unknown",
+  "git_dirty": null,
+  "config_hash": "62ba2757ca9710879cc8d67993e13a3b0f38f406b4461d755884017e29ec8c48",
+  "config": {
+    "corpus": "scifact",
+    "arm": "official-init",
+    "official_run": "20261112T214624Z-7ec05061",
+    "cells": [
+      {
+        "lr": 0.0001,
+        "score_temperature": 0.02,
+        "beta_end": 0.02
+      },
+      {
+        "lr": 0.0001,
+        "score_temperature": 0.02,
+        "beta_end": 0.1
+      },
+      {
+        "lr": 0.0001,
+        "score_temperature": 0.05,
+        "beta_end": 0.02
+      },
+      {
+        "lr": 0.0001,
+        "score_temperature": 0.05,
+        "beta_end": 0.1
+      },
+      {
+        "lr": 0.001,
+        "score_temperature": 0.02,
+        "beta_end": 0.02
+      },
+      {
+        "lr": 0.001,
+        "score_temperature": 0.02,
+        "beta_end": 0.1
+      },
+      {
+        "lr": 0.001,
+        "score_temperature": 0.05,
+        "beta_end": 0.02
+      },
+      {
+        "lr": 0.001,
+        "score_temperature": 0.05,
+        "beta_end": 0.1
+      }
+    ],
+    "tune_ids_sha256": "7997975896395645257d42048e8d0be4269330eb5389aea993171fdd6db18e85",
+    "resource_record_sha256": "57cdeec777809bf1dd4a329f892377c228f29844fe42adad00becab61fbf8ec3"
+  },
+  "dataset_hash": "e4b1fa65c7f04a480d8cd9845e63e055ac6777c4c0ff95f1227e8f6551ff4896",
+  "model_revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+  "seed": 42,
+  "determinism": {
+    "PYTHONHASHSEED": "0"
+  },
+  "device": "cuda:0",
+  "dtype": "float32",
+  "versions": {
+    "python": "3.12.15",
+    "torch": "2.11.0+cu128",
+    "numpy": "2.5.4",
+    "hyperdime": "0.0.1"
+  },
+  "started_at": "2026-11-12T23:14:23.607878Z",
+  "finished_at": "2026-11-12T23:22:25.282980Z",
+  "artifacts": [
+    {
+      "name": "cell-0.pt",
+      "sha256": "398b1e6d5abbf5a6c9f05492c0fdca0a6a4b621a5a3588bfe387c003ce778df0"
+    },
+    {
+      "name": "cell-1.pt",
+      "sha256": "a233d612c0c49b34af58fa83f919038a46d00f9b8b548cec89cc2b54743c857b"
+    },
+    {
+      "name": "cell-2.pt",
+      "sha256": "a5ee26ff178df5578a4809484d6b59164048f62b4c7f1cb2587de22efbdd65be"
+    },
+    {
+      "name": "cell-3.pt",
+      "sha256": "51e56ecbc889060fe279c3d9f7ca64decf3e36d1e797e137838e42e5faee0305"
+    },
+    {
+      "name": "cell-4.pt",
+      "sha256": "805dedfa2b5cd1adc6fcfe546763a5bb622b0e64a039b3acd96962846220424d"
+    },
+    {
+      "name": "cell-5.pt",
+      "sha256": "ad6aff8c85b56b7371972157e924e538d4c43166c03947430afa5a7b08d2c98c"
+    },
+    {
+      "name": "cell-6.pt",
+      "sha256": "d993ffa51ba453ffd7fc0e47127f614fb02a6c0b058687c407b1697b366e1d51"
+    },
+    {
+      "name": "cell-7.pt",
+      "sha256": "b54fd5b6844e49fd0d207aa67735dad505938115de2090c97d0cd0f466af8d2e"
+    },
+    {
+      "name": "selected-seed0.pt",
+      "sha256": "302c09a91378fc3c93cf6f640c13fc8b2b954ccdb17a1b0b70ca413077c8818c"
+    },
+    {
+      "name": "selected-seed1.pt",
+      "sha256": "49ff2cc608b98cf80524622ca972da846241e49375d420fde4c05a1022e96031"
+    },
+    {
+      "name": "selected-seed2.pt",
+      "sha256": "fb57f1a01055bf7a69498ce697eb968961e22830d5c507fabf1dfa77097b13d8"
+    },
+    {
+      "name": "selected-seed42.pt",
+      "sha256": "edcceff147caec3a37d874f4d6b63d979fd8a38dc84a7019f905ce933f5e6e58"
+    },
+    {
+      "name": "selection.json",
+      "sha256": "70a53384a12197d695a23ab8d6cdc540cf2c70adbcc44e2eace7d868a15bed10"
+    }
+  ]
+}

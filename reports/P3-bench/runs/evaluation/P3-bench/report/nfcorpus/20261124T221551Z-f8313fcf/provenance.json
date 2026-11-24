@@ -1,0 +1,11 @@
+{
+  "l2s_commit": "55f010f5f3e82a6d171ce0909793e72f9c066ec7",
+  "split": "p3-query-split-v1",
+  "split_fingerprints": {
+    "evaluation": "b8ced26a39ab04fbd52beb945a72e3bfd269fad5f8de599870d1a69209412247",
+    "fit": "d35ed33c39ce39328a916603933fbfd7839a63d53d57eae6809f6751b4e03bc2",
+    "tune": "5752f754df9cb6ed5c8ed99c43aa3d8036f3181557ac2528b6f41b0cd247054f"
+  },
+  "split_manifest_sha256": "e4b1fa65c7f04a480d8cd9845e63e055ac6777c4c0ff95f1227e8f6551ff4896",
+  "transfer_flag": null
+}

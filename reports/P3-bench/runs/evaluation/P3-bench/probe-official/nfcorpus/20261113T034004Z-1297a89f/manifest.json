@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "run_id": "20261113T034004Z-1297a89f",
+  "command": "p3-bench official --purpose probe",
+  "git_commit": "unknown",
+  "git_dirty": null,
+  "config_hash": "3801d56010b80aba889be2632e5a812636c839a07ed944bae4d05cf92afd84e0",
+  "config": {
+    "corpus": "nfcorpus",
+    "purpose": "probe",
+    "n_fit": 1810,
+    "temperature": 0.05,
+    "epochs": 75,
+    "published_source": "nfcorpus",
+    "l2s_commit": "55f010f5f3e82a6d171ce0909793e72f9c066ec7",
+    "train": true,
+    "fit_ids_sha256": "e0483d0b56de44e25d9906dd109fa1b7d1e9ea97b52ba1a51edcb6eca2e971fd"
+  },
+  "dataset_hash": "e4b1fa65c7f04a480d8cd9845e63e055ac6777c4c0ff95f1227e8f6551ff4896",
+  "model_revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+  "seed": 42,
+  "determinism": {
+    "torch": "2.11.0+cu128",
+    "cudnn_deterministic": false,
+    "cudnn_benchmark": false,
+    "PYTHONHASHSEED": "0"
+  },
+  "device": "cuda:0",
+  "dtype": "float32",
+  "versions": {
+    "python": "3.12.15",
+    "torch": "2.11.0+cu128",
+    "numpy": "2.5.4",
+    "hyperdime": "0.0.1"
+  },
+  "started_at": "2026-11-13T03:40:04.273693Z",
+  "finished_at": "2026-11-13T03:40:07.089175Z",
+  "artifacts": [
+    {
+      "name": "fallback.npy",
+      "sha256": "25b7cb91f96e7b8ec2866b43d35f2e37d6a689fbc04e13ce763213d503c34d05"
+    },
+    {
+      "name": "negatives_f2_rows.npy",
+      "sha256": "8fa3d15e3d4921163bc7631a44e44df3469117df47a7e7cd0178ef3d36a27231"
+    },
+    {
+      "name": "rng_after_labels.pt",
+      "sha256": "787094c33a71e067e63a97b87206e7aea670be309e3df06f2ce384951d21ada2"
+    },
+    {
+      "name": "state_dict.pt",
+      "sha256": "93dae7f8664c036cd777a888703f01ecaf8a5eed21c86e01fc8e275d7c2a701c"
+    },
+    {
+      "name": "summary.json",
+      "sha256": "5559c73d053c3867437e15ec30906f943cfecd17a66827ddea6f5d83af80a6a9"
+    },
+    {
+      "name": "targets.pt",
+      "sha256": "e74f38515699c5328cc025253d7fdcd89bcb01a2a6851b6a2dccb071dd657eca"
+    },
+    {
+      "name": "valid_query_ids.json",
+      "sha256": "a90567e7154fa775f7d770a5b35944cd0df29b2b4e99b01f36936692c9e05534"
+    }
+  ]
+}

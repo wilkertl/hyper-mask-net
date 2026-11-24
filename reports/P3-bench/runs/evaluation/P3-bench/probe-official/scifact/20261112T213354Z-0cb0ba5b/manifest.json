@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "run_id": "20261112T213354Z-0cb0ba5b",
+  "command": "p3-bench official --purpose probe",
+  "git_commit": "unknown",
+  "git_dirty": null,
+  "config_hash": "20df818e614fce8a217fc5e95edce71fa5fc5941096adef567147e0ea2c3b311",
+  "config": {
+    "corpus": "scifact",
+    "purpose": "probe",
+    "n_fit": 256,
+    "temperature": 0.05,
+    "epochs": 200,
+    "published_source": "scifact",
+    "l2s_commit": "55f010f5f3e82a6d171ce0909793e72f9c066ec7",
+    "train": false,
+    "fit_ids_sha256": "4b883fb9ff0bc95936c9ef0e740adeb66092bafac3ea83980262a52e4269fa0f"
+  },
+  "dataset_hash": "e4b1fa65c7f04a480d8cd9845e63e055ac6777c4c0ff95f1227e8f6551ff4896",
+  "model_revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+  "seed": 42,
+  "determinism": {
+    "torch": "2.11.0+cu128",
+    "cudnn_deterministic": false,
+    "cudnn_benchmark": false,
+    "PYTHONHASHSEED": "0"
+  },
+  "device": "cuda:0",
+  "dtype": "float32",
+  "versions": {
+    "python": "3.12.15",
+    "torch": "2.11.0+cu128",
+    "numpy": "2.5.4",
+    "hyperdime": "0.0.1"
+  },
+  "started_at": "2026-11-12T21:33:54.041993Z",
+  "finished_at": "2026-11-12T21:33:54.475190Z",
+  "artifacts": [
+    {
+      "name": "fallback.npy",
+      "sha256": "c400f50e583a065c5aa95b08cbf82d37bc844fb01f1e14a9b834906347e4efe9"
+    },
+    {
+      "name": "negatives_f2_rows.npy",
+      "sha256": "6d62c200abd1dcb5d49fd2908b581e88a98816fa4bd3e9135ec03948aa23d062"
+    },
+    {
+      "name": "rng_after_labels.pt",
+      "sha256": "54c6c213447c72d6a14a4edc5581254e397aa9686477b22a0106d2e59ecc6064"
+    },
+    {
+      "name": "summary.json",
+      "sha256": "c54e46fe1c2cbbb51fd8f3f16939c5a5188779166a0a3b847e4c3b9d9de50d2f"
+    },
+    {
+      "name": "targets.pt",
+      "sha256": "340b3ccec979c4d1189f79a850cf251a40cc2b4ed88968e4eb0642a0cfcdd1c1"
+    },
+    {
+      "name": "valid_query_ids.json",
+      "sha256": "b0397123ad8e542009368e22fb553a5db3630c943f5f39a3eb33382ead1b60b3"
+    }
+  ]
+}

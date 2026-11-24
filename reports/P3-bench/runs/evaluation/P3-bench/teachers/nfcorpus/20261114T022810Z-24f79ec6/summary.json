@@ -1,0 +1,43 @@
+{
+  "demotions": {
+    "known_negative": 0,
+    "unjudged": 0
+  },
+  "device": "cuda:0",
+  "nesting": {
+    "contrastive": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "positive": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ]
+  },
+  "queries": 1810,
+  "rank_guided_from": {
+    "contrastive": 0,
+    "positive": 0
+  },
+  "searches": 0,
+  "searches_hit_cap": 0,
+  "searches_improved": 0,
+  "seconds": 1.2370709909591824,
+  "step_cap": null,
+  "teachers": [
+    "positive",
+    "contrastive"
+  ]
+}

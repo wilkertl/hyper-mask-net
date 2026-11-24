@@ -1,0 +1,28 @@
+{
+  "checks": {
+    "dropped_equals_excluded": true,
+    "dropped_match_test": true,
+    "kept_ids_are_development": true,
+    "no_group_crosses_splits": true,
+    "no_kept_text_matches_test": true,
+    "no_test_id_kept": true,
+    "source_queries_sha256": true
+  },
+  "counts": {
+    "evaluation": 121,
+    "fit": 565,
+    "tune": 121
+  },
+  "development_pool": 809,
+  "dropped": 2,
+  "fingerprints": {
+    "evaluation": "f58296404286e5e37abe4011ea481752dbb5be5240921bca1769cc532783619b",
+    "fit": "3ed985ebd1a59d67c0a00010f8b1eac01cd04f23832d6975111ca0cb1a863286",
+    "tune": "7997975896395645257d42048e8d0be4269330eb5389aea993171fdd6db18e85"
+  },
+  "groups": 805,
+  "manifest_sha256": "e4b1fa65c7f04a480d8cd9845e63e055ac6777c4c0ff95f1227e8f6551ff4896",
+  "passed": true,
+  "researcher_verification": "independent host check by the researcher, 2026-11-12",
+  "source_dataset_run": "20261012T034117Z-05f1e2b6"
+}

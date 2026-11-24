@@ -22,3 +22,6 @@ __pycache__/
 
 # Slurm job logs from cluster runs.
 /logs/
+
+# Per-query result tables of report run copies are large and reproducible from the runs.
+reports/**/per_query.csv

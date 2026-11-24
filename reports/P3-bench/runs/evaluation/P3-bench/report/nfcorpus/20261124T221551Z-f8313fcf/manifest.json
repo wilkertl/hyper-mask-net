@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "run_id": "20261124T221551Z-f8313fcf",
+  "command": "p3-bench report",
+  "git_commit": "4f977e2b667be9be835be2ed5c889746c804a18d",
+  "git_dirty": true,
+  "config_hash": "6a472d7419f88c2d8eab42d416b8e4b0fd69901f1923c7403bb9734bbe50eeed",
+  "config": {
+    "corpus": "nfcorpus",
+    "evaluation_run": "20261114T180408Z-f16e9038",
+    "lock_record_sha256": "e017ac55f3aa48547e7f9aea928c2b2226f31c88a2cdc058c6ea5d29a6b17768",
+    "summary_sha256": "dc764774b1ef2783ee084389998cc6726e0d5d1bf20cca35908f829df8ba68c2"
+  },
+  "dataset_hash": "e4b1fa65c7f04a480d8cd9845e63e055ac6777c4c0ff95f1227e8f6551ff4896",
+  "model_revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+  "seed": 20261112,
+  "determinism": {
+    "PYTHONHASHSEED": null
+  },
+  "device": "cpu",
+  "dtype": "float32",
+  "versions": {
+    "python": "3.13.15",
+    "torch": "2.14.1+cpu",
+    "numpy": "2.5.4",
+    "hyperdime": "0.0.1"
+  },
+  "started_at": "2026-11-24T22:15:51.229400Z",
+  "finished_at": "2026-11-24T22:15:51.231483Z",
+  "artifacts": [
+    {
+      "name": "README.md",
+      "sha256": "082a073ad548e59e8b8a122cc8ddeed9cb3f5e8a94e3f66ce2f7b118adefa5d7"
+    },
+    {
+      "name": "costs.json",
+      "sha256": "07ed2fe6c7d9e51324d99199509b6fb77f549592bea19b872e972f66eab675bc"
+    },
+    {
+      "name": "provenance.json",
+      "sha256": "45943f604a3fd93495edeb536ea6dad71d7d5268b4bb3aa684ae13201d080db0"
+    }
+  ]
+}

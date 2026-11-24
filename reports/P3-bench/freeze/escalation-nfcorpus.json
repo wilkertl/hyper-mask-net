@@ -1,0 +1,17 @@
+{
+  "budget_hours": 16.0,
+  "corpus": "nfcorpus",
+  "created_at": "2026-11-14T02:25:47.964113+00:00",
+  "fixed_hours_with_safety": 0.438897409917543,
+  "kind": "escalation",
+  "option": "remove-rank-guided",
+  "rank_guided_lower_bound_hours": 21.69640229240904,
+  "reason": "Resource gate escalated (rank-guided projected 379 h at cap 8 against 16 h). Even the least possible search cost, one full swap scan per search at the fastest probe scan, exceeds the budget, so no cap fits. A larger budget is outside the compute authorized for F12 (shared RTX 4090, 12 h job cap). The rank-guided arm leaves the NFCorpus family before any NFCorpus evaluation is opened; positive and contrastive stay. The global-mask control is defined from rank-guided masks and is therefore not built for NFCorpus.",
+  "removed_controls": [
+    "global-mask"
+  ],
+  "removed_primary_arms": [
+    "rank-guided"
+  ],
+  "resource_record_sha256": "0086064c55d54f653e0a33eb0a349d7918737b51520d46064a092a408223147b"
+}

@@ -218,8 +218,16 @@ def _validated(record: Mapping[str, Any]) -> RunManifest:
         raise ContractError(f"RunManifest: {error}") from error
 
 
+CODE_COMMIT_ENV = "HYPERDIME_CODE_COMMIT"
+
+
 def _git_state() -> tuple[str, bool | None]:
-    """Commit and dirty flag of the working directory's checkout; untracked files do not count."""
+    """Commit and dirty flag of the working directory's checkout; untracked files do not count.
+
+    Outside a git checkout (a code snapshot exported from a bundle onto a compute host), the
+    commit comes from ``HYPERDIME_CODE_COMMIT`` when it holds a full 40-hex commit id; the dirty
+    flag is then unknown (None). Without either, the commit is recorded as ``unknown``.
+    """
     try:
         commit = subprocess.run(
             ["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True
@@ -231,6 +239,9 @@ def _git_state() -> tuple[str, bool | None]:
             check=True,
         ).stdout
     except (OSError, subprocess.CalledProcessError):
+        declared = os.environ.get(CODE_COMMIT_ENV, "").strip().lower()
+        if len(declared) == 40 and all(c in "0123456789abcdef" for c in declared):
+            return declared, None
         return "unknown", None
     return commit, status.strip() != ""
 

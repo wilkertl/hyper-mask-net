@@ -1,0 +1,103 @@
+{
+  "cells": [
+    {
+      "beta_end": 0.02,
+      "cell": 0,
+      "checkpoint_step": 7000.0,
+      "lr": 0.0001,
+      "passes_guard": true,
+      "rerank": 0.8201824426651001,
+      "score_temperature": 0.02,
+      "seconds": 46.496088924002834,
+      "soft_mass_final": 0.9869802594184875,
+      "tune_mean_ndcg10": 0.819843564048088
+    },
+    {
+      "beta_end": 0.1,
+      "cell": 1,
+      "checkpoint_step": 14000.0,
+      "lr": 0.0001,
+      "passes_guard": true,
+      "rerank": 0.8213188052177429,
+      "score_temperature": 0.02,
+      "seconds": 43.43338739400497,
+      "soft_mass_final": 0.9365649819374084,
+      "tune_mean_ndcg10": 0.8213188507008501
+    },
+    {
+      "beta_end": 0.02,
+      "cell": 2,
+      "checkpoint_step": 11000.0,
+      "lr": 0.0001,
+      "passes_guard": true,
+      "rerank": 0.815710723400116,
+      "score_temperature": 0.05,
+      "seconds": 40.59044130699476,
+      "soft_mass_final": 0.9868544340133667,
+      "tune_mean_ndcg10": 0.8157107063309719
+    },
+    {
+      "beta_end": 0.1,
+      "cell": 3,
+      "checkpoint_step": 8000.0,
+      "lr": 0.0001,
+      "passes_guard": true,
+      "rerank": 0.8153693079948425,
+      "score_temperature": 0.05,
+      "seconds": 41.33011247299146,
+      "soft_mass_final": 0.938085675239563,
+      "tune_mean_ndcg10": 0.8153693303700308
+    },
+    {
+      "beta_end": 0.02,
+      "cell": 4,
+      "checkpoint_step": 7000.0,
+      "lr": 0.001,
+      "passes_guard": true,
+      "rerank": 0.8299006223678589,
+      "score_temperature": 0.02,
+      "seconds": 46.786253405036405,
+      "soft_mass_final": 0.986240804195404,
+      "tune_mean_ndcg10": 0.8299006227878192
+    },
+    {
+      "beta_end": 0.1,
+      "cell": 5,
+      "checkpoint_step": 8000.0,
+      "lr": 0.001,
+      "passes_guard": true,
+      "rerank": 0.830991804599762,
+      "score_temperature": 0.02,
+      "seconds": 44.561383569962345,
+      "soft_mass_final": 0.9334254860877991,
+      "tune_mean_ndcg10": 0.8309918392790888
+    },
+    {
+      "beta_end": 0.02,
+      "cell": 6,
+      "checkpoint_step": 12000.0,
+      "lr": 0.001,
+      "passes_guard": true,
+      "rerank": 0.8245017528533936,
+      "score_temperature": 0.05,
+      "seconds": 45.381588559015654,
+      "soft_mass_final": 0.9866252541542053,
+      "tune_mean_ndcg10": 0.8245017282407762
+    },
+    {
+      "beta_end": 0.1,
+      "cell": 7,
+      "checkpoint_step": 8000.0,
+      "lr": 0.001,
+      "passes_guard": true,
+      "rerank": 0.822821319103241,
+      "score_temperature": 0.05,
+      "seconds": 45.98703136300901,
+      "soft_mass_final": 0.9356654286384583,
+      "tune_mean_ndcg10": 0.8228213376372892
+    }
+  ],
+  "selected": 5,
+  "selection_candidates": 168,
+  "tune_queries": 121
+}

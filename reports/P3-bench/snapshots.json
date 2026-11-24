@@ -1,0 +1,290 @@
+{
+  "bundles": [
+    {
+      "commit": "371138f1a6c9cb0c0389298a29f76918e9eaa442",
+      "committed_at": "2026-11-12T18:32:07-03:00"
+    },
+    {
+      "commit": "6ce68a0bd2c5e26b74600084fe09f57057cea04f",
+      "committed_at": "2026-11-12T18:32:38-03:00"
+    },
+    {
+      "commit": "e50f3647765bf6adbef6a479329ac7028cbbdb92",
+      "committed_at": "2026-11-12T19:36:19-03:00"
+    },
+    {
+      "commit": "3c1775ac94a295441cac4473b87418209221ef94",
+      "committed_at": "2026-11-13T23:24:35-03:00"
+    },
+    {
+      "commit": "e7827da6a5dd67700446b3fdabd4c89f6a2553f2",
+      "committed_at": "2026-11-13T23:54:17-03:00"
+    }
+  ],
+  "runs": {
+    "20261112T213306Z-725c0b8a": {
+      "command": "p3-bench split-provenance",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "6ce68a0bd2c5e26b74600084fe09f57057cea04f",
+      "started_at": "2026-11-12T21:33:06.047923Z"
+    },
+    "20261112T213354Z-0cb0ba5b": {
+      "command": "p3-bench official --purpose probe",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "6ce68a0bd2c5e26b74600084fe09f57057cea04f",
+      "started_at": "2026-11-12T21:33:54.041993Z"
+    },
+    "20261112T213355Z-56dd9646": {
+      "command": "p3-bench official --purpose probe",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "6ce68a0bd2c5e26b74600084fe09f57057cea04f",
+      "started_at": "2026-11-12T21:33:55.832772Z"
+    },
+    "20261112T213411Z-417072aa": {
+      "command": "p3-bench probe",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "6ce68a0bd2c5e26b74600084fe09f57057cea04f",
+      "started_at": "2026-11-12T21:34:11.713517Z"
+    },
+    "20261112T214624Z-7ec05061": {
+      "command": "p3-bench official --purpose reference",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "6ce68a0bd2c5e26b74600084fe09f57057cea04f",
+      "started_at": "2026-11-12T21:46:24.312457Z"
+    },
+    "20261112T214641Z-598e8e33": {
+      "command": "p3-bench official-parity",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "6ce68a0bd2c5e26b74600084fe09f57057cea04f",
+      "started_at": "2026-11-12T21:46:41.619756Z"
+    },
+    "20261112T223653Z-bfc81ad7": {
+      "command": "p3-bench train-arm",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "e50f3647765bf6adbef6a479329ac7028cbbdb92",
+      "started_at": "2026-11-12T22:36:53.566898Z"
+    },
+    "20261112T223656Z-07608c76": {
+      "command": "p3-bench teachers",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "e50f3647765bf6adbef6a479329ac7028cbbdb92",
+      "started_at": "2026-11-12T22:36:56.645535Z"
+    },
+    "20261112T230338Z-4f7bb1be": {
+      "command": "p3-bench train-arm",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "e50f3647765bf6adbef6a479329ac7028cbbdb92",
+      "started_at": "2026-11-12T23:03:38.922822Z"
+    },
+    "20261112T230350Z-19a566cf": {
+      "command": "p3-bench train-arm",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "e50f3647765bf6adbef6a479329ac7028cbbdb92",
+      "started_at": "2026-11-12T23:03:50.994791Z"
+    },
+    "20261112T230403Z-d4b7dbfd": {
+      "command": "p3-bench train-arm",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "e50f3647765bf6adbef6a479329ac7028cbbdb92",
+      "started_at": "2026-11-12T23:04:03.038973Z"
+    },
+    "20261112T230415Z-5b212a87": {
+      "command": "p3-bench train-arm",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "e50f3647765bf6adbef6a479329ac7028cbbdb92",
+      "started_at": "2026-11-12T23:04:15.310718Z"
+    },
+    "20261112T230427Z-36ef7bf9": {
+      "command": "p3-bench train-arm",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "e50f3647765bf6adbef6a479329ac7028cbbdb92",
+      "started_at": "2026-11-12T23:04:27.376296Z"
+    },
+    "20261112T230439Z-25b9493d": {
+      "command": "p3-bench train-arm",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "e50f3647765bf6adbef6a479329ac7028cbbdb92",
+      "started_at": "2026-11-12T23:04:39.439125Z"
+    },
+    "20261112T230451Z-0e8e46b6": {
+      "command": "p3-bench train-arm",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "e50f3647765bf6adbef6a479329ac7028cbbdb92",
+      "started_at": "2026-11-12T23:04:51.665787Z"
+    },
+    "20261112T230503Z-17b5a379": {
+      "command": "p3-bench train-arm",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "e50f3647765bf6adbef6a479329ac7028cbbdb92",
+      "started_at": "2026-11-12T23:05:03.750807Z"
+    },
+    "20261112T230515Z-89493bde": {
+      "command": "p3-bench train-arm",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "e50f3647765bf6adbef6a479329ac7028cbbdb92",
+      "started_at": "2026-11-12T23:05:15.860335Z"
+    },
+    "20261112T230527Z-60c14b2c": {
+      "command": "p3-bench train-arm",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "e50f3647765bf6adbef6a479329ac7028cbbdb92",
+      "started_at": "2026-11-12T23:05:27.882258Z"
+    },
+    "20261112T230539Z-d678b62e": {
+      "command": "p3-bench train-arm",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "e50f3647765bf6adbef6a479329ac7028cbbdb92",
+      "started_at": "2026-11-12T23:05:39.942334Z"
+    },
+    "20261112T230551Z-5d4246fa": {
+      "command": "p3-bench train-arm",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "e50f3647765bf6adbef6a479329ac7028cbbdb92",
+      "started_at": "2026-11-12T23:05:51.999314Z"
+    },
+    "20261112T230604Z-220da458": {
+      "command": "p3-bench train-s1",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "e50f3647765bf6adbef6a479329ac7028cbbdb92",
+      "started_at": "2026-11-12T23:06:04.295895Z"
+    },
+    "20261112T231423Z-833ccb08": {
+      "command": "p3-bench train-s1",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "e50f3647765bf6adbef6a479329ac7028cbbdb92",
+      "started_at": "2026-11-12T23:14:23.607878Z"
+    },
+    "20261112T232241Z-fbc6f7b5": {
+      "command": "p3-bench evaluate",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "e50f3647765bf6adbef6a479329ac7028cbbdb92",
+      "started_at": "2026-11-12T23:22:41.410912Z"
+    },
+    "20261113T033930Z-90c4a87f": {
+      "command": "p3-bench split-provenance",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "e50f3647765bf6adbef6a479329ac7028cbbdb92",
+      "started_at": "2026-11-13T03:39:30.657418Z"
+    },
+    "20261113T033947Z-24a35c3f": {
+      "command": "p3-bench official --purpose probe",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "e50f3647765bf6adbef6a479329ac7028cbbdb92",
+      "started_at": "2026-11-13T03:39:47.154967Z"
+    },
+    "20261113T034004Z-1297a89f": {
+      "command": "p3-bench official --purpose probe",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "e50f3647765bf6adbef6a479329ac7028cbbdb92",
+      "started_at": "2026-11-13T03:40:04.273693Z"
+    },
+    "20261113T034023Z-340e4903": {
+      "command": "p3-bench probe",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "e50f3647765bf6adbef6a479329ac7028cbbdb92",
+      "started_at": "2026-11-13T03:40:23.652580Z"
+    },
+    "20261114T022621Z-669b02f6": {
+      "command": "p3-bench official --purpose reference",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "3c1775ac94a295441cac4473b87418209221ef94",
+      "started_at": "2026-11-14T02:26:21.404793Z"
+    },
+    "20261114T022735Z-b05d6c60": {
+      "command": "p3-bench official-parity",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "3c1775ac94a295441cac4473b87418209221ef94",
+      "started_at": "2026-11-14T02:27:35.520167Z"
+    },
+    "20261114T022751Z-0f595cc9": {
+      "command": "p3-bench train-arm",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "3c1775ac94a295441cac4473b87418209221ef94",
+      "started_at": "2026-11-14T02:27:51.934462Z"
+    },
+    "20261114T022810Z-24f79ec6": {
+      "command": "p3-bench teachers",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "3c1775ac94a295441cac4473b87418209221ef94",
+      "started_at": "2026-11-14T02:28:10.544648Z"
+    },
+    "20261114T022828Z-853a31e9": {
+      "command": "p3-bench train-arm",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "3c1775ac94a295441cac4473b87418209221ef94",
+      "started_at": "2026-11-14T02:28:28.713563Z"
+    },
+    "20261114T022847Z-97cc3baa": {
+      "command": "p3-bench train-arm",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "3c1775ac94a295441cac4473b87418209221ef94",
+      "started_at": "2026-11-14T02:28:47.291791Z"
+    },
+    "20261114T022905Z-3145e9df": {
+      "command": "p3-bench train-arm",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "3c1775ac94a295441cac4473b87418209221ef94",
+      "started_at": "2026-11-14T02:29:05.823908Z"
+    },
+    "20261114T022924Z-c68a39a1": {
+      "command": "p3-bench train-arm",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "3c1775ac94a295441cac4473b87418209221ef94",
+      "started_at": "2026-11-14T02:29:24.632512Z"
+    },
+    "20261114T022943Z-20eac4ec": {
+      "command": "p3-bench train-arm",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "3c1775ac94a295441cac4473b87418209221ef94",
+      "started_at": "2026-11-14T02:29:43.212139Z"
+    },
+    "20261114T023001Z-9771fea2": {
+      "command": "p3-bench train-arm",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "3c1775ac94a295441cac4473b87418209221ef94",
+      "started_at": "2026-11-14T02:30:01.815924Z"
+    },
+    "20261114T023020Z-24892dee": {
+      "command": "p3-bench train-arm",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "3c1775ac94a295441cac4473b87418209221ef94",
+      "started_at": "2026-11-14T02:30:20.374898Z"
+    },
+    "20261114T023038Z-b68c13a8": {
+      "command": "p3-bench train-arm",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "3c1775ac94a295441cac4473b87418209221ef94",
+      "started_at": "2026-11-14T02:30:38.900360Z"
+    },
+    "20261114T023057Z-0df5a9f7": {
+      "command": "p3-bench train-s1",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "3c1775ac94a295441cac4473b87418209221ef94",
+      "started_at": "2026-11-14T02:30:57.869903Z"
+    },
+    "20261114T024227Z-a2c77cfa": {
+      "command": "p3-bench train-s1",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "3c1775ac94a295441cac4473b87418209221ef94",
+      "started_at": "2026-11-14T02:42:27.683802Z"
+    },
+    "20261114T025422Z-8c5b643c": {
+      "command": "p3-bench split-provenance",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "e7827da6a5dd67700446b3fdabd4c89f6a2553f2",
+      "started_at": "2026-11-14T02:54:22.349345Z",
+      "unverified": "started after the newest bundle; a later snapshot without a local bundle may have been used"
+    },
+    "20261114T180408Z-f16e9038": {
+      "command": "p3-bench evaluate",
+      "method": "inferred: newest bundled snapshot committed before the run started",
+      "snapshot": "e7827da6a5dd67700446b3fdabd4c89f6a2553f2",
+      "started_at": "2026-11-14T18:04:08.232643Z",
+      "unverified": "started after the newest bundle; a later snapshot without a local bundle may have been used"
+    }
+  },
+  "unverified": [
+    "20261114T025422Z-8c5b643c",
+    "20261114T180408Z-f16e9038"
+  ]
+}

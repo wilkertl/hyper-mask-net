@@ -1,0 +1,106 @@
+{
+  "offline": {
+    "contrastive@0": {
+      "device": "cuda:0",
+      "selection_candidates": 1,
+      "training_seconds": 2.083907129999716,
+      "upstream": "teacher mask generation (shared by every teacher arm)",
+      "upstream_seconds": 1.2370709909591824,
+      "wall_seconds": 2.091621
+    },
+    "contrastive@1": {
+      "device": "cuda:0",
+      "selection_candidates": 1,
+      "training_seconds": 2.070640605990775,
+      "upstream": "teacher mask generation (shared by every teacher arm)",
+      "upstream_seconds": 1.2370709909591824,
+      "wall_seconds": 2.078169
+    },
+    "contrastive@2": {
+      "device": "cuda:0",
+      "selection_candidates": 1,
+      "training_seconds": 2.120714722026605,
+      "upstream": "teacher mask generation (shared by every teacher arm)",
+      "upstream_seconds": 1.2370709909591824,
+      "wall_seconds": 2.131978
+    },
+    "contrastive@42": {
+      "device": "cuda:0",
+      "selection_candidates": 1,
+      "training_seconds": 2.086228659027256,
+      "upstream": "teacher mask generation (shared by every teacher arm)",
+      "upstream_seconds": 1.2370709909591824,
+      "wall_seconds": 2.096063
+    },
+    "full": {
+      "selection_candidates": 0,
+      "training_note": "untrained",
+      "training_seconds": 0.0
+    },
+    "l2s-official@42": {
+      "device": "cuda:0",
+      "selection_candidates": 1,
+      "training_seconds": 1.6220831099781208,
+      "upstream": "official label generation",
+      "upstream_seconds": 0.6722542290226556,
+      "wall_seconds": 2.808679
+    },
+    "positive@0": {
+      "device": "cuda:0",
+      "selection_candidates": 1,
+      "training_seconds": 2.066802817978896,
+      "upstream": "teacher mask generation (shared by every teacher arm)",
+      "upstream_seconds": 1.2370709909591824,
+      "wall_seconds": 2.074197
+    },
+    "positive@1": {
+      "device": "cuda:0",
+      "selection_candidates": 1,
+      "training_seconds": 2.330466127023101,
+      "upstream": "teacher mask generation (shared by every teacher arm)",
+      "upstream_seconds": 1.2370709909591824,
+      "wall_seconds": 2.337905
+    },
+    "positive@2": {
+      "device": "cuda:0",
+      "selection_candidates": 1,
+      "training_seconds": 2.102001989958808,
+      "upstream": "teacher mask generation (shared by every teacher arm)",
+      "upstream_seconds": 1.2370709909591824,
+      "wall_seconds": 2.109548
+    },
+    "positive@42": {
+      "device": "cuda:0",
+      "selection_candidates": 1,
+      "training_seconds": 2.1164230620488524,
+      "upstream": "teacher mask generation (shared by every teacher arm)",
+      "upstream_seconds": 1.2370709909591824,
+      "wall_seconds": 2.124231
+    },
+    "s1-official-init": {
+      "device": "cuda:0",
+      "selection_candidates": 168,
+      "training_note": "8 cells at seed 42; seed 0-2 retrains are in the wall time only",
+      "training_seconds": 474.7683572801179,
+      "wall_seconds": 677.062084
+    },
+    "s1-scratch": {
+      "device": "cuda:0",
+      "selection_candidates": 168,
+      "training_note": "8 cells at seed 42; seed 0-2 retrains are in the wall time only",
+      "training_seconds": 464.2032586619607,
+      "wall_seconds": 672.853024
+    },
+    "variance": {
+      "selection_candidates": 0,
+      "training_note": "untrained",
+      "training_seconds": 0.0
+    }
+  },
+  "online": {
+    "masked_scoring_seconds_per_query": 0.0011876663550765443,
+    "masked_scoring_source": "fit-only cost probe, exact float64 full-corpus scoring",
+    "selector_forward_seconds_per_query": 9.386100100527983e-05,
+    "selector_forward_source": "measured at report time on cpu, synthetic input"
+  }
+}

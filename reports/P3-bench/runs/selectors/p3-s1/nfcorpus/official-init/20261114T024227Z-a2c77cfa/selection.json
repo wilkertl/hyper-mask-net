@@ -1,0 +1,103 @@
+{
+  "cells": [
+    {
+      "beta_end": 0.02,
+      "cell": 0,
+      "checkpoint_step": 0.0,
+      "lr": 0.0001,
+      "passes_guard": true,
+      "rerank": 0.37260064482688904,
+      "score_temperature": 0.02,
+      "seconds": 62.26522019796539,
+      "soft_mass_final": 0.9869887232780457,
+      "tune_mean_ndcg10": 0.37228976818171106
+    },
+    {
+      "beta_end": 0.1,
+      "cell": 1,
+      "checkpoint_step": 0.0,
+      "lr": 0.0001,
+      "passes_guard": true,
+      "rerank": 0.37260064482688904,
+      "score_temperature": 0.02,
+      "seconds": 57.66638369305292,
+      "soft_mass_final": 0.9361490607261658,
+      "tune_mean_ndcg10": 0.37228976818171106
+    },
+    {
+      "beta_end": 0.02,
+      "cell": 2,
+      "checkpoint_step": 9000.0,
+      "lr": 0.0001,
+      "passes_guard": true,
+      "rerank": 0.37496066093444824,
+      "score_temperature": 0.05,
+      "seconds": 59.055720345000736,
+      "soft_mass_final": 0.9872061610221863,
+      "tune_mean_ndcg10": 0.37457918684568786
+    },
+    {
+      "beta_end": 0.1,
+      "cell": 3,
+      "checkpoint_step": 12000.0,
+      "lr": 0.0001,
+      "passes_guard": true,
+      "rerank": 0.37545356154441833,
+      "score_temperature": 0.05,
+      "seconds": 56.13051330798771,
+      "soft_mass_final": 0.937580943107605,
+      "tune_mean_ndcg10": 0.374995757163326
+    },
+    {
+      "beta_end": 0.02,
+      "cell": 4,
+      "checkpoint_step": 0.0,
+      "lr": 0.001,
+      "passes_guard": true,
+      "rerank": 0.37260064482688904,
+      "score_temperature": 0.02,
+      "seconds": 62.448673733044416,
+      "soft_mass_final": 0.9869014024734497,
+      "tune_mean_ndcg10": 0.37228976818171106
+    },
+    {
+      "beta_end": 0.1,
+      "cell": 5,
+      "checkpoint_step": 0.0,
+      "lr": 0.001,
+      "passes_guard": true,
+      "rerank": 0.37260064482688904,
+      "score_temperature": 0.02,
+      "seconds": 61.61929542804137,
+      "soft_mass_final": 0.9360340237617493,
+      "tune_mean_ndcg10": 0.37228976818171106
+    },
+    {
+      "beta_end": 0.02,
+      "cell": 6,
+      "checkpoint_step": 4000.0,
+      "lr": 0.001,
+      "passes_guard": true,
+      "rerank": 0.3762163817882538,
+      "score_temperature": 0.05,
+      "seconds": 58.41371721599717,
+      "soft_mass_final": 0.9872631430625916,
+      "tune_mean_ndcg10": 0.37567647868477727
+    },
+    {
+      "beta_end": 0.1,
+      "cell": 7,
+      "checkpoint_step": 4000.0,
+      "lr": 0.001,
+      "passes_guard": true,
+      "rerank": 0.3763810396194458,
+      "score_temperature": 0.05,
+      "seconds": 57.16883335902821,
+      "soft_mass_final": 0.9376019239425659,
+      "tune_mean_ndcg10": 0.3757252964697451
+    }
+  ],
+  "selected": 7,
+  "selection_candidates": 168,
+  "tune_queries": 388
+}

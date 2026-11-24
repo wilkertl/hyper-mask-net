@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "run_id": "20261112T213355Z-56dd9646",
+  "command": "p3-bench official --purpose probe",
+  "git_commit": "unknown",
+  "git_dirty": null,
+  "config_hash": "e8ae60092245644b298a5105a6261a1d4816d758a1b630c02b39320647d3b66e",
+  "config": {
+    "corpus": "scifact",
+    "purpose": "probe",
+    "n_fit": 565,
+    "temperature": 0.05,
+    "epochs": 200,
+    "published_source": "scifact",
+    "l2s_commit": "55f010f5f3e82a6d171ce0909793e72f9c066ec7",
+    "train": true,
+    "fit_ids_sha256": "33c8d640b9ef8e0b584089d706af811b3e72d3a1585a26b62f6eab1ce5102aa0"
+  },
+  "dataset_hash": "e4b1fa65c7f04a480d8cd9845e63e055ac6777c4c0ff95f1227e8f6551ff4896",
+  "model_revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+  "seed": 42,
+  "determinism": {
+    "torch": "2.11.0+cu128",
+    "cudnn_deterministic": false,
+    "cudnn_benchmark": false,
+    "PYTHONHASHSEED": "0"
+  },
+  "device": "cuda:0",
+  "dtype": "float32",
+  "versions": {
+    "python": "3.12.15",
+    "torch": "2.11.0+cu128",
+    "numpy": "2.5.4",
+    "hyperdime": "0.0.1"
+  },
+  "started_at": "2026-11-12T21:33:55.832772Z",
+  "finished_at": "2026-11-12T21:33:57.692421Z",
+  "artifacts": [
+    {
+      "name": "fallback.npy",
+      "sha256": "dcd038fc23a767926b0d26bbc52eca0958d756103bad2754e125c7a650fc9f64"
+    },
+    {
+      "name": "negatives_f2_rows.npy",
+      "sha256": "514462982fa1c0187f8520fd27648e57d92b4b4c8c20d2f4accd53b764bf7252"
+    },
+    {
+      "name": "rng_after_labels.pt",
+      "sha256": "d96483a734acd1b30c2aed78a80706ec510a56d819ff9a34f8728e18e166d772"
+    },
+    {
+      "name": "state_dict.pt",
+      "sha256": "85ca3d3bb12c1c62e1e7e03a875fc0b29f09900e459836eb7fea023164029f29"
+    },
+    {
+      "name": "summary.json",
+      "sha256": "af9d88f41e107e9fa305e29dd9d7bca0dac64fc72f6302a8165edcbbd87e38bb"
+    },
+    {
+      "name": "targets.pt",
+      "sha256": "9247e3273cfa826e65b5ae981bf16132e00e33e4ec3620de3286edabbb0d3e84"
+    },
+    {
+      "name": "valid_query_ids.json",
+      "sha256": "5f3232c66b54d984f2523cbbda7f11b0d5c62d9b106c21f5a116275c38a7e191"
+    }
+  ]
+}

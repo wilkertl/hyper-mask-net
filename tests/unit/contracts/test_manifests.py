@@ -112,6 +112,21 @@ def test_git_unavailable_is_recorded_not_omitted(monkeypatch: pytest.MonkeyPatch
     assert manifest.git_commit == "unknown" and manifest.git_dirty is None
 
 
+def test_snapshot_commit_from_the_environment_when_git_is_unavailable(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def missing(*args: object, **kwargs: object) -> None:
+        raise FileNotFoundError("git")
+
+    monkeypatch.setattr(manifests.subprocess, "run", missing)
+    monkeypatch.setenv(manifests.CODE_COMMIT_ENV, "E50F3647765BF6ADBEF6A479329AC7028CBBDB92")
+    manifest = start_manifest("diagnose", _config())
+    assert manifest.git_commit == "e50f3647765bf6adbef6a479329ac7028cbbdb92"
+    assert manifest.git_dirty is None
+    monkeypatch.setenv(manifests.CODE_COMMIT_ENV, "e50f364")  # abbreviated ids are not accepted
+    assert start_manifest("diagnose", _config()).git_commit == "unknown"
+
+
 def test_finish_manifest_sets_the_end_time_and_files() -> None:
     started = start_manifest("diagnose", _config())
     finished = finish_manifest(started, [("queries.json", "ab" * 32)])
