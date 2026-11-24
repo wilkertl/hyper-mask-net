@@ -1,0 +1,4 @@
+environment,"curves and controls, seconds","their summaries, seconds",read,transfer,synchronized compute,write,"peak device memory, MiB","of which all-k and reference arrays, MiB"
+scifact,0.3,3.0,0.0,0.0,0.2,0.1,1114,34.2
+nfcorpus,13.1,4.8,1.0,0.6,11.1,0.4,1985,116.0
+msmarco,14.1,37.7,2.3,0.5,3.4,4.4,1556,1112.4

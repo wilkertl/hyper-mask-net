@@ -1,0 +1,10 @@
+environment,group,queries,weighted share,positives per query,cosine among positives
+scifact,complete in every repeat,12,0.174,"2.000 (2.000 to 2.000), n=12","0.680 (0.582 to 0.839), n=12"
+scifact,complete in some repeats,10,0.145,"2.200 (2.000 to 3.000), n=10","0.710 (0.627 to 0.808), n=10"
+scifact,complete in no repeat,47,0.681,"2.489 (2.000 to 4.000), n=47","0.728 (0.525 to 0.832), n=47"
+nfcorpus,complete in every repeat,188,0.361,"17.074 (2.000 to 40.000), n=188","0.461 (0.353 to 0.601), n=188"
+nfcorpus,complete in some repeats,47,0.095,"37.830 (3.600 to 65.200), n=47","0.428 (0.344 to 0.550), n=47"
+nfcorpus,complete in no repeat,265,0.545,"55.313 (4.000 to 113.600), n=265","0.425 (0.334 to 0.553), n=265"
+msmarco,complete in every repeat,84,0.169,"2.143 (2.000 to 2.700), n=84","0.603 (0.477 to 0.770), n=84"
+msmarco,complete in some repeats,118,0.236,"2.254 (2.000 to 3.000), n=118","0.632 (0.500 to 0.769), n=118"
+msmarco,complete in no repeat,298,0.595,"2.215 (2.000 to 3.000), n=298","0.684 (0.523 to 0.839), n=298"

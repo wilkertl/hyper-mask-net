@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "run_id": "20261109T180212Z-0514a02d",
+  "command": "p3-ranking-exclusion-sensitivity",
+  "git_commit": "bd0fd382202d454c2e262fc19859074b16a43c0a",
+  "git_dirty": false,
+  "config_hash": "2f8d37a8ef1bf0ff2de57fba423ec785363bc0135f6c9feda8d0ca338e8f4782",
+  "config": {
+    "run": "20261109T163931Z-9e9f5a0a",
+    "script_sha256": "05c6b39d9f60ca837952bd57378915f9d6be4ddc4e539d8597db016147a99520"
+  },
+  "dataset_hash": "none",
+  "model_revision": "none",
+  "seed": 0,
+  "determinism": {
+    "PYTHONHASHSEED": null
+  },
+  "device": "cpu",
+  "dtype": "float32",
+  "versions": {
+    "python": "3.12.15",
+    "torch": "2.11.0+cu128",
+    "numpy": "2.5.4",
+    "hyperdime": "0.0.1"
+  },
+  "started_at": "2026-11-09T18:02:12.632576Z",
+  "finished_at": "2026-11-09T18:03:32.232140Z",
+  "artifacts": [
+    {
+      "name": "exposure.csv",
+      "sha256": "1e03ed563079c70ac2d0dacf499215c88c37270825a84cdca1e6f264704a5983"
+    },
+    {
+      "name": "primary-comparison.csv",
+      "sha256": "f6cbb5596055d5ca7bec9d2b195ee9101a9cefcd1fd8e3dcbd710e3626a3e537"
+    },
+    {
+      "name": "sensitivity.json",
+      "sha256": "bda632f8d8ddbca53b9ed3dc6f87cc1c9a10e5a9e7ad20f182a003f6efa6bec1"
+    }
+  ]
+}

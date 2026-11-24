@@ -1,0 +1,9 @@
+environment,k,positives per query,queries,Spearman of the stratum's frequency with the corpus's
+scifact,307,1,659,0.998
+scifact,307,2-5,69,0.856
+scifact,307,6-20,0,n/a
+scifact,307,21+,0,n/a
+nfcorpus,307,1,169,0.899
+nfcorpus,307,2-5,399,0.973
+nfcorpus,307,6-20,688,0.991
+nfcorpus,307,21+,1075,0.992

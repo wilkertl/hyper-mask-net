@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "run_id": "20261112T160235Z-298d5679",
+  "command": "analyze-oracle-l2s",
+  "git_commit": "d362793ae9be9c3d876c7ffd11ebc18a0993b69d",
+  "git_dirty": false,
+  "config_hash": "418675a7b8019dcea0cdc833b56d7f96150a52f25d4abef2d57fa4687a730cce",
+  "config": {
+    "model": {
+      "name": "Qwen/Qwen3-Embedding-0.6B",
+      "revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+      "embedding_dim": 1024,
+      "frozen": true,
+      "normalize": true,
+      "max_length": 512,
+      "dtype": "bfloat16"
+    },
+    "data": {
+      "environment": "scifact",
+      "source": "BeIR/scifact",
+      "instruction": "Given a scientific claim, retrieve documents that support or refute the claim",
+      "validation_fraction": 0.1,
+      "sample": null
+    },
+    "run": {
+      "seed": 0,
+      "device": "cuda",
+      "dtype": "float32",
+      "output_dir": "artifacts"
+    },
+    "config_version": 1
+  },
+  "dataset_hash": "none",
+  "model_revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+  "seed": 0,
+  "determinism": {
+    "seed": "0",
+    "deterministic": true,
+    "cudnn_benchmark": false,
+    "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+    "PYTHONHASHSEED": null
+  },
+  "device": "cuda:0",
+  "dtype": "float32",
+  "versions": {
+    "python": "3.12.15",
+    "torch": "2.11.0+cu128",
+    "numpy": "2.5.4",
+    "hyperdime": "0.0.1"
+  },
+  "started_at": "2026-11-12T16:02:35.378320Z",
+  "finished_at": "2026-11-12T16:03:50.270407Z",
+  "artifacts": [
+    {
+      "name": "inputs.json",
+      "sha256": "5512615b1323b2f8ef63bc9e15d323d0b27d25a9d7a740149d3ec7e765ad5536"
+    },
+    {
+      "name": "msmarco/masks.npz",
+      "sha256": "7e4c91b12976ed41e921d09d7180fe0641968dbc66039529cb94cab02847ec99"
+    },
+    {
+      "name": "msmarco/per-query.npz",
+      "sha256": "602ce3b50b591b031fdc5ddf68f834ae5925327d541dfa9c30affb49502f0ce7"
+    },
+    {
+      "name": "msmarco/relationship.npz",
+      "sha256": "a9bc1632c98412ba8a9c3c43e888fe8c0e8741cd1044e5d15a94afa68b4c49c2"
+    },
+    {
+      "name": "msmarco/selected-queries.json",
+      "sha256": "967d3d34b6552e3e4fc84de2146d91bf67fc509f75b8cb872436f3a53e6a8f93"
+    },
+    {
+      "name": "msmarco/selection.npz",
+      "sha256": "2df935e5b7b327369b4ce88fe27b57e71c73cc6a6d2eddbab4b9180a5659afcd"
+    },
+    {
+      "name": "msmarco/summary.json",
+      "sha256": "eac5ad0aa7218675ecd6c4e6269eadd6c1bddabf47e94401062b375f5a36c64e"
+    },
+    {
+      "name": "msmarco/tracked.npz",
+      "sha256": "85f209b0f4cf67800694dbed9cb51c3ccc12d3dca5910c084e1aca55c53489c6"
+    }
+  ]
+}

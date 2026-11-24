@@ -1,0 +1,17 @@
+environment,check,passed
+scifact,checkpoint fingerprint is the dataset's,True
+scifact,dataset is the F2 dataset read here,True
+scifact,embeddings are the F2 embeddings read here,True
+scifact,embeddings fingerprint is the dataset's,True
+scifact,environment matches,True
+scifact,model revision matches,True
+scifact,negatives are the latest F2 negatives,True
+scifact,negatives fingerprint is the dataset's,True
+scifact,official recipe,True
+scifact,one published checkpoint,True
+scifact,payload hash matches,True
+scifact,"per-domain, 1024 wide",True
+scifact,published F2 dataset,True
+scifact,split ids are disjoint,True
+scifact,trained by train-selector,True
+scifact,trained from a clean tree,True

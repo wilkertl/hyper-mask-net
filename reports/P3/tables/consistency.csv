@@ -1,0 +1,4 @@
+environment,"|similarity(1024) - dot(q, d)|",|retained P(1024) - 1|,|removed N(1024)|,|Jaccard(1024) - 1|
+scifact,0.00e+00,0.00e+00,0.00e+00,0.00e+00
+nfcorpus,0.00e+00,0.00e+00,0.00e+00,0.00e+00
+msmarco,0.00e+00,0.00e+00,0.00e+00,0.00e+00

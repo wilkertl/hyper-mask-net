@@ -1,0 +1,55 @@
+{
+  "corpus": "scifact",
+  "fit_queries": 565,
+  "nesting": {
+    "contrastive": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "positive": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "rank-guided": [
+      0.9970154433454796,
+      0.9971455838972759,
+      0.9975843878815831,
+      0.9974641365731225,
+      0.9969787057522124,
+      0.9976305093540111,
+      0.9968828793197212,
+      0.9963542848498602
+    ]
+  },
+  "search_effect": {
+    "chosen": 5085,
+    "chosen_changed": 177,
+    "chosen_from_contrastive": 332,
+    "hit_cap": 4,
+    "mean_gain_gdr": 0.005266284526769074,
+    "mean_gain_ndcg10": 0.0056548747116153516,
+    "mean_jaccard_to_start": 0.9997549669149358,
+    "searches": 10170,
+    "share_improved_ndcg10": 0.03421828908554572,
+    "steps_mean": 0.04355948869223206
+  },
+  "seconds": 16.71370121400105,
+  "teachers": [
+    "positive",
+    "contrastive",
+    "rank-guided"
+  ],
+  "tune_queries": 121
+}

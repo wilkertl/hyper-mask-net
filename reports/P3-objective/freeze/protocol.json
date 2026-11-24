@@ -1,0 +1,12 @@
+{
+  "kind": "p3-objective-protocol",
+  "recorded_utc": "2026-11-16T01:07:37Z",
+  "note": "Recorded before any ADR-0020 training or score run.",
+  "code_snapshot": "5963306c4c81ac250ef0b2254bb04f40bdd74a6d",
+  "sha256": {
+    "docs/decisions/ADR-0020-p3-objective-study.md": "2e5fd0482d3ba0084f858528433aa119faa10b1be6e789d9b7616baf31edf5d5",
+    "src/hyperdime/evaluation/objective_study.py": "973487283768fe91d9c02f70c06b224af9fa8206144243bd59c0480ddffdd8ea",
+    "src/hyperdime/cli/p3_objective.py": "ddba08a5bf9821629128385489b80d92abe94d1ee7f6c441bcc485024ffb230a",
+    "src/hyperdime/evaluation/target_study.py": "f50c2b4b64446989abcbef80566f4ac0b79f3a01b641d059a6403aff2cc58954"
+  }
+}

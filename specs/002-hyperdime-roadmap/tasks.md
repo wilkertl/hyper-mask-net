@@ -146,8 +146,8 @@ research R7.
 
 **Independent Test**: `reports/E1/` regenerates from result files and its ADR states G2.
 
-- [ ] T034 [US2] Specify, plan, and implement feature F4 `selector-shift` (M12.3, M4.1–M4.3), retesting H1 with the per-environment selector F3 selected (ADR-0003), promoting src/hyperdime/evaluation/statistics.py and src/hyperdime/evaluation/selector_shift.py from the spike and adding `hyperdime transfer-matrix`
-- [ ] T035 [US2] Run E1 (3 seeds per environment) on `exp/E1-selector-shift`, generate reports/E1/, and write docs/decisions/ADR-XXXX-g2-selector-shift.md; tag `g2-selector-shift`. On No-Go, close later milestone issues as not planned
+- [X] T034 [US2] Specify, plan, and implement feature F4 `selector-shift` (M12.3, M4.1–M4.3), retesting H1 with the per-environment selector F3 selected (ADR-0003), promoting src/hyperdime/evaluation/statistics.py and src/hyperdime/evaluation/selector_shift.py from the spike and adding `hyperdime transfer-matrix` (specs/005-selector-shift; status reconciled 2026-11-12 from evidence)
+- [X] T035 [US2] Run E1 (3 seeds per environment) on `exp/E1-selector-shift`, generate reports/E1/, and write docs/decisions/ADR-XXXX-g2-selector-shift.md; tag `g2-selector-shift`. On No-Go, close later milestone issues as not planned (reports/E1; ADR-0007 accepted 2026-10-15; tag `g2-selector-shift` exists; status reconciled 2026-11-12)
 
 **Checkpoint**: G2 decided. Stop on No-Go.
 

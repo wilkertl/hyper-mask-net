@@ -1,0 +1,9 @@
+environment,queries,n,share of dims with a sign conflict,dims always helpful,dims always harmful,mean Spearman of c orderings,worst Spearman pair,mass cancelled by averaging,variance between positives / second moment,dims whose mean opposes a positive
+scifact,multi,69,0.280 (0.194 to 0.371),598.1 (525.8 to 664.4),136.7 (80.8 to 195.6),0.673 (0.530 to 0.797),0.661 (0.452 to 0.796),0.050 (0.025 to 0.085),0.081 (0.040 to 0.147),286.4 (198.8 to 379.8)
+scifact,positives 2-5,69,0.280 (0.194 to 0.371),598.1 (525.8 to 664.4),136.7 (80.8 to 195.6),0.673 (0.530 to 0.797),0.661 (0.452 to 0.796),0.050 (0.025 to 0.085),0.081 (0.040 to 0.147),286.4 (198.8 to 379.8)
+scifact,positives 21+,0,n/a,n/a,n/a,n/a,n/a,n/a,n/a,n/a
+scifact,positives 6-20,0,n/a,n/a,n/a,n/a,n/a,n/a,n/a,n/a
+nfcorpus,multi,2162,0.840 (0.522 to 0.989),122.2 (9.0 to 352.9),39.5 (0.0 to 136.0),0.394 (0.305 to 0.518),0.184 (0.055 to 0.384),0.263 (0.146 to 0.359),0.391 (0.235 to 0.520),860.3 (534.1 to 1013.0)
+nfcorpus,positives 2-5,399,0.484 (0.279 to 0.676),371.3 (234.8 to 511.0),154.0 (70.6 to 260.2),0.469 (0.320 to 0.638),0.390 (0.212 to 0.601),0.153 (0.073 to 0.233),0.243 (0.112 to 0.370),495.4 (285.8 to 692.2)
+nfcorpus,positives 21+,1075,0.974 (0.948 to 0.994),24.0 (5.0 to 48.0),1.7 (0.0 to 5.0),0.347 (0.297 to 0.405),0.093 (0.032 to 0.150),0.317 (0.258 to 0.374),0.461 (0.375 to 0.547),996.9 (971.0 to 1018.0)
+nfcorpus,positives 6-20,688,0.838 (0.729 to 0.927),131.1 (62.7 to 217.0),32.0 (6.0 to 72.0),0.424 (0.339 to 0.521),0.206 (0.119 to 0.312),0.243 (0.177 to 0.303),0.368 (0.272 to 0.457),858.6 (746.0 to 949.0)

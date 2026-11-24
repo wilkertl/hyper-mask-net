@@ -1,0 +1,13 @@
+environment,documents in the group,queries with that many positives,measure,relevant,matched reference,relevant minus reference
+scifact,2,69,sign conflict,0.243 (0.192 to 0.312),0.406 (0.389 to 0.422),-0.163 (-0.214 to -0.090)
+scifact,2,69,cancelled mass,0.046 (0.023 to 0.081),0.182 (0.166 to 0.196),-0.136 (-0.165 to -0.105)
+scifact,5,1,sign conflict,0.544 (0.544 to 0.544),0.810 (0.810 to 0.810),-0.266 (-0.266 to -0.266)
+scifact,5,1,cancelled mass,0.082 (0.082 to 0.082),0.332 (0.332 to 0.332),-0.250 (-0.250 to -0.250)
+scifact,20,0,sign conflict,n/a,n/a,n/a
+scifact,20,0,cancelled mass,n/a,n/a,n/a
+nfcorpus,2,2162,sign conflict,0.352 (0.298 to 0.396),0.400 (0.382 to 0.418),-0.048 (-0.105 to -0.001)
+nfcorpus,2,2162,cancelled mass,0.135 (0.094 to 0.170),0.178 (0.161 to 0.196),-0.043 (-0.087 to -0.005)
+nfcorpus,5,1833,sign conflict,0.712 (0.636 to 0.767),0.786 (0.773 to 0.800),-0.074 (-0.150 to -0.018)
+nfcorpus,5,1833,cancelled mass,0.233 (0.174 to 0.284),0.307 (0.288 to 0.326),-0.074 (-0.135 to -0.024)
+nfcorpus,20,1105,sign conflict,0.946 (0.924 to 0.964),0.971 (0.968 to 0.974),-0.024 (-0.046 to -0.007)
+nfcorpus,20,1105,cancelled mass,0.305 (0.249 to 0.357),0.380 (0.362 to 0.399),-0.075 (-0.129 to -0.032)

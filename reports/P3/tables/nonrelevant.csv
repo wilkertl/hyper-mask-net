@@ -1,0 +1,4 @@
+environment,queries with a judged nonrelevant document,coverage,pairs,statistic,"mean (p10 to p90), per pair"
+scifact,0,0.000,0,none available,n/a
+nfcorpus,0,0.000,0,none available,n/a
+msmarco,0,0.000,0,none available,n/a

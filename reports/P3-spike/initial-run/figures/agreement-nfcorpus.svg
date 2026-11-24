@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" width="760" height="420" role="img" aria-label="Do a query&#x27;s positives pick the same dimensions? (nfcorpus)">
+<style>.bg{fill:#fcfcfb}.t{fill:#0b0b0b}.m{fill:#52514e}.g{stroke:#e4e3de;stroke-width:1}text{font:12px system-ui,sans-serif}.h{font-size:15px;font-weight:600}.s0{stroke:#2a78d6;fill:#2a78d6}.s1{stroke:#eb6834;fill:#eb6834}.s2{stroke:#1baf7a;fill:#1baf7a}.n{stroke:#8a8983;fill:#8a8983}.l{fill:none!important;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}.b{stroke:none!important;fill-opacity:.1}.r{stroke:#fcfcfb!important;stroke-width:2}@media (prefers-color-scheme:dark){.bg{fill:#1a1a19}.t{fill:#f0efec}.m{fill:#c3c2b7}.g{stroke:#3a3a37}.s0{stroke:#3987e5;fill:#3987e5}.s1{stroke:#d95926;fill:#d95926}.s2{stroke:#199e70;fill:#199e70}.r{stroke:#1a1a19!important}}</style>
+<rect class="bg" width="760" height="420"/>
+<text class="t h" x="16" y="26">Do a query&#x27;s positives pick the same dimensions? (nfcorpus)</text>
+<text class="m" x="16" y="46">Mean Jaccard of pairwise top-k masks, multi-positive queries, query-balanced.</text>
+<text class="m" x="404.0" y="408" text-anchor="middle">Retained dimensions k</text>
+<text class="m" transform="translate(16 238.0) rotate(-90)" text-anchor="middle">Mean Jaccard</text>
+<line class="g" x1="72" x2="736" y1="364.0" y2="364.0"/>
+<text class="m" x="64" y="368.0" text-anchor="end">0</text>
+<line class="g" x1="72" x2="736" y1="313.6" y2="313.6"/>
+<text class="m" x="64" y="317.6" text-anchor="end">0.2</text>
+<line class="g" x1="72" x2="736" y1="263.2" y2="263.2"/>
+<text class="m" x="64" y="267.2" text-anchor="end">0.4</text>
+<line class="g" x1="72" x2="736" y1="212.8" y2="212.8"/>
+<text class="m" x="64" y="216.8" text-anchor="end">0.6</text>
+<line class="g" x1="72" x2="736" y1="162.4" y2="162.4"/>
+<text class="m" x="64" y="166.4" text-anchor="end">0.8</text>
+<line class="g" x1="72" x2="736" y1="112.0" y2="112.0"/>
+<text class="m" x="64" y="116.0" text-anchor="end">1</text>
+<text class="m" x="151.45" y="382" text-anchor="middle">200</text>
+<text class="m" x="313.6" y="382" text-anchor="middle">400</text>
+<text class="m" x="475.75" y="382" text-anchor="middle">600</text>
+<text class="m" x="637.9" y="382" text-anchor="middle">800</text>
+<polyline class="s0 l" points="72.0,281.24 154.7,267.48 238.2,256.31 320.9,246.42 404.41,237.02 487.1,226.41 569.8,204.69 653.3,177.58 736.0,147.92"/>
+<circle class="s0" cx="72.0" cy="281.24" r="4"><title>Same query: 102, 0.328</title></circle>
+<circle class="s0" cx="154.7" cy="267.48" r="4"><title>Same query: 204, 0.383</title></circle>
+<circle class="s0" cx="238.2" cy="256.31" r="4"><title>Same query: 307, 0.427</title></circle>
+<circle class="s0" cx="320.9" cy="246.42" r="4"><title>Same query: 409, 0.467</title></circle>
+<circle class="s0" cx="404.41" cy="237.02" r="4"><title>Same query: 512, 0.504</title></circle>
+<circle class="s0" cx="487.1" cy="226.41" r="4"><title>Same query: 614, 0.546</title></circle>
+<circle class="s0" cx="569.8" cy="204.69" r="4"><title>Same query: 716, 0.632</title></circle>
+<circle class="s0" cx="653.3" cy="177.58" r="4"><title>Same query: 819, 0.740</title></circle>
+<circle class="s0" cx="736.0" cy="147.92" r="4"><title>Same query: 921, 0.857</title></circle>
+<polyline class="s1 l" points="72.0,333.96 154.7,321.08 238.2,307.06 320.9,291.6 404.41,273.67 487.1,252.26 569.8,226.23 653.3,194.65 736.0,157.36"/>
+<circle class="s1" cx="72.0" cy="333.96" r="4"><title>Different queries: 102, 0.119</title></circle>
+<circle class="s1" cx="154.7" cy="321.08" r="4"><title>Different queries: 204, 0.170</title></circle>
+<circle class="s1" cx="238.2" cy="307.06" r="4"><title>Different queries: 307, 0.226</title></circle>
+<circle class="s1" cx="320.9" cy="291.6" r="4"><title>Different queries: 409, 0.287</title></circle>
+<circle class="s1" cx="404.41" cy="273.67" r="4"><title>Different queries: 512, 0.358</title></circle>
+<circle class="s1" cx="487.1" cy="252.26" r="4"><title>Different queries: 614, 0.443</title></circle>
+<circle class="s1" cx="569.8" cy="226.23" r="4"><title>Different queries: 716, 0.547</title></circle>
+<circle class="s1" cx="653.3" cy="194.65" r="4"><title>Different queries: 819, 0.672</title></circle>
+<circle class="s1" cx="736.0" cy="157.36" r="4"><title>Different queries: 921, 0.820</title></circle>
+<polyline class="n l" points="72.0,350.79 154.7,336.12 238.2,319.56 320.9,301.12 404.41,280.0 487.1,256.1 569.8,228.54 653.3,196.07 736.0,158.06"/>
+<circle class="n" cx="72.0" cy="350.79" r="4"><title>Chance: 102, 0.052</title></circle>
+<circle class="n" cx="154.7" cy="336.12" r="4"><title>Chance: 204, 0.111</title></circle>
+<circle class="n" cx="238.2" cy="319.56" r="4"><title>Chance: 307, 0.176</title></circle>
+<circle class="n" cx="320.9" cy="301.12" r="4"><title>Chance: 409, 0.250</title></circle>
+<circle class="n" cx="404.41" cy="280.0" r="4"><title>Chance: 512, 0.333</title></circle>
+<circle class="n" cx="487.1" cy="256.1" r="4"><title>Chance: 614, 0.428</title></circle>
+<circle class="n" cx="569.8" cy="228.54" r="4"><title>Chance: 716, 0.538</title></circle>
+<circle class="n" cx="653.3" cy="196.07" r="4"><title>Chance: 819, 0.666</title></circle>
+<circle class="n" cx="736.0" cy="158.06" r="4"><title>Chance: 921, 0.817</title></circle>
+<rect class="s0" x="72" y="84" width="14" height="4" rx="2"/>
+<text class="m" x="92" y="90">Same query</text>
+<rect class="s1" x="176" y="84" width="14" height="4" rx="2"/>
+<text class="m" x="196" y="90">Different queries</text>
+<rect class="n" x="329" y="84" width="14" height="4" rx="2"/>
+<text class="m" x="349" y="90">Chance</text>
+</svg>

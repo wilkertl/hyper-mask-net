@@ -1,0 +1,4 @@
+environment,device,seconds,masks,documents,mask-documents per second,plan,thresholds,read,scan,metrics,write,peak device MiB,peak RSS MiB,artifact MiB
+scifact,NVIDIA GeForce RTX 4090,0.9,5118,5183,203M,0.2,0.0,0.0,0.1,0.4,0.0,115,1371,1.6
+nfcorpus,NVIDIA GeForce RTX 4090,194.2,1463276,3633,334M,4.6,64.8,0.0,15.9,106.8,0.6,794,9463,971.4
+msmarco,NVIDIA GeForce RTX 4090,2727.3,148607,8841823,488M,1.9,1.0,2.2,2690.2,11.6,0.0,559,27014,48.2

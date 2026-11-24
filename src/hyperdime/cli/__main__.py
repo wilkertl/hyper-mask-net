@@ -7,6 +7,10 @@ import sys
 from collections.abc import Sequence
 
 from hyperdime.cli import (
+    analyze_mask_rankings,
+    analyze_oracle_l2s,
+    analyze_representations,
+    analyze_shared_masks,
     compare_selectors,
     decide,
     describe_space,
@@ -15,6 +19,8 @@ from hyperdime.cli import (
     evaluate,
     mine_negatives,
     p3_bench,
+    p3_objective,
+    p3_target,
     prepare_data,
     probe_descriptors,
     probe_geometry,
@@ -40,7 +46,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     probe_geometry.register(commands)
     describe_space.register(commands)
     probe_descriptors.register(commands)
+    analyze_representations.register(commands)
+    analyze_shared_masks.register(commands)
+    analyze_mask_rankings.register(commands)
+    analyze_oracle_l2s.register(commands)
     p3_bench.register(commands)
+    p3_objective.register(commands)
+    p3_target.register(commands)
     report.register(commands)
     decide.register(commands)
     args = parser.parse_args(argv)

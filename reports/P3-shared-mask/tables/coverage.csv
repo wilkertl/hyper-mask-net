@@ -1,0 +1,4 @@
+environment,F2 cap on train and validation queries,training queries,with a positive,eligible multi-positive,selected,pairs,largest group,2-5,6-20,21+,grades,capped
+scifact,none,728,728,69,69,163,5,69,0,0,1,no
+nfcorpus,none,2331,2331,2162,2162,100664,1363,399,688,1075,1,no
+msmarco,50000,45000,45000,2321,2321,5054,7,2317,4,0,1,no

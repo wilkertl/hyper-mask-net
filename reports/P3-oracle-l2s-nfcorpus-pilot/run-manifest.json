@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "run_id": "20261112T160013Z-462aa6c4",
+  "command": "analyze-oracle-l2s",
+  "git_commit": "d362793ae9be9c3d876c7ffd11ebc18a0993b69d",
+  "git_dirty": false,
+  "config_hash": "418675a7b8019dcea0cdc833b56d7f96150a52f25d4abef2d57fa4687a730cce",
+  "config": {
+    "model": {
+      "name": "Qwen/Qwen3-Embedding-0.6B",
+      "revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+      "embedding_dim": 1024,
+      "frozen": true,
+      "normalize": true,
+      "max_length": 512,
+      "dtype": "bfloat16"
+    },
+    "data": {
+      "environment": "scifact",
+      "source": "BeIR/scifact",
+      "instruction": "Given a scientific claim, retrieve documents that support or refute the claim",
+      "validation_fraction": 0.1,
+      "sample": null
+    },
+    "run": {
+      "seed": 0,
+      "device": "cuda",
+      "dtype": "float32",
+      "output_dir": "artifacts"
+    },
+    "config_version": 1
+  },
+  "dataset_hash": "none",
+  "model_revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+  "seed": 0,
+  "determinism": {
+    "seed": "0",
+    "deterministic": true,
+    "cudnn_benchmark": false,
+    "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+    "PYTHONHASHSEED": null
+  },
+  "device": "cuda:0",
+  "dtype": "float32",
+  "versions": {
+    "python": "3.12.15",
+    "torch": "2.11.0+cu128",
+    "numpy": "2.5.4",
+    "hyperdime": "0.0.1"
+  },
+  "started_at": "2026-11-12T16:00:13.275419Z",
+  "finished_at": "2026-11-12T16:00:16.857227Z",
+  "artifacts": [
+    {
+      "name": "inputs.json",
+      "sha256": "850cc84e2de36f7e58723201c640a838e5ed0c0e8892e09ad75cf48054f4c30b"
+    },
+    {
+      "name": "nfcorpus/masks.npz",
+      "sha256": "0217337b7d7d1e1bae4184454e41606fc8fd8a47b5bc21968e0e763e0e6d5e36"
+    },
+    {
+      "name": "nfcorpus/per-query.npz",
+      "sha256": "94d70084ac330750727e7edfcda99034b9ef649f5bf953bca1451560246635c5"
+    },
+    {
+      "name": "nfcorpus/relationship.npz",
+      "sha256": "cb06411f570d3330013ccba64ca754af9b3ab89ca7eeab4c37210f44e4aa4897"
+    },
+    {
+      "name": "nfcorpus/selected-queries.json",
+      "sha256": "552c703dd63510ea63d46faa9c09e227c260365d5bbae0616e67111dc90df49c"
+    },
+    {
+      "name": "nfcorpus/selection.npz",
+      "sha256": "fce8693831bd44f93802f0b561aca816dd1bcd18dcdb0aa1ace10d2937070e91"
+    },
+    {
+      "name": "nfcorpus/summary.json",
+      "sha256": "6b0100b89da4ef7ce252280c4968b2410532815fa5c2604fead80ad3b50fb5d8"
+    },
+    {
+      "name": "nfcorpus/tracked.npz",
+      "sha256": "c8f3e09944732b4ce6728f85629e5c73a86746e42e2311bd01eba92e52a9e3b6"
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+environment,inputs,payload hashes,D,documents,train queries,F2 cap on train and validation queries,document norms (sampled),train query norms,documents sampled for norms,embeddings commit,instruction,encoding settings
+scifact,converted from the F0 spike caches by scripts/checks/p3_spike_inputs.py (pilot),match,1024,5183,728,none,0.9998 to 1.0002,0.9998 to 1.0001,5183,2b7d031e09f2,"Given a scientific claim, retrieve documents that support or refute the claim",{}
+nfcorpus,converted from the F0 spike caches by scripts/checks/p3_spike_inputs.py (pilot),match,1024,3633,2331,none,0.9998 to 1.0002,0.9998 to 1.0002,3633,2b7d031e09f2,"Given a question, retrieve relevant documents that best answer the question",{}

@@ -1,0 +1,10 @@
+{
+  "final_loss": 3.4171157223458416e-05,
+  "parameters": 1049600,
+  "parity_with_l2s_official": {
+    "bit_equal": true,
+    "max_abs_difference": 0.0
+  },
+  "seconds": 2.4542392529547215,
+  "steps": 4275
+}

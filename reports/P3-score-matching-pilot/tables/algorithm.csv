@@ -1,0 +1,4 @@
+environment,exact checks disagreeing,"complete query-repeats, exact","complete, greedy nearest-unused",greedy false failures
+scifact,0,50,50,0
+nfcorpus,0,636,629,7
+msmarco,0,417,409,8

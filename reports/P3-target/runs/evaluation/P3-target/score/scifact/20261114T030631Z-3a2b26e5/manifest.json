@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "run_id": "20261114T030631Z-3a2b26e5",
+  "command": "p3-target score",
+  "git_commit": "unknown",
+  "git_dirty": null,
+  "config_hash": "d5cbfc45ca703107c90a690711a2ef9c3502b30d864e4c6a23c03c2e8d1d3aac",
+  "config": {
+    "corpus": "scifact",
+    "checkpoints": {
+      "E4[0.1]@42": "20261114T030520Z-de62932c",
+      "E4[0.3]@42": "20261114T030545Z-3f3f7004",
+      "E4[1.0]@42": "20261114T030613Z-cbe4b663"
+    },
+    "tune_ids_sha256": "7997975896395645257d42048e8d0be4269330eb5389aea993171fdd6db18e85"
+  },
+  "dataset_hash": "e4b1fa65c7f04a480d8cd9845e63e055ac6777c4c0ff95f1227e8f6551ff4896",
+  "model_revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+  "seed": 20261114,
+  "determinism": {
+    "PYTHONHASHSEED": "0"
+  },
+  "device": "cpu",
+  "dtype": "float32",
+  "versions": {
+    "python": "3.12.15",
+    "torch": "2.11.0+cu128",
+    "numpy": "2.5.4",
+    "hyperdime": "0.0.1"
+  },
+  "started_at": "2026-11-14T03:06:31.610601Z",
+  "finished_at": "2026-11-14T03:06:31.617401Z",
+  "artifacts": [
+    {
+      "name": "per_query.csv",
+      "sha256": "a573dbc3217954d2866015b6a315d36622c5f020fcd49f5051456f33d3e5ae56"
+    },
+    {
+      "name": "summary.json",
+      "sha256": "2027b081710bed34563d6558c1bfe131e6f8a73b105816d35624fd3a068a6509"
+    }
+  ]
+}

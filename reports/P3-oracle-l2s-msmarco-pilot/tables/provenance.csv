@@ -1,0 +1,17 @@
+environment,check,passed
+msmarco,checkpoint fingerprint is the dataset's,True
+msmarco,dataset is the F2 dataset read here,True
+msmarco,embeddings are the F2 embeddings read here,True
+msmarco,embeddings fingerprint is the dataset's,True
+msmarco,environment matches,True
+msmarco,model revision matches,True
+msmarco,negatives are the latest F2 negatives,True
+msmarco,negatives fingerprint is the dataset's,True
+msmarco,official recipe,True
+msmarco,one published checkpoint,True
+msmarco,payload hash matches,True
+msmarco,"per-domain, 1024 wide",True
+msmarco,published F2 dataset,True
+msmarco,split ids are disjoint,True
+msmarco,trained by train-selector,True
+msmarco,trained from a clean tree,True

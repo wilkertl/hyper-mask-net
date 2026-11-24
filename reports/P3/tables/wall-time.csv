@@ -1,0 +1,4 @@
+environment,"total, seconds",load and verify inputs,orderings and per-pair statistics,corpus summaries,control pass,all-k summaries,"other (JSON, sizes)","of those, profiled kernels",unprofiled
+scifact,4.8,0.1,0.7,0.3,0.3,3.0,0.3,0.4,4.5
+nfcorpus,41.5,0.5,21.6,0.9,13.1,4.8,0.7,13.6,27.9
+msmarco,126.5,28.6,39.3,4.9,14.1,37.7,1.9,14.0,112.5

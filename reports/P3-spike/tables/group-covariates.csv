@@ -1,0 +1,49 @@
+statistic,environment,queries,n,relevant,matched reference,relevant minus reference
+full score,scifact,all,728,0.656 (0.497 to 0.801),0.265 (0.203 to 0.322),0.391 (0.225 to 0.540)
+full score,scifact,multi,69,0.663 (0.572 to 0.779),0.263 (0.214 to 0.310),0.400 (0.299 to 0.507)
+full score,scifact,positives 2-5,69,0.663 (0.572 to 0.779),0.263 (0.214 to 0.310),0.400 (0.299 to 0.507)
+full score,scifact,positives 21+,0,n/a,n/a,n/a
+full score,scifact,positives 6-20,0,n/a,n/a,n/a
+full score,scifact,single,659,0.655 (0.486 to 0.804),0.265 (0.202 to 0.323),0.390 (0.221 to 0.541)
+full score,nfcorpus,all,2331,0.347 (0.219 to 0.477),0.242 (0.176 to 0.307),0.105 (0.015 to 0.213)
+full score,nfcorpus,multi,2162,0.343 (0.220 to 0.464),0.243 (0.178 to 0.307),0.099 (0.018 to 0.202)
+full score,nfcorpus,positives 2-5,399,0.362 (0.211 to 0.546),0.227 (0.163 to 0.296),0.135 (0.007 to 0.302)
+full score,nfcorpus,positives 21+,1075,0.337 (0.232 to 0.440),0.253 (0.189 to 0.312),0.084 (0.024 to 0.154)
+full score,nfcorpus,positives 6-20,688,0.340 (0.214 to 0.467),0.238 (0.176 to 0.302),0.102 (0.011 to 0.209)
+full score,nfcorpus,single,169,0.409 (0.201 to 0.665),0.229 (0.156 to 0.309),0.180 (-0.002 to 0.415)
+cosine between documents,scifact,all,69,0.717 (0.575 to 0.832),0.291 (0.253 to 0.338),0.426 (0.279 to 0.550)
+cosine between documents,scifact,multi,69,0.717 (0.575 to 0.832),0.291 (0.253 to 0.338),0.426 (0.279 to 0.550)
+cosine between documents,scifact,positives 2-5,69,0.717 (0.575 to 0.832),0.291 (0.253 to 0.338),0.426 (0.279 to 0.550)
+cosine between documents,scifact,positives 21+,0,n/a,n/a,n/a
+cosine between documents,scifact,positives 6-20,0,n/a,n/a,n/a
+cosine between documents,scifact,single,0,n/a,n/a,n/a
+cosine between documents,nfcorpus,all,2162,0.439 (0.344 to 0.571),0.308 (0.295 to 0.320),0.131 (0.036 to 0.268)
+cosine between documents,nfcorpus,multi,2162,0.439 (0.344 to 0.571),0.308 (0.295 to 0.320),0.131 (0.036 to 0.268)
+cosine between documents,nfcorpus,positives 2-5,399,0.520 (0.364 to 0.699),0.308 (0.273 to 0.341),0.212 (0.054 to 0.385)
+cosine between documents,nfcorpus,positives 21+,1075,0.389 (0.335 to 0.451),0.308 (0.302 to 0.314),0.081 (0.028 to 0.143)
+cosine between documents,nfcorpus,positives 6-20,688,0.471 (0.381 to 0.575),0.308 (0.295 to 0.320),0.164 (0.074 to 0.272)
+cosine between documents,nfcorpus,single,0,n/a,n/a,n/a
+share of dims with a sign conflict,scifact,all,69,0.280 (0.194 to 0.371),0.470 (0.390 to 0.625),-0.190 (-0.302 to -0.110)
+share of dims with a sign conflict,scifact,multi,69,0.280 (0.194 to 0.371),0.470 (0.390 to 0.625),-0.190 (-0.302 to -0.110)
+share of dims with a sign conflict,scifact,positives 2-5,69,0.280 (0.194 to 0.371),0.470 (0.390 to 0.625),-0.190 (-0.302 to -0.110)
+share of dims with a sign conflict,scifact,positives 21+,0,n/a,n/a,n/a
+share of dims with a sign conflict,scifact,positives 6-20,0,n/a,n/a,n/a
+share of dims with a sign conflict,scifact,single,0,n/a,n/a,n/a
+share of dims with a sign conflict,nfcorpus,all,2162,0.840 (0.522 to 0.989),0.894 (0.613 to 0.992),-0.054 (-0.147 to -0.002)
+share of dims with a sign conflict,nfcorpus,multi,2162,0.840 (0.522 to 0.989),0.894 (0.613 to 0.992),-0.054 (-0.147 to -0.002)
+share of dims with a sign conflict,nfcorpus,positives 2-5,399,0.484 (0.279 to 0.676),0.594 (0.394 to 0.785),-0.110 (-0.203 to -0.025)
+share of dims with a sign conflict,nfcorpus,positives 21+,1075,0.974 (0.948 to 0.994),0.987 (0.977 to 0.995),-0.013 (-0.031 to -0.000)
+share of dims with a sign conflict,nfcorpus,positives 6-20,688,0.838 (0.729 to 0.927),0.923 (0.860 to 0.967),-0.085 (-0.161 to -0.030)
+share of dims with a sign conflict,nfcorpus,single,0,n/a,n/a,n/a
+mass cancelled by an unweighted mean,scifact,all,69,0.050 (0.025 to 0.085),0.205 (0.167 to 0.269),-0.155 (-0.222 to -0.105)
+mass cancelled by an unweighted mean,scifact,multi,69,0.050 (0.025 to 0.085),0.205 (0.167 to 0.269),-0.155 (-0.222 to -0.105)
+mass cancelled by an unweighted mean,scifact,positives 2-5,69,0.050 (0.025 to 0.085),0.205 (0.167 to 0.269),-0.155 (-0.222 to -0.105)
+mass cancelled by an unweighted mean,scifact,positives 21+,0,n/a,n/a,n/a
+mass cancelled by an unweighted mean,scifact,positives 6-20,0,n/a,n/a,n/a
+mass cancelled by an unweighted mean,scifact,single,0,n/a,n/a,n/a
+mass cancelled by an unweighted mean,nfcorpus,all,2162,0.263 (0.146 to 0.359),0.356 (0.261 to 0.410),-0.093 (-0.157 to -0.036)
+mass cancelled by an unweighted mean,nfcorpus,multi,2162,0.263 (0.146 to 0.359),0.356 (0.261 to 0.410),-0.093 (-0.157 to -0.036)
+mass cancelled by an unweighted mean,nfcorpus,positives 2-5,399,0.153 (0.073 to 0.233),0.246 (0.172 to 0.310),-0.093 (-0.153 to -0.026)
+mass cancelled by an unweighted mean,nfcorpus,positives 21+,1075,0.317 (0.258 to 0.374),0.395 (0.373 to 0.417),-0.078 (-0.129 to -0.033)
+mass cancelled by an unweighted mean,nfcorpus,positives 6-20,688,0.243 (0.177 to 0.303),0.360 (0.330 to 0.389),-0.117 (-0.182 to -0.060)
+mass cancelled by an unweighted mean,nfcorpus,single,0,n/a,n/a,n/a

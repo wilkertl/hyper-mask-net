@@ -7,7 +7,22 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from hyperdime.reports import dimensions, e0, e1, e2, overview, p1, s1, s2, s3, s4
+from hyperdime.reports import (
+    dimensions,
+    e0,
+    e1,
+    e2,
+    overview,
+    p1,
+    p3,
+    p3_oracle_l2s,
+    p3_ranking,
+    p3_shared,
+    s1,
+    s2,
+    s3,
+    s4,
+)
 
 COMMAND = "report"
 
@@ -16,14 +31,32 @@ def register(commands: Any) -> None:
     parser = commands.add_parser(COMMAND, help="generate a report from result files")
     parser.add_argument(
         "experiment",
-        choices=["E0", "E1", "E2", "S1", "P1", "S2", "S3", "S4", "overview", "dimensions"],
+        choices=[
+            "E0",
+            "E1",
+            "E2",
+            "S1",
+            "P1",
+            "P3",
+            "P3-mask-ranking",
+            "P3-oracle-l2s",
+            "P3-shared-mask",
+            "S2",
+            "S3",
+            "S4",
+            "overview",
+            "dimensions",
+        ],
     )
     parser.add_argument("--artifacts", type=Path, default=Path("artifacts"))
     parser.add_argument("--envs", nargs="+", default=["scifact", "nfcorpus", "msmarco"])
     parser.add_argument(
         "--report-dir",
         type=Path,
-        help="default: reports/<experiment>; for dimensions, the reports read and written to",
+        help=(
+            "default: reports/<experiment> (P3 on non-F2 inputs: reports/P3-spike); "
+            "for dimensions, the reports read and written to"
+        ),
     )
     parser.set_defaults(handler=run)
 
@@ -43,6 +76,14 @@ def run(args: argparse.Namespace) -> int:
             path = s1.write(args.artifacts, report_dir)
         elif args.experiment == "P1":
             path = p1.write(args.artifacts, report_dir)
+        elif args.experiment == "P3":
+            path = p3.write(args.artifacts, args.report_dir)
+        elif args.experiment == "P3-mask-ranking":
+            path = p3_ranking.write(args.artifacts, report_dir)
+        elif args.experiment == "P3-oracle-l2s":
+            path = p3_oracle_l2s.write(args.artifacts, report_dir)
+        elif args.experiment == "P3-shared-mask":
+            path = p3_shared.write(args.artifacts, report_dir)
         elif args.experiment == "S2":
             path = s2.write(args.artifacts, report_dir)
         elif args.experiment == "S3":

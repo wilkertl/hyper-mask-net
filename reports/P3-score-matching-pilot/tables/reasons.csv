@@ -1,0 +1,13 @@
+environment,query-repeat outcome,count
+scifact,a positive has no eligible sample document within the caliper,150
+scifact,complete,50
+scifact,"every positive has a document, but positives compete for too few",7
+scifact,fewer eligible sample documents than positives,0
+nfcorpus,a positive has no eligible sample document within the caliper,812
+nfcorpus,complete,636
+nfcorpus,"every positive has a document, but positives compete for too few",52
+nfcorpus,fewer eligible sample documents than positives,0
+msmarco,a positive has no eligible sample document within the caliper,1036
+msmarco,complete,417
+msmarco,"every positive has a document, but positives compete for too few",47
+msmarco,fewer eligible sample documents than positives,0

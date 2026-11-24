@@ -1,0 +1,2 @@
+environment,training queries,with a positive,evaluated,single-positive,multi-positive,positives,documents,capped,weights all 1
+msmarco,45000,45000,32,16,16,69,8841823,True,False

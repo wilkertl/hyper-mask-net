@@ -1,0 +1,4 @@
+environment,spike inputs,identical,differ,train queries shared,only F2,only spike,train judgments shared,documents shared,lowest document cosine,lowest query cosine
+msmarco,none,n/a,n/a,n/a,n/a,n/a,n/a,n/a,n/a,n/a
+nfcorpus,present,"instruction, model_revision, split_seed, train_judgments_file, validation_fraction","dataset_fingerprint, documents_payload, queries_payload",2331,0,0,100833,3633,0.999752,0.999165
+scifact,present,"instruction, model_revision, split_seed, train_judgments_file, validation_fraction","dataset_fingerprint, documents_payload, queries_payload",728,0,0,822,5183,0.999720,0.999673

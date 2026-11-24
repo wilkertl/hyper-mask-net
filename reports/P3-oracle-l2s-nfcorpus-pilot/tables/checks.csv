@@ -1,0 +1,20 @@
+environment,check,value
+nfcorpus,boundary_note,"""L2S ties at a mask boundary go to the lower dimension"""
+nfcorpus,documents_excluded_by_id,0
+nfcorpus,float32_evaluation_gap,"{""largest_ndcg10_gap"": 0.0, ""query_budget_pairs_above_1e-6"": 0}"
+nfcorpus,ids_colliding_with_a_document,0
+nfcorpus,k1024_list_mismatches,0
+nfcorpus,k1024_rank_mismatches,0
+nfcorpus,l2s_boundary_ties,28
+nfcorpus,masks,25418
+nfcorpus,masks_with_same_id_document,0
+nfcorpus,oracle_ceiling_violations,0
+nfcorpus,ranks_out_of_bounds,0
+nfcorpus,same_id_list_inconsistencies,0
+nfcorpus,single_positive_masks_identical_to_oracle,64
+nfcorpus,single_positive_queries,64
+nfcorpus,stored_run_parity,"{""compared"": 20521, ""mismatched"": 0, ""run"": ""20261109T163931Z-9e9f5a0a""}"
+nfcorpus,tied_tracked_documents,5659
+nfcorpus,tracked_ranks_charged_by_same_id_document,0
+nfcorpus,total seconds,3.6
+nfcorpus,device,cuda:0

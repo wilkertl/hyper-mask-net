@@ -1,0 +1,51 @@
+environment,cohort,k,arm,Jaccard with oracle mask,score regret to ceiling / mass
+scifact,single-positive,102,prefix-k,0.0849 (0.0837 to 0.0861),0.3371 (0.3357 to 0.3385)
+scifact,single-positive,102,L2S (in-sample),0.3833 (0.3777 to 0.3891),0.1214 (0.1188 to 0.1238)
+scifact,single-positive,204,prefix-k,0.1121 (0.1110 to 0.1132),0.4714 (0.4698 to 0.4729)
+scifact,single-positive,204,L2S (in-sample),0.4052 (0.4001 to 0.4104),0.1742 (0.1709 to 0.1773)
+scifact,single-positive,307,prefix-k,0.1676 (0.1664 to 0.1688),0.5126 (0.5108 to 0.5144)
+scifact,single-positive,307,L2S (in-sample),0.4289 (0.4247 to 0.4333),0.1948 (0.1916 to 0.1979)
+scifact,single-positive,409,prefix-k,0.2449 (0.2437 to 0.2462),0.4911 (0.4893 to 0.4929)
+scifact,single-positive,409,L2S (in-sample),0.4605 (0.4571 to 0.4639),0.1947 (0.1917 to 0.1976)
+scifact,single-positive,512,prefix-k,0.3329 (0.3318 to 0.3339),0.4412 (0.4396 to 0.4429)
+scifact,single-positive,512,L2S (in-sample),0.5012 (0.4985 to 0.5041),0.1810 (0.1784 to 0.1836)
+scifact,single-positive,614,prefix-k,0.4315 (0.4305 to 0.4325),0.3805 (0.3788 to 0.3823)
+scifact,single-positive,614,L2S (in-sample),0.5542 (0.5520 to 0.5563),0.1593 (0.1569 to 0.1617)
+scifact,single-positive,716,prefix-k,0.5424 (0.5416 to 0.5432),0.3120 (0.3100 to 0.3139)
+scifact,single-positive,716,L2S (in-sample),0.6228 (0.6212 to 0.6245),0.1339 (0.1317 to 0.1361)
+scifact,single-positive,819,prefix-k,0.6717 (0.6709 to 0.6723),0.2272 (0.2250 to 0.2293)
+scifact,single-positive,819,L2S (in-sample),0.7167 (0.7154 to 0.7181),0.1076 (0.1057 to 0.1096)
+scifact,single-positive,921,prefix-k,0.8202 (0.8197 to 0.8206),0.1321 (0.1304 to 0.1339)
+scifact,single-positive,921,L2S (in-sample),0.8402 (0.8393 to 0.8413),0.0744 (0.0729 to 0.0761)
+scifact,single-positive,1024,prefix-k,1.0000 (1.0000 to 1.0000),0.0000 (0.0000 to 0.0000)
+scifact,single-positive,1024,L2S (in-sample),1.0000 (1.0000 to 1.0000),0.0000 (0.0000 to 0.0000)
+scifact,multi-positive,102,prefix-k,0.0856 (0.0822 to 0.0893),0.3215 (0.3161 to 0.3268)
+scifact,multi-positive,102,L2S (in-sample),0.3705 (0.3558 to 0.3872),0.1187 (0.1118 to 0.1251)
+scifact,multi-positive,102,held-out transfer (1-1),0.7050 (0.6911 to 0.7184),n/a
+scifact,multi-positive,204,prefix-k,0.1130 (0.1092 to 0.1166),0.4482 (0.4420 to 0.4540)
+scifact,multi-positive,204,L2S (in-sample),0.3936 (0.3822 to 0.4060),0.1695 (0.1618 to 0.1764)
+scifact,multi-positive,204,held-out transfer (1-1),0.7404 (0.7288 to 0.7515),n/a
+scifact,multi-positive,307,prefix-k,0.1676 (0.1642 to 0.1710),0.4863 (0.4799 to 0.4924)
+scifact,multi-positive,307,L2S (in-sample),0.4210 (0.4100 to 0.4320),0.1894 (0.1822 to 0.1966)
+scifact,multi-positive,307,held-out transfer (1-1),0.7652 (0.7544 to 0.7758),n/a
+scifact,multi-positive,409,prefix-k,0.2428 (0.2393 to 0.2462),0.4663 (0.4596 to 0.4728)
+scifact,multi-positive,409,L2S (in-sample),0.4541 (0.4452 to 0.4629),0.1904 (0.1836 to 0.1972)
+scifact,multi-positive,409,held-out transfer (1-1),0.7879 (0.7776 to 0.7980),n/a
+scifact,multi-positive,512,prefix-k,0.3338 (0.3304 to 0.3371),0.4107 (0.4039 to 0.4175)
+scifact,multi-positive,512,L2S (in-sample),0.4928 (0.4867 to 0.4994),0.1771 (0.1710 to 0.1827)
+scifact,multi-positive,512,held-out transfer (1-1),0.8023 (0.7926 to 0.8111),n/a
+scifact,multi-positive,614,prefix-k,0.4296 (0.4270 to 0.4323),0.3539 (0.3478 to 0.3600)
+scifact,multi-positive,614,L2S (in-sample),0.5462 (0.5415 to 0.5514),0.1542 (0.1491 to 0.1593)
+scifact,multi-positive,614,held-out transfer (1-1),0.8168 (0.8080 to 0.8254),n/a
+scifact,multi-positive,716,prefix-k,0.5434 (0.5411 to 0.5457),0.2850 (0.2790 to 0.2914)
+scifact,multi-positive,716,L2S (in-sample),0.6143 (0.6111 to 0.6177),0.1266 (0.1221 to 0.1311)
+scifact,multi-positive,716,held-out transfer (1-1),0.8280 (0.8200 to 0.8361),n/a
+scifact,multi-positive,819,prefix-k,0.6709 (0.6690 to 0.6727),0.2017 (0.1965 to 0.2072)
+scifact,multi-positive,819,L2S (in-sample),0.7088 (0.7060 to 0.7115),0.0979 (0.0942 to 0.1017)
+scifact,multi-positive,819,held-out transfer (1-1),0.8609 (0.8549 to 0.8665),n/a
+scifact,multi-positive,921,prefix-k,0.8190 (0.8180 to 0.8200),0.1126 (0.1090 to 0.1167)
+scifact,multi-positive,921,L2S (in-sample),0.8344 (0.8324 to 0.8363),0.0662 (0.0635 to 0.0690)
+scifact,multi-positive,921,held-out transfer (1-1),0.9227 (0.9192 to 0.9261),n/a
+scifact,multi-positive,1024,prefix-k,1.0000 (1.0000 to 1.0000),0.0000 (0.0000 to 0.0000)
+scifact,multi-positive,1024,L2S (in-sample),1.0000 (1.0000 to 1.0000),0.0000 (0.0000 to 0.0000)
+scifact,multi-positive,1024,held-out transfer (1-1),1.0000 (1.0000 to 1.0000),n/a

@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "run_id": "20261116T021344Z-948bc073",
+  "command": "p3-objective train",
+  "git_commit": "unknown",
+  "git_dirty": null,
+  "config_hash": "0dcc806f3173a9e7a3c87b9fe47da581b9e1457809ef73d8aa31b4a8c21a4b9e",
+  "config": {
+    "corpus": "nfcorpus",
+    "arm": "KG",
+    "lr": 0.0001,
+    "seed": 0,
+    "epochs": 75,
+    "runs": {
+      "official": "20261114T022621Z-669b02f6",
+      "teachers": "20261114T022810Z-24f79ec6"
+    },
+    "init": "seeded",
+    "targets_sha256": "e74f38515699c5328cc025253d7fdcd89bcb01a2a6851b6a2dccb071dd657eca",
+    "masks_sha256": "90a8a5cbf6e0e38e9a081156aa5ffc0991b2ba442c9e2cc2edffaa0a1364f9e5",
+    "negatives_sha256": "8fa3d15e3d4921163bc7631a44e44df3469117df47a7e7cd0178ef3d36a27231",
+    "fit_ids_sha256": "d35ed33c39ce39328a916603933fbfd7839a63d53d57eae6809f6751b4e03bc2",
+    "compute": {
+      "host": "ceia40902",
+      "device": "cuda:0",
+      "gpu": "NVIDIA GeForce RTX 4090",
+      "gpu_uuid": "GPU-7ba81dde-05d0-306c-2880-e259c0add8b2"
+    }
+  },
+  "dataset_hash": "e4b1fa65c7f04a480d8cd9845e63e055ac6777c4c0ff95f1227e8f6551ff4896",
+  "model_revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+  "seed": 0,
+  "determinism": {
+    "PYTHONHASHSEED": null
+  },
+  "device": "cuda:0",
+  "dtype": "float32",
+  "versions": {
+    "python": "3.14.6",
+    "torch": "2.11.0+cu128",
+    "numpy": "2.5.4",
+    "hyperdime": "0.0.1"
+  },
+  "started_at": "2026-11-16T02:13:44.680341Z",
+  "finished_at": "2026-11-16T02:13:47.081360Z",
+  "artifacts": [
+    {
+      "name": "state_dict.pt",
+      "sha256": "735f3933c107df401a1d6682e36a52568cd2c9f38f93c2c5460e2fc22dcc2509"
+    },
+    {
+      "name": "summary.json",
+      "sha256": "884e252cb85aa011f9c1a87cb79f72d070f08a92f56de55c8e6ab18c9a4cf975"
+    }
+  ]
+}

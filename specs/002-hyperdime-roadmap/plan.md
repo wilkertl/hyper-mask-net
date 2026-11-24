@@ -111,6 +111,26 @@ Each feature follows: `/speckit-specify` → `/speckit-clarify` (if needed) → 
 `/speckit-tasks` → implement on per-ticket `agent/` branches → `exp/` branch runs the experiment →
 gate ADR, tag.
 
+### Realized feature numbering after G2 (ADR-0008)
+
+After G2, ADR-0008 made the selector the contribution, so the feature ids used in `specs/` from F5 on
+differ from the table above (whose F5–F7 remain the planned descriptor, hypernetwork, and paper
+features, not yet specified under those ids). Status lives in
+[docs/experiment_registry.md](../../docs/experiment_registry.md).
+
+| Feature | Spec | Experiment |
+|---|---|---|
+| F4 `selector-shift` | [specs/005-selector-shift](../005-selector-shift/spec.md) | E1, G2 (ADR-0007) |
+| F5 `selector-objective` | [specs/006-selector-objective](../006-selector-objective/spec.md) | S1 (ADR-0009) |
+| F6 `geometry-probe` | [specs/007-geometry-probe](../007-geometry-probe/spec.md) | P1 |
+| F7 `geometric-prior` | [specs/008-geometric-prior](../008-geometric-prior/spec.md) | S2 (ADR-0010) |
+| F8 `prior-weight` | [specs/009-prior-weight](../009-prior-weight/spec.md) | S3 (ADR-0011) |
+| F9 `budget-prior` | [specs/010-budget-prior](../010-budget-prior/spec.md) | S4 (ADR-0012, proposed) |
+| F10 `descriptor-probe` | [specs/011-descriptor-probe](../011-descriptor-probe/spec.md) | E2, G3 stages 1–2 (ADR-0013, proposed) |
+| F11 `covariance-probe` | `specs/012-covariance-probe` (on branch `agent/F11-covariance-probe`, not on this branch) | P2 |
+| — (unticketed) | none; ADR-0014 to ADR-0017 | P3 exploratory stages, legacy evidence |
+| F12 `p3-selector-benchmark` | [specs/013-p3-selector-benchmark](../013-p3-selector-benchmark/spec.md) | P3-bench, planned |
+
 ## Project Structure
 
 ### Documentation (this feature)

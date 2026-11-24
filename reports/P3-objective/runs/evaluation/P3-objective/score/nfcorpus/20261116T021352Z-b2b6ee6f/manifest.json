@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "run_id": "20261116T021352Z-b2b6ee6f",
+  "command": "p3-objective score",
+  "git_commit": "unknown",
+  "git_dirty": null,
+  "config_hash": "d576bbf9abef9fff225222f808c492f62897f3b5f19a7a19864df9b3505f9c79",
+  "config": {
+    "corpus": "nfcorpus",
+    "checkpoints": {
+      "KG|0.0003|42": "20261116T015535Z-221c4019",
+      "KG|0.0003|0": "20261116T020743Z-a83759f3",
+      "KG|0.0003|1": "20261116T020747Z-ccdbe316",
+      "KS|0.001|42": "20261116T015555Z-9c0a4bd5",
+      "KS|0.001|0": "20261116T020751Z-3e9a6f02",
+      "KS|0.001|1": "20261116T020755Z-5efae8f0",
+      "MS|0.0003|42": "20261116T015614Z-72877dc1",
+      "MS|0.0003|0": "20261116T020759Z-8c1c7baa",
+      "MS|0.0003|1": "20261116T020807Z-79d117d0",
+      "MG|0.001|42": "20261116T015657Z-59046ad9",
+      "MG|0.001|0": "20261116T020814Z-f48e13bd",
+      "MG|0.001|1": "20261116T020823Z-e714c965",
+      "KBk|0.001|42": "20261116T015734Z-665eea91",
+      "KBk|0.001|0": "20261116T020832Z-7bd28e39",
+      "KBk|0.001|1": "20261116T020842Z-3ebb83dd",
+      "KBa|0.001|42": "20261116T015813Z-fe0c08b1",
+      "KBa|0.001|0": "20261116T020851Z-3b98bb63",
+      "KBa|0.001|1": "20261116T020901Z-19f0fa37",
+      "R0|0.001|42": "20261116T020141Z-0c521483",
+      "R0|0.001|0": "20261116T020911Z-371b66e2",
+      "R0|0.001|1": "20261116T021017Z-1fe6a14c",
+      "RI|0.001|42": "20261116T020610Z-c781a957",
+      "RI|0.001|0": "20261116T021124Z-2bf7ac0f",
+      "RI|0.001|1": "20261116T021230Z-6306bf78",
+      "KGI|0.0003|42": "20261116T020725Z-2ed8ba8c",
+      "KGI|0.0003|0": "20261116T021336Z-d36f5bf0",
+      "KGI|0.0003|1": "20261116T021340Z-5152b4aa",
+      "REF|0.0001|42": "l2s-official",
+      "REF|0.0001|0": "20261116T021344Z-948bc073",
+      "REF|0.0001|1": "20261116T021348Z-9c2643b2"
+    },
+    "runs": {
+      "official": "20261114T022621Z-669b02f6",
+      "teachers": "20261114T022810Z-24f79ec6"
+    },
+    "tune_ids_sha256": "5752f754df9cb6ed5c8ed99c43aa3d8036f3181557ac2528b6f41b0cd247054f",
+    "budgets": [
+      102,
+      204,
+      307,
+      409,
+      512,
+      614,
+      716,
+      819,
+      921,
+      1024
+    ],
+    "compute": {
+      "host": "ceia40902",
+      "device": "cuda:0",
+      "gpu": "NVIDIA GeForce RTX 4090",
+      "gpu_uuid": "GPU-7ba81dde-05d0-306c-2880-e259c0add8b2"
+    }
+  },
+  "dataset_hash": "e4b1fa65c7f04a480d8cd9845e63e055ac6777c4c0ff95f1227e8f6551ff4896",
+  "model_revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+  "seed": 20261115,
+  "determinism": {
+    "PYTHONHASHSEED": null
+  },
+  "device": "cuda:0",
+  "dtype": "float32",
+  "versions": {
+    "python": "3.14.6",
+    "torch": "2.11.0+cu128",
+    "numpy": "2.5.4",
+    "hyperdime": "0.0.1"
+  },
+  "started_at": "2026-11-16T02:13:52.651033Z",
+  "finished_at": "2026-11-16T02:14:51.602342Z",
+  "artifacts": [
+    {
+      "name": "diagnostics.json",
+      "sha256": "1c6937d93332a3d2ecea930744578da6ddec80df04b4c80c456af82d8fd3172d"
+    },
+    {
+      "name": "per_query.csv",
+      "sha256": "add71958db606ee194262aa774eac732e0de5a760cd0aac5968c2ae7e4cfd2f4"
+    },
+    {
+      "name": "summary.json",
+      "sha256": "8a928c9f2804da739363f37b72e983afab92b331b6e42dbdbd5fe6bd79a9dd75"
+    }
+  ]
+}

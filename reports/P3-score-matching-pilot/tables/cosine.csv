@@ -1,0 +1,4 @@
+environment,queries complete at least once,among positives,among matched references,"among random references, same queries",positives minus matched,positives minus random,matched by repeat
+scifact,22,"0.694 (0.589 to 0.817), n=22","0.586 (0.477 to 0.726), n=22","0.284 (0.242 to 0.358), n=22","0.108 (0.030 to 0.211), n=22","0.410 (0.308 to 0.569), n=22",0.564 / 0.578 / 0.569
+nfcorpus,235,"0.455 (0.350 to 0.598), n=235","0.340 (0.298 to 0.397), n=235","0.306 (0.286 to 0.325), n=235","0.115 (0.017 to 0.245), n=235","0.148 (0.040 to 0.303), n=235",0.337 / 0.339 / 0.340
+msmarco,202,"0.620 (0.480 to 0.772), n=202","0.571 (0.395 to 0.735), n=202","0.162 (0.102 to 0.222), n=202","0.049 (-0.082 to 0.215), n=202","0.458 (0.301 to 0.634), n=202",0.557 / 0.558 / 0.552

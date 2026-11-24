@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" width="760" height="420" role="img" aria-label="nDCG@10 under masks (msmarco)">
+<style>.bg{fill:#fcfcfb}.t{fill:#0b0b0b}.m{fill:#52514e}.g{stroke:#e4e3de;stroke-width:1}text{font:12px system-ui,sans-serif}.h{font-size:15px;font-weight:600}.s0{stroke:#2a78d6;fill:#2a78d6}.s1{stroke:#eb6834;fill:#eb6834}.s2{stroke:#1baf7a;fill:#1baf7a}.n{stroke:#8a8983;fill:#8a8983}.l{fill:none!important;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}.b{stroke:none!important;fill-opacity:.1}.r{stroke:#fcfcfb!important;stroke-width:2}@media (prefers-color-scheme:dark){.bg{fill:#1a1a19}.t{fill:#f0efec}.m{fill:#c3c2b7}.g{stroke:#3a3a37}.s0{stroke:#3987e5;fill:#3987e5}.s1{stroke:#d95926;fill:#d95926}.s2{stroke:#199e70;fill:#199e70}.r{stroke:#1a1a19!important}}</style>
+<rect class="bg" width="760" height="420"/>
+<text class="t h" x="16" y="26">nDCG@10 under masks (msmarco)</text>
+<text class="m" x="16" y="46">Training judgments, multi-positive queries, query-balanced. The shared and 1-1 masks saw relevant</text>
+<text class="m" x="16" y="62">documents, and are privileged. Budgets are the grid, not every k.</text>
+<text class="m" x="404.0" y="408" text-anchor="middle">Retained dimensions k</text>
+<text class="m" transform="translate(16 238.0) rotate(-90)" text-anchor="middle">nDCG@10</text>
+<line class="g" x1="72" x2="736" y1="364.0" y2="364.0"/>
+<text class="m" x="64" y="368.0" text-anchor="end">0</text>
+<line class="g" x1="72" x2="736" y1="301.0" y2="301.0"/>
+<text class="m" x="64" y="305.0" text-anchor="end">0.2</text>
+<line class="g" x1="72" x2="736" y1="238.0" y2="238.0"/>
+<text class="m" x="64" y="242.0" text-anchor="end">0.4</text>
+<line class="g" x1="72" x2="736" y1="175.0" y2="175.0"/>
+<text class="m" x="64" y="179.0" text-anchor="end">0.6</text>
+<line class="g" x1="72" x2="736" y1="112.0" y2="112.0"/>
+<text class="m" x="64" y="116.0" text-anchor="end">0.8</text>
+<text class="m" x="151.45" y="382" text-anchor="middle">200</text>
+<text class="m" x="313.6" y="382" text-anchor="middle">400</text>
+<text class="m" x="475.75" y="382" text-anchor="middle">600</text>
+<text class="m" x="637.9" y="382" text-anchor="middle">800</text>
+<polyline class="n l" points="72.0,276.59 154.7,276.59 238.2,276.59 320.9,276.59 404.41,276.59 487.1,276.59 569.8,276.59 653.3,276.59 736.0,276.59"/>
+<circle class="n" cx="72.0" cy="276.59" r="4"><title>Full query: 102, 0.277</title></circle>
+<circle class="n" cx="154.7" cy="276.59" r="4"><title>Full query: 204, 0.277</title></circle>
+<circle class="n" cx="238.2" cy="276.59" r="4"><title>Full query: 307, 0.277</title></circle>
+<circle class="n" cx="320.9" cy="276.59" r="4"><title>Full query: 409, 0.277</title></circle>
+<circle class="n" cx="404.41" cy="276.59" r="4"><title>Full query: 512, 0.277</title></circle>
+<circle class="n" cx="487.1" cy="276.59" r="4"><title>Full query: 614, 0.277</title></circle>
+<circle class="n" cx="569.8" cy="276.59" r="4"><title>Full query: 716, 0.277</title></circle>
+<circle class="n" cx="653.3" cy="276.59" r="4"><title>Full query: 819, 0.277</title></circle>
+<circle class="n" cx="736.0" cy="276.59" r="4"><title>Full query: 921, 0.277</title></circle>
+<polyline class="s0 l" points="72.0,306.42 154.7,293.05 238.2,287.89 320.9,284.33 404.41,281.89 487.1,280.08 569.8,278.28 653.3,277.29 736.0,277.0"/>
+<circle class="s0" cx="72.0" cy="306.42" r="4"><title>prefix: 102, 0.183</title></circle>
+<circle class="s0" cx="154.7" cy="293.05" r="4"><title>prefix: 204, 0.225</title></circle>
+<circle class="s0" cx="238.2" cy="287.89" r="4"><title>prefix: 307, 0.242</title></circle>
+<circle class="s0" cx="320.9" cy="284.33" r="4"><title>prefix: 409, 0.253</title></circle>
+<circle class="s0" cx="404.41" cy="281.89" r="4"><title>prefix: 512, 0.261</title></circle>
+<circle class="s0" cx="487.1" cy="280.08" r="4"><title>prefix: 614, 0.266</title></circle>
+<circle class="s0" cx="569.8" cy="278.28" r="4"><title>prefix: 716, 0.272</title></circle>
+<circle class="s0" cx="653.3" cy="277.29" r="4"><title>prefix: 819, 0.275</title></circle>
+<circle class="s0" cx="736.0" cy="277.0" r="4"><title>prefix: 921, 0.276</title></circle>
+<polyline class="s1 l" points="72.0,173.66 154.7,176.39 238.2,183.84 320.9,192.31 404.41,200.77 487.1,208.91 569.8,216.83 653.3,223.77 736.0,238.34"/>
+<circle class="s1" cx="72.0" cy="173.66" r="4"><title>shared: 102, 0.604</title></circle>
+<circle class="s1" cx="154.7" cy="176.39" r="4"><title>shared: 204, 0.596</title></circle>
+<circle class="s1" cx="238.2" cy="183.84" r="4"><title>shared: 307, 0.572</title></circle>
+<circle class="s1" cx="320.9" cy="192.31" r="4"><title>shared: 409, 0.545</title></circle>
+<circle class="s1" cx="404.41" cy="200.77" r="4"><title>shared: 512, 0.518</title></circle>
+<circle class="s1" cx="487.1" cy="208.91" r="4"><title>shared: 614, 0.492</title></circle>
+<circle class="s1" cx="569.8" cy="216.83" r="4"><title>shared: 716, 0.467</title></circle>
+<circle class="s1" cx="653.3" cy="223.77" r="4"><title>shared: 819, 0.445</title></circle>
+<circle class="s1" cx="736.0" cy="238.34" r="4"><title>shared: 921, 0.399</title></circle>
+<polyline class="s2 l" points="72.0,164.89 154.7,165.72 238.2,170.39 320.9,176.59 404.41,184.94 487.1,193.32 569.8,201.2 653.3,211.85 736.0,232.95"/>
+<circle class="s2" cx="72.0" cy="164.89" r="4"><title>1-1: 102, 0.632</title></circle>
+<circle class="s2" cx="154.7" cy="165.72" r="4"><title>1-1: 204, 0.629</title></circle>
+<circle class="s2" cx="238.2" cy="170.39" r="4"><title>1-1: 307, 0.615</title></circle>
+<circle class="s2" cx="320.9" cy="176.59" r="4"><title>1-1: 409, 0.595</title></circle>
+<circle class="s2" cx="404.41" cy="184.94" r="4"><title>1-1: 512, 0.568</title></circle>
+<circle class="s2" cx="487.1" cy="193.32" r="4"><title>1-1: 614, 0.542</title></circle>
+<circle class="s2" cx="569.8" cy="201.2" r="4"><title>1-1: 716, 0.517</title></circle>
+<circle class="s2" cx="653.3" cy="211.85" r="4"><title>1-1: 819, 0.483</title></circle>
+<circle class="s2" cx="736.0" cy="232.95" r="4"><title>1-1: 921, 0.416</title></circle>
+<rect class="n" x="72" y="84" width="14" height="4" rx="2"/>
+<text class="m" x="92" y="90">Full query</text>
+<rect class="s0" x="176" y="84" width="14" height="4" rx="2"/>
+<text class="m" x="196" y="90">prefix</text>
+<rect class="s1" x="252" y="84" width="14" height="4" rx="2"/>
+<text class="m" x="272" y="90">shared</text>
+<rect class="s2" x="328" y="84" width="14" height="4" rx="2"/>
+<text class="m" x="348" y="90">1-1</text>
+</svg>

@@ -1,0 +1,12 @@
+{
+ "scifact": {
+  "score": "20261116T022417Z-dff04909",
+  "selection": "selection-a1-scifact.json",
+  "trainings": "trainings-a1-scifact.json"
+ },
+ "nfcorpus": {
+  "score": "20261116T023356Z-f9cbb66f",
+  "selection": "selection-a1-nfcorpus.json",
+  "trainings": "trainings-a1-nfcorpus.json"
+ }
+}

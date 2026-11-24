@@ -1,0 +1,4 @@
+environment,matched positive score,matched reference score,unmatched positive score,reference minus positive,absolute residual,largest absolute residual,sample mean score per query
+scifact,"0.611 (0.501 to 0.722), n=220","0.609 (0.498 to 0.725), n=220","0.718 (0.615 to 0.805), n=269","-0.002 (-0.014 to 0.009), n=220","0.007 (0.001 to 0.017), n=220",0.019801,"0.267 (0.221 to 0.305), n=207"
+nfcorpus,"0.291 (0.170 to 0.435), n=54323","0.291 (0.170 to 0.434), n=54323","0.542 (0.409 to 0.669), n=4615","-0.001 (-0.002 to 0.000), n=54323","0.001 (0.000 to 0.003), n=54323",0.019995,"0.238 (0.174 to 0.303), n=1500"
+msmarco,"0.608 (0.490 to 0.727), n=1595","0.606 (0.489 to 0.722), n=1595","0.711 (0.618 to 0.796), n=1723","-0.002 (-0.013 to 0.007), n=1595","0.005 (0.000 to 0.014), n=1595",0.020000,"0.117 (0.093 to 0.140), n=1500"

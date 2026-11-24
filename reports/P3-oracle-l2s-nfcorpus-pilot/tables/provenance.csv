@@ -1,0 +1,17 @@
+environment,check,passed
+nfcorpus,checkpoint fingerprint is the dataset's,True
+nfcorpus,dataset is the F2 dataset read here,True
+nfcorpus,embeddings are the F2 embeddings read here,True
+nfcorpus,embeddings fingerprint is the dataset's,True
+nfcorpus,environment matches,True
+nfcorpus,model revision matches,True
+nfcorpus,negatives are the latest F2 negatives,True
+nfcorpus,negatives fingerprint is the dataset's,True
+nfcorpus,official recipe,True
+nfcorpus,one published checkpoint,True
+nfcorpus,payload hash matches,True
+nfcorpus,"per-domain, 1024 wide",True
+nfcorpus,published F2 dataset,True
+nfcorpus,split ids are disjoint,True
+nfcorpus,trained by train-selector,True
+nfcorpus,trained from a clean tree,True

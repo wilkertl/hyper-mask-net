@@ -1,0 +1,4 @@
+environment,device,batch pairs,pairs,"seconds (total, offline)",pair analysis,corpus summaries,pairs per second,peak RSS (MiB),artifact MiB,bytes per pair (arrays)
+scifact,NVIDIA GeForce RTX 4090,8192,822,4.8,0.7,0.3,1207,1943,56.5,6144
+nfcorpus,NVIDIA GeForce RTX 4090,8192,100833,41.5,21.6,0.9,4671,2509,837.1,6144
+msmarco,NVIDIA GeForce RTX 4090,8192,47733,126.5,39.3,4.9,1213,21216,1685.7,6144

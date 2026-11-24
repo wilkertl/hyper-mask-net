@@ -1,0 +1,4 @@
+environment,queries,multi-positive,reference samples per query,reference documents drawn,groups short of documents,queries using sampled pairs,pairs per query at most,corpus documents behind the scale
+scifact,728,69,5,4110,0,0,2000,5183
+nfcorpus,2331,2162,5,504165,0,310,2000,3633
+msmarco,45000,2321,5,238665,0,0,2000,200000

@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "run_id": "20261109T175007Z-456c297d",
+  "command": "p3-ranking-integrity",
+  "git_commit": "bd0fd382202d454c2e262fc19859074b16a43c0a",
+  "git_dirty": false,
+  "config_hash": "05e33b853606fb5b2b624461ab134786d04d035ab022dc832ad3c2bb316ec210",
+  "config": {
+    "run": "20261109T163931Z-9e9f5a0a",
+    "per_stratum": 4,
+    "script_sha256": "cf5f777bfe6d04b3d5b9f2ba736d99aa2f52b6a45b6e7bf61595a8a8f1be3608"
+  },
+  "dataset_hash": "none",
+  "model_revision": "none",
+  "seed": 0,
+  "determinism": {
+    "PYTHONHASHSEED": null
+  },
+  "device": "cpu",
+  "dtype": "float32",
+  "versions": {
+    "python": "3.12.15",
+    "torch": "2.11.0+cu128",
+    "numpy": "2.5.4",
+    "hyperdime": "0.0.1"
+  },
+  "started_at": "2026-11-09T17:50:07.808156Z",
+  "finished_at": "2026-11-09T17:52:40.791324Z",
+  "artifacts": [
+    {
+      "name": "integrity.json",
+      "sha256": "30de266d313ce0db4f4171c3be068bc96d0b43c43d35d23e87cba58c0b7eecb9"
+    }
+  ]
+}

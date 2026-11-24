@@ -1,0 +1,108 @@
+{
+  "exit": 0,
+  "peak_mib_by_stage": {
+    "_across": {
+      "anonymous": 3222,
+      "file": 16235,
+      "rss": 19476
+    },
+    "_frequency": {
+      "anonymous": 3334,
+      "file": 16235,
+      "rss": 19588
+    },
+    "_paired": {
+      "anonymous": 4778,
+      "file": 16258,
+      "rss": 21032
+    },
+    "_write_json": {
+      "anonymous": 2695,
+      "file": 15051,
+      "rss": 17765
+    },
+    "analyze_controls": {
+      "anonymous": 3050,
+      "file": 16258,
+      "rss": 19310
+    },
+    "analyze_environment": {
+      "anonymous": 3798,
+      "file": 4170,
+      "rss": 7983
+    },
+    "coordinate_scale": {
+      "anonymous": 2661,
+      "file": 11015,
+      "rss": 13656
+    },
+    "load_training_judgments": {
+      "anonymous": 1425,
+      "file": 1091,
+      "rss": 2524
+    },
+    "load_unlabeled": {
+      "anonymous": 1250,
+      "file": 370,
+      "rss": 1628
+    },
+    "startup": {
+      "anonymous": 2694,
+      "file": 15051,
+      "rss": 17763
+    },
+    "verify_inputs": {
+      "anonymous": 2068,
+      "file": 1091,
+      "rss": 3168
+    }
+  },
+  "peak_rss_mib": 21053,
+  "stages": {
+    "_across": {
+      "calls": 1,
+      "seconds": 0.3133726320229471
+    },
+    "_frequency": {
+      "calls": 1,
+      "seconds": 2.7436426669883076
+    },
+    "_half_range": {
+      "calls": 2,
+      "seconds": 0.11048233599285595
+    },
+    "_paired": {
+      "calls": 5,
+      "seconds": 34.074438252981054
+    },
+    "_write_json": {
+      "calls": 3,
+      "seconds": 0.15507445205003023
+    },
+    "analyze_controls": {
+      "calls": 1,
+      "seconds": 52.564993720006896
+    },
+    "analyze_environment": {
+      "calls": 1,
+      "seconds": 47.370846686011646
+    },
+    "coordinate_scale": {
+      "calls": 1,
+      "seconds": 0.8245796179980971
+    },
+    "load_training_judgments": {
+      "calls": 1,
+      "seconds": 0.45783233898691833
+    },
+    "load_unlabeled": {
+      "calls": 1,
+      "seconds": 4.285356465989025
+    },
+    "verify_inputs": {
+      "calls": 1,
+      "seconds": 14.808694074017694
+    }
+  },
+  "wall_seconds": 126.98632669899962
+}

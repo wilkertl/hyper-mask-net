@@ -1,0 +1,973 @@
+environment,arm,k,positives evaluated,measure,queries,arm value,"full query, same documents",difference,95% interval (pointwise)
+scifact,prefix,102,all known positives,reciprocal rank,69,0.3460,0.4358,-0.0898,-0.1290 to -0.0517
+scifact,prefix,102,all known positives,in top 10,69,0.6871,0.8344,-0.1472,-0.2125 to -0.0859
+scifact,prefix,102,all known positives,in top 100,69,0.9325,0.9816,-0.0491,-0.1000 to -0.0062
+scifact,prefix,102,all known positives,log rank (lower is better),69,1.8410,1.2983,0.5427,0.3816 to 0.7220
+scifact,prefix,102,all known positives,worst rank in the set,69,66.4356,18.1227,48.3129,16.5351 to 94.1305
+scifact,prefix,204,all known positives,reciprocal rank,69,0.3925,0.4358,-0.0433,-0.0744 to -0.0152
+scifact,prefix,204,all known positives,in top 10,69,0.7669,0.8344,-0.0675,-0.1118 to -0.0266
+scifact,prefix,204,all known positives,in top 100,69,0.9632,0.9816,-0.0184,-0.0524 to 0.0113
+scifact,prefix,204,all known positives,log rank (lower is better),69,1.5926,1.2983,0.2943,0.1839 to 0.4210
+scifact,prefix,204,all known positives,worst rank in the set,69,41.4110,18.1227,23.2883,4.4731 to 49.3798
+scifact,prefix,307,all known positives,reciprocal rank,69,0.4013,0.4358,-0.0345,-0.0580 to -0.0127
+scifact,prefix,307,all known positives,in top 10,69,0.7730,0.8344,-0.0613,-0.1056 to -0.0186
+scifact,prefix,307,all known positives,in top 100,69,0.9693,0.9816,-0.0123,-0.0452 to 0.0124
+scifact,prefix,307,all known positives,log rank (lower is better),69,1.5072,1.2983,0.2089,0.1192 to 0.3108
+scifact,prefix,307,all known positives,worst rank in the set,69,30.3865,18.1227,12.2638,2.4809 to 25.5876
+scifact,prefix,409,all known positives,reciprocal rank,69,0.4198,0.4358,-0.0159,-0.0365 to 0.0034
+scifact,prefix,409,all known positives,in top 10,69,0.7791,0.8344,-0.0552,-0.1090 to -0.0061
+scifact,prefix,409,all known positives,in top 100,69,0.9877,0.9816,0.0061,0.0000 to 0.0191
+scifact,prefix,409,all known positives,log rank (lower is better),69,1.4106,1.2983,0.1124,0.0462 to 0.1894
+scifact,prefix,409,all known positives,worst rank in the set,69,21.7055,18.1227,3.5828,-1.3431 to 9.8535
+scifact,prefix,512,all known positives,reciprocal rank,69,0.4215,0.4358,-0.0142,-0.0388 to 0.0080
+scifact,prefix,512,all known positives,in top 10,69,0.7669,0.8344,-0.0675,-0.1118 to -0.0253
+scifact,prefix,512,all known positives,in top 100,69,0.9877,0.9816,0.0061,0.0000 to 0.0191
+scifact,prefix,512,all known positives,log rank (lower is better),69,1.3933,1.2983,0.0950,0.0323 to 0.1649
+scifact,prefix,512,all known positives,worst rank in the set,69,18.4417,18.1227,0.3190,-2.8414 to 3.1430
+scifact,prefix,614,all known positives,reciprocal rank,69,0.4209,0.4358,-0.0149,-0.0367 to 0.0066
+scifact,prefix,614,all known positives,in top 10,69,0.8160,0.8344,-0.0184,-0.0500 to 0.0119
+scifact,prefix,614,all known positives,in top 100,69,0.9816,0.9816,0.0000,0.0000 to 0.0000
+scifact,prefix,614,all known positives,log rank (lower is better),69,1.3585,1.2983,0.0602,0.0111 to 0.1112
+scifact,prefix,614,all known positives,worst rank in the set,69,19.7117,18.1227,1.5890,-1.0703 to 4.7294
+scifact,prefix,716,all known positives,reciprocal rank,69,0.4314,0.4358,-0.0043,-0.0215 to 0.0132
+scifact,prefix,716,all known positives,in top 10,69,0.8221,0.8344,-0.0123,-0.0377 to 0.0116
+scifact,prefix,716,all known positives,in top 100,69,0.9877,0.9816,0.0061,0.0000 to 0.0191
+scifact,prefix,716,all known positives,log rank (lower is better),69,1.3383,1.2983,0.0401,-0.0003 to 0.0851
+scifact,prefix,716,all known positives,worst rank in the set,69,19.6933,18.1227,1.5706,-1.2130 to 5.4656
+scifact,prefix,819,all known positives,reciprocal rank,69,0.4323,0.4358,-0.0035,-0.0200 to 0.0124
+scifact,prefix,819,all known positives,in top 10,69,0.8098,0.8344,-0.0245,-0.0729 to 0.0123
+scifact,prefix,819,all known positives,in top 100,69,0.9816,0.9816,0.0000,0.0000 to 0.0000
+scifact,prefix,819,all known positives,log rank (lower is better),69,1.3243,1.2983,0.0261,-0.0141 to 0.0712
+scifact,prefix,819,all known positives,worst rank in the set,69,20.5644,18.1227,2.4417,-0.7593 to 8.0320
+scifact,prefix,921,all known positives,reciprocal rank,69,0.4293,0.4358,-0.0064,-0.0170 to 0.0016
+scifact,prefix,921,all known positives,in top 10,69,0.8282,0.8344,-0.0061,-0.0364 to 0.0189
+scifact,prefix,921,all known positives,in top 100,69,0.9816,0.9816,0.0000,0.0000 to 0.0000
+scifact,prefix,921,all known positives,log rank (lower is better),69,1.3114,1.2983,0.0131,-0.0124 to 0.0427
+scifact,prefix,921,all known positives,worst rank in the set,69,19.5337,18.1227,1.4110,-1.1447 to 5.7279
+scifact,shared,102,all known positives,reciprocal rank,69,0.6229,0.4358,0.1872,0.1383 to 0.2396
+scifact,shared,102,all known positives,in top 10,69,0.9939,0.8344,0.1595,0.0949 to 0.2284
+scifact,shared,102,all known positives,in top 100,69,1.0000,0.9816,0.0184,0.0000 to 0.0422
+scifact,shared,102,all known positives,log rank (lower is better),69,0.6345,1.2983,-0.6638,-0.8726 to -0.4854
+scifact,shared,102,all known positives,worst rank in the set,69,3.5583,18.1227,-14.5644,-26.2573 to -6.4061
+scifact,shared,204,all known positives,reciprocal rank,69,0.6229,0.4358,0.1872,0.1390 to 0.2377
+scifact,shared,204,all known positives,in top 10,69,0.9939,0.8344,0.1595,0.0994 to 0.2281
+scifact,shared,204,all known positives,in top 100,69,1.0000,0.9816,0.0184,0.0000 to 0.0422
+scifact,shared,204,all known positives,log rank (lower is better),69,0.6431,1.2983,-0.6552,-0.8534 to -0.4839
+scifact,shared,204,all known positives,worst rank in the set,69,3.8098,18.1227,-14.3129,-25.6433 to -6.2505
+scifact,shared,307,all known positives,reciprocal rank,69,0.6125,0.4358,0.1768,0.1305 to 0.2274
+scifact,shared,307,all known positives,in top 10,69,0.9877,0.8344,0.1534,0.0937 to 0.2204
+scifact,shared,307,all known positives,in top 100,69,1.0000,0.9816,0.0184,0.0000 to 0.0422
+scifact,shared,307,all known positives,log rank (lower is better),69,0.6736,1.2983,-0.6247,-0.8226 to -0.4606
+scifact,shared,307,all known positives,worst rank in the set,69,3.9325,18.1227,-14.1902,-25.5726 to -6.1360
+scifact,shared,409,all known positives,reciprocal rank,69,0.6070,0.4358,0.1713,0.1265 to 0.2204
+scifact,shared,409,all known positives,in top 10,69,0.9755,0.8344,0.1411,0.0833 to 0.2036
+scifact,shared,409,all known positives,in top 100,69,1.0000,0.9816,0.0184,0.0000 to 0.0422
+scifact,shared,409,all known positives,log rank (lower is better),69,0.6926,1.2983,-0.6056,-0.8012 to -0.4424
+scifact,shared,409,all known positives,worst rank in the set,69,4.1411,18.1227,-13.9816,-25.4233 to -5.9742
+scifact,shared,512,all known positives,reciprocal rank,69,0.6020,0.4358,0.1662,0.1217 to 0.2154
+scifact,shared,512,all known positives,in top 10,69,0.9693,0.8344,0.1350,0.0774 to 0.1976
+scifact,shared,512,all known positives,in top 100,69,1.0000,0.9816,0.0184,0.0000 to 0.0422
+scifact,shared,512,all known positives,log rank (lower is better),69,0.7086,1.2983,-0.5897,-0.7849 to -0.4292
+scifact,shared,512,all known positives,worst rank in the set,69,4.2945,18.1227,-13.8282,-25.1980 to -5.8538
+scifact,shared,614,all known positives,reciprocal rank,69,0.5931,0.4358,0.1574,0.1149 to 0.2053
+scifact,shared,614,all known positives,in top 10,69,0.9571,0.8344,0.1227,0.0674 to 0.1856
+scifact,shared,614,all known positives,in top 100,69,1.0000,0.9816,0.0184,0.0000 to 0.0422
+scifact,shared,614,all known positives,log rank (lower is better),69,0.7332,1.2983,-0.5651,-0.7517 to -0.4132
+scifact,shared,614,all known positives,worst rank in the set,69,4.5767,18.1227,-13.5460,-24.7527 to -5.6535
+scifact,shared,716,all known positives,reciprocal rank,69,0.5819,0.4358,0.1461,0.1059 to 0.1916
+scifact,shared,716,all known positives,in top 10,69,0.9509,0.8344,0.1166,0.0636 to 0.1745
+scifact,shared,716,all known positives,in top 100,69,1.0000,0.9816,0.0184,0.0000 to 0.0422
+scifact,shared,716,all known positives,log rank (lower is better),69,0.7701,1.2983,-0.5282,-0.7014 to -0.3860
+scifact,shared,716,all known positives,worst rank in the set,69,5.0245,18.1227,-13.0982,-23.9377 to -5.3998
+scifact,shared,819,all known positives,reciprocal rank,69,0.5694,0.4358,0.1336,0.0946 to 0.1769
+scifact,shared,819,all known positives,in top 10,69,0.9509,0.8344,0.1166,0.0636 to 0.1745
+scifact,shared,819,all known positives,in top 100,69,1.0000,0.9816,0.0184,0.0000 to 0.0422
+scifact,shared,819,all known positives,log rank (lower is better),69,0.8102,1.2983,-0.4881,-0.6496 to -0.3536
+scifact,shared,819,all known positives,worst rank in the set,69,5.6012,18.1227,-12.5215,-22.9631 to -5.1469
+scifact,shared,921,all known positives,reciprocal rank,69,0.5326,0.4358,0.0969,0.0677 to 0.1295
+scifact,shared,921,all known positives,in top 10,69,0.9448,0.8344,0.1104,0.0621 to 0.1656
+scifact,shared,921,all known positives,in top 100,69,0.9939,0.9816,0.0123,0.0000 to 0.0316
+scifact,shared,921,all known positives,log rank (lower is better),69,0.9176,1.2983,-0.3807,-0.4966 to -0.2824
+scifact,shared,921,all known positives,worst rank in the set,69,7.6074,18.1227,-10.5153,-18.5751 to -4.5291
+scifact,own,102,the mask's own positive,reciprocal rank,69,0.9660,0.4383,0.5277,0.4619 to 0.5882
+scifact,own,102,the mask's own positive,in top 10,69,1.0000,0.8287,0.1713,0.1051 to 0.2461
+scifact,own,102,the mask's own positive,in top 100,69,1.0000,0.9807,0.0193,0.0000 to 0.0435
+scifact,own,102,the mask's own positive,log rank (lower is better),69,0.0480,1.3133,-1.2653,-1.5042 to -1.0501
+scifact,own,102,the mask's own positive,worst rank in the set,69,1.0713,11.4116,-10.3403,-18.7467 to -4.9031
+scifact,own,204,the mask's own positive,reciprocal rank,69,0.9696,0.4383,0.5313,0.4658 to 0.5925
+scifact,own,204,the mask's own positive,in top 10,69,1.0000,0.8287,0.1713,0.1051 to 0.2461
+scifact,own,204,the mask's own positive,in top 100,69,1.0000,0.9807,0.0193,0.0000 to 0.0435
+scifact,own,204,the mask's own positive,log rank (lower is better),69,0.0430,1.3133,-1.2703,-1.5092 to -1.0546
+scifact,own,204,the mask's own positive,worst rank in the set,69,1.0640,11.4116,-10.3476,-18.7752 to -4.9147
+scifact,own,307,the mask's own positive,reciprocal rank,69,0.9630,0.4383,0.5247,0.4594 to 0.5852
+scifact,own,307,the mask's own positive,in top 10,69,1.0000,0.8287,0.1713,0.1051 to 0.2461
+scifact,own,307,the mask's own positive,in top 100,69,1.0000,0.9807,0.0193,0.0000 to 0.0435
+scifact,own,307,the mask's own positive,log rank (lower is better),69,0.0522,1.3133,-1.2611,-1.5003 to -1.0468
+scifact,own,307,the mask's own positive,worst rank in the set,69,1.0773,11.4116,-10.3343,-18.7713 to -4.9026
+scifact,own,409,the mask's own positive,reciprocal rank,69,0.9235,0.4383,0.4853,0.4154 to 0.5506
+scifact,own,409,the mask's own positive,in top 10,69,1.0000,0.8287,0.1713,0.1051 to 0.2461
+scifact,own,409,the mask's own positive,in top 100,69,1.0000,0.9807,0.0193,0.0000 to 0.0435
+scifact,own,409,the mask's own positive,log rank (lower is better),69,0.1090,1.3133,-1.2043,-1.4434 to -0.9811
+scifact,own,409,the mask's own positive,worst rank in the set,69,1.1643,11.4116,-10.2473,-18.6847 to -4.8297
+scifact,own,512,the mask's own positive,reciprocal rank,69,0.8952,0.4383,0.4570,0.3883 to 0.5231
+scifact,own,512,the mask's own positive,in top 10,69,1.0000,0.8287,0.1713,0.1051 to 0.2461
+scifact,own,512,the mask's own positive,in top 100,69,1.0000,0.9807,0.0193,0.0000 to 0.0435
+scifact,own,512,the mask's own positive,log rank (lower is better),69,0.1547,1.3133,-1.1586,-1.3995 to -0.9391
+scifact,own,512,the mask's own positive,worst rank in the set,69,1.2476,11.4116,-10.1640,-18.6506 to -4.7270
+scifact,own,614,the mask's own positive,reciprocal rank,69,0.8742,0.4383,0.4360,0.3720 to 0.5014
+scifact,own,614,the mask's own positive,in top 10,69,1.0000,0.8287,0.1713,0.1051 to 0.2461
+scifact,own,614,the mask's own positive,in top 100,69,1.0000,0.9807,0.0193,0.0000 to 0.0435
+scifact,own,614,the mask's own positive,log rank (lower is better),69,0.1897,1.3133,-1.1236,-1.3618 to -0.9094
+scifact,own,614,the mask's own positive,worst rank in the set,69,1.3164,11.4116,-10.0952,-18.5417 to -4.6541
+scifact,own,716,the mask's own positive,reciprocal rank,69,0.8555,0.4383,0.4173,0.3527 to 0.4839
+scifact,own,716,the mask's own positive,in top 10,69,1.0000,0.8287,0.1713,0.1051 to 0.2461
+scifact,own,716,the mask's own positive,in top 100,69,1.0000,0.9807,0.0193,0.0000 to 0.0435
+scifact,own,716,the mask's own positive,log rank (lower is better),69,0.2157,1.3133,-1.0976,-1.3384 to -0.8825
+scifact,own,716,the mask's own positive,worst rank in the set,69,1.3539,11.4116,-10.0577,-18.5146 to -4.6111
+scifact,own,819,the mask's own positive,reciprocal rank,69,0.8003,0.4383,0.3620,0.2976 to 0.4280
+scifact,own,819,the mask's own positive,in top 10,69,1.0000,0.8287,0.1713,0.1051 to 0.2461
+scifact,own,819,the mask's own positive,in top 100,69,1.0000,0.9807,0.0193,0.0000 to 0.0435
+scifact,own,819,the mask's own positive,log rank (lower is better),69,0.3152,1.3133,-0.9981,-1.2193 to -0.8037
+scifact,own,819,the mask's own positive,worst rank in the set,69,1.5800,11.4116,-9.8316,-18.2486 to -4.4248
+scifact,own,921,the mask's own positive,reciprocal rank,69,0.7083,0.4383,0.2700,0.2171 to 0.3257
+scifact,own,921,the mask's own positive,in top 10,69,0.9783,0.8287,0.1495,0.0942 to 0.2126
+scifact,own,921,the mask's own positive,in top 100,69,1.0000,0.9807,0.0193,0.0000 to 0.0435
+scifact,own,921,the mask's own positive,log rank (lower is better),69,0.5092,1.3133,-0.8041,-0.9811 to -0.6498
+scifact,own,921,the mask's own positive,worst rank in the set,69,2.2106,11.4116,-9.2010,-17.2844 to -3.9750
+scifact,1-1,102,held-out,reciprocal rank,69,0.3333,0.4346,-0.1013,-0.1378 to -0.0641
+scifact,1-1,102,held-out,in top 10,69,0.8816,0.8309,0.0507,0.0024 to 0.0991
+scifact,1-1,102,held-out,in top 100,69,0.9758,0.9807,-0.0048,-0.0290 to 0.0193
+scifact,1-1,102,held-out,log rank (lower is better),69,1.4306,1.3197,0.1109,-0.0223 to 0.2312
+scifact,1-1,102,held-out,worst rank in the set,69,11.6987,11.4058,0.2929,-2.1880 to 3.2870
+scifact,1-1,102,held-out,"nDCG@10, restricted to held-out labels",69,0.4615,0.5243,-0.0628,-0.0969 to -0.0253
+scifact,1-1,102,held-out,"reciprocal rank, construction positives skipped (secondary)",69,0.5327,0.5066,0.0261,-0.0236 to 0.0785
+scifact,1-1,204,held-out,reciprocal rank,69,0.3387,0.4346,-0.0959,-0.1330 to -0.0606
+scifact,1-1,204,held-out,in top 10,69,0.8816,0.8309,0.0507,0.0060 to 0.0979
+scifact,1-1,204,held-out,in top 100,69,0.9758,0.9807,-0.0048,-0.0290 to 0.0193
+scifact,1-1,204,held-out,log rank (lower is better),69,1.3870,1.3197,0.0672,-0.0619 to 0.1814
+scifact,1-1,204,held-out,worst rank in the set,69,11.2802,11.4058,-0.1256,-2.5600 to 2.7377
+scifact,1-1,204,held-out,"nDCG@10, restricted to held-out labels",69,0.4667,0.5243,-0.0576,-0.0919 to -0.0217
+scifact,1-1,204,held-out,"reciprocal rank, construction positives skipped (secondary)",69,0.5512,0.5066,0.0446,-0.0053 to 0.0948
+scifact,1-1,307,held-out,reciprocal rank,69,0.3414,0.4346,-0.0932,-0.1303 to -0.0568
+scifact,1-1,307,held-out,in top 10,69,0.8798,0.8309,0.0489,-0.0024 to 0.1063
+scifact,1-1,307,held-out,in top 100,69,0.9783,0.9807,-0.0024,-0.0290 to 0.0242
+scifact,1-1,307,held-out,log rank (lower is better),69,1.3638,1.3197,0.0440,-0.0850 to 0.1609
+scifact,1-1,307,held-out,worst rank in the set,69,11.0586,11.4058,-0.3472,-2.9580 to 2.6385
+scifact,1-1,307,held-out,"nDCG@10, restricted to held-out labels",69,0.4684,0.5243,-0.0559,-0.0914 to -0.0188
+scifact,1-1,307,held-out,"reciprocal rank, construction positives skipped (secondary)",69,0.5476,0.5066,0.0409,-0.0071 to 0.0906
+scifact,1-1,409,held-out,reciprocal rank,69,0.3636,0.4346,-0.0710,-0.1051 to -0.0369
+scifact,1-1,409,held-out,in top 10,69,0.8750,0.8309,0.0441,-0.0000 to 0.0888
+scifact,1-1,409,held-out,in top 100,69,0.9783,0.9807,-0.0024,-0.0290 to 0.0242
+scifact,1-1,409,held-out,log rank (lower is better),69,1.3285,1.3197,0.0087,-0.1118 to 0.1126
+scifact,1-1,409,held-out,worst rank in the set,69,10.6268,11.4058,-0.7790,-3.2181 to 1.8220
+scifact,1-1,409,held-out,"nDCG@10, restricted to held-out labels",69,0.4834,0.5243,-0.0408,-0.0721 to -0.0076
+scifact,1-1,409,held-out,"reciprocal rank, construction positives skipped (secondary)",69,0.5520,0.5066,0.0453,0.0037 to 0.0883
+scifact,1-1,512,held-out,reciprocal rank,69,0.3753,0.4346,-0.0593,-0.0929 to -0.0286
+scifact,1-1,512,held-out,in top 10,69,0.8678,0.8309,0.0368,-0.0042 to 0.0803
+scifact,1-1,512,held-out,in top 100,69,0.9783,0.9807,-0.0024,-0.0290 to 0.0242
+scifact,1-1,512,held-out,log rank (lower is better),69,1.3018,1.3197,-0.0180,-0.1273 to 0.0778
+scifact,1-1,512,held-out,worst rank in the set,69,11.1413,11.4058,-0.2645,-3.3479 to 3.5985
+scifact,1-1,512,held-out,"nDCG@10, restricted to held-out labels",69,0.4904,0.5243,-0.0339,-0.0634 to -0.0044
+scifact,1-1,512,held-out,"reciprocal rank, construction positives skipped (secondary)",69,0.5652,0.5066,0.0585,0.0213 to 0.0957
+scifact,1-1,614,held-out,reciprocal rank,69,0.3760,0.4346,-0.0586,-0.0902 to -0.0298
+scifact,1-1,614,held-out,in top 10,69,0.8641,0.8309,0.0332,-0.0079 to 0.0767
+scifact,1-1,614,held-out,in top 100,69,0.9783,0.9807,-0.0024,-0.0290 to 0.0242
+scifact,1-1,614,held-out,log rank (lower is better),69,1.2983,1.3197,-0.0215,-0.1299 to 0.0700
+scifact,1-1,614,held-out,worst rank in the set,69,10.4746,11.4058,-0.9312,-3.6143 to 1.9288
+scifact,1-1,614,held-out,"nDCG@10, restricted to held-out labels",69,0.4898,0.5243,-0.0345,-0.0618 to -0.0056
+scifact,1-1,614,held-out,"reciprocal rank, construction positives skipped (secondary)",69,0.5672,0.5066,0.0605,0.0258 to 0.0964
+scifact,1-1,716,held-out,reciprocal rank,69,0.3759,0.4346,-0.0587,-0.0883 to -0.0316
+scifact,1-1,716,held-out,in top 10,69,0.8557,0.8309,0.0248,-0.0127 to 0.0664
+scifact,1-1,716,held-out,in top 100,69,0.9783,0.9807,-0.0024,-0.0290 to 0.0242
+scifact,1-1,716,held-out,log rank (lower is better),69,1.3201,1.3197,0.0003,-0.0900 to 0.0819
+scifact,1-1,716,held-out,worst rank in the set,69,10.5386,11.4058,-0.8671,-3.2391 to 1.6450
+scifact,1-1,716,held-out,"nDCG@10, restricted to held-out labels",69,0.4865,0.5243,-0.0378,-0.0631 to -0.0121
+scifact,1-1,716,held-out,"reciprocal rank, construction positives skipped (secondary)",69,0.5489,0.5066,0.0423,0.0168 to 0.0681
+scifact,1-1,819,held-out,reciprocal rank,69,0.4028,0.4346,-0.0318,-0.0628 to -0.0041
+scifact,1-1,819,held-out,in top 10,69,0.8653,0.8309,0.0344,-0.0000 to 0.0749
+scifact,1-1,819,held-out,in top 100,69,0.9831,0.9807,0.0024,-0.0170 to 0.0242
+scifact,1-1,819,held-out,log rank (lower is better),69,1.2817,1.3197,-0.0381,-0.1174 to 0.0407
+scifact,1-1,819,held-out,worst rank in the set,69,10.1395,11.4058,-1.2663,-3.2808 to 0.4470
+scifact,1-1,819,held-out,"nDCG@10, restricted to held-out labels",69,0.5100,0.5243,-0.0143,-0.0416 to 0.0113
+scifact,1-1,819,held-out,"reciprocal rank, construction positives skipped (secondary)",69,0.5540,0.5066,0.0474,0.0207 to 0.0753
+scifact,1-1,921,held-out,reciprocal rank,69,0.4109,0.4346,-0.0237,-0.0495 to -0.0010
+scifact,1-1,921,held-out,in top 10,69,0.8539,0.8309,0.0229,-0.0048 to 0.0519
+scifact,1-1,921,held-out,in top 100,69,0.9903,0.9807,0.0097,0.0000 to 0.0266
+scifact,1-1,921,held-out,log rank (lower is better),69,1.2872,1.3197,-0.0326,-0.1020 to 0.0338
+scifact,1-1,921,held-out,worst rank in the set,69,10.3593,11.4058,-1.0465,-2.3599 to -0.0071
+scifact,1-1,921,held-out,"nDCG@10, restricted to held-out labels",69,0.5129,0.5243,-0.0114,-0.0334 to 0.0092
+scifact,1-1,921,held-out,"reciprocal rank, construction positives skipped (secondary)",69,0.5419,0.5066,0.0353,0.0139 to 0.0575
+scifact,2-2,102,held-out,reciprocal rank,6,0.2633,0.3761,-0.1128,-0.1633 to -0.0633
+scifact,2-2,102,held-out,in top 10,6,0.9375,0.8854,0.0521,0.0000 to 0.1562
+scifact,2-2,102,held-out,in top 100,6,1.0000,1.0000,0.0000,0.0000 to 0.0000
+scifact,2-2,102,held-out,log rank (lower is better),6,1.4698,1.2652,0.2046,0.0622 to 0.3324
+scifact,2-2,102,held-out,worst rank in the set,6,6.1458,6.6389,-0.4931,-1.6837 to 0.4583
+scifact,2-2,102,held-out,"nDCG@10, restricted to held-out labels",6,0.5138,0.6031,-0.0893,-0.1523 to -0.0174
+scifact,2-2,102,held-out,"reciprocal rank, construction positives skipped (secondary)",6,0.5151,0.4889,0.0262,-0.0147 to 0.0623
+scifact,2-2,204,held-out,reciprocal rank,6,0.2693,0.3761,-0.1068,-0.1597 to -0.0514
+scifact,2-2,204,held-out,in top 10,6,0.9306,0.8854,0.0451,0.0000 to 0.1193
+scifact,2-2,204,held-out,in top 100,6,1.0000,1.0000,0.0000,0.0000 to 0.0000
+scifact,2-2,204,held-out,log rank (lower is better),6,1.4565,1.2652,0.1913,0.0439 to 0.3084
+scifact,2-2,204,held-out,worst rank in the set,6,6.1319,6.6389,-0.5069,-1.6944 to 0.3889
+scifact,2-2,204,held-out,"nDCG@10, restricted to held-out labels",6,0.5172,0.6031,-0.0858,-0.1477 to -0.0220
+scifact,2-2,204,held-out,"reciprocal rank, construction positives skipped (secondary)",6,0.5141,0.4889,0.0252,-0.0195 to 0.0652
+scifact,2-2,307,held-out,reciprocal rank,6,0.2836,0.3761,-0.0925,-0.1456 to -0.0432
+scifact,2-2,307,held-out,in top 10,6,0.9583,0.8854,0.0729,0.0000 to 0.1750
+scifact,2-2,307,held-out,in top 100,6,1.0000,1.0000,0.0000,0.0000 to 0.0000
+scifact,2-2,307,held-out,log rank (lower is better),6,1.4269,1.2652,0.1617,0.0121 to 0.2736
+scifact,2-2,307,held-out,worst rank in the set,6,6.0417,6.6389,-0.5972,-1.6683 to 0.2500
+scifact,2-2,307,held-out,"nDCG@10, restricted to held-out labels",6,0.5401,0.6031,-0.0630,-0.1317 to 0.0041
+scifact,2-2,307,held-out,"reciprocal rank, construction positives skipped (secondary)",6,0.5256,0.4889,0.0367,-0.0103 to 0.0871
+scifact,2-2,409,held-out,reciprocal rank,6,0.2931,0.3761,-0.0830,-0.1300 to -0.0388
+scifact,2-2,409,held-out,in top 10,6,0.9583,0.8854,0.0729,0.0000 to 0.1750
+scifact,2-2,409,held-out,in top 100,6,1.0000,1.0000,0.0000,0.0000 to 0.0000
+scifact,2-2,409,held-out,log rank (lower is better),6,1.4002,1.2652,0.1350,0.0117 to 0.2431
+scifact,2-2,409,held-out,worst rank in the set,6,5.8819,6.6389,-0.7569,-1.8958 to 0.0833
+scifact,2-2,409,held-out,"nDCG@10, restricted to held-out labels",6,0.5492,0.6031,-0.0539,-0.1124 to 0.0095
+scifact,2-2,409,held-out,"reciprocal rank, construction positives skipped (secondary)",6,0.5283,0.4889,0.0394,-0.0046 to 0.0868
+scifact,2-2,512,held-out,reciprocal rank,6,0.3057,0.3761,-0.0704,-0.1253 to -0.0279
+scifact,2-2,512,held-out,in top 10,6,0.9688,0.8854,0.0833,0.0000 to 0.2000
+scifact,2-2,512,held-out,in top 100,6,1.0000,1.0000,0.0000,0.0000 to 0.0000
+scifact,2-2,512,held-out,log rank (lower is better),6,1.3750,1.2652,0.1098,-0.0044 to 0.2117
+scifact,2-2,512,held-out,worst rank in the set,6,5.9236,6.6389,-0.7153,-1.8200 to 0.1667
+scifact,2-2,512,held-out,"nDCG@10, restricted to held-out labels",6,0.5649,0.6031,-0.0381,-0.1072 to 0.0299
+scifact,2-2,512,held-out,"reciprocal rank, construction positives skipped (secondary)",6,0.5227,0.4889,0.0337,-0.0108 to 0.0792
+scifact,2-2,614,held-out,reciprocal rank,6,0.3218,0.3761,-0.0543,-0.0833 to -0.0278
+scifact,2-2,614,held-out,in top 10,6,0.9688,0.8854,0.0833,0.0000 to 0.2000
+scifact,2-2,614,held-out,in top 100,6,1.0000,1.0000,0.0000,0.0000 to 0.0000
+scifact,2-2,614,held-out,log rank (lower is better),6,1.3427,1.2652,0.0775,-0.0034 to 0.1477
+scifact,2-2,614,held-out,worst rank in the set,6,5.9167,6.6389,-0.7222,-1.8056 to 0.1667
+scifact,2-2,614,held-out,"nDCG@10, restricted to held-out labels",6,0.5800,0.6031,-0.0231,-0.0684 to 0.0273
+scifact,2-2,614,held-out,"reciprocal rank, construction positives skipped (secondary)",6,0.5213,0.4889,0.0324,-0.0120 to 0.0788
+scifact,2-2,716,held-out,reciprocal rank,6,0.3256,0.3761,-0.0506,-0.0822 to -0.0208
+scifact,2-2,716,held-out,in top 10,6,0.9688,0.8854,0.0833,0.0000 to 0.2000
+scifact,2-2,716,held-out,in top 100,6,1.0000,1.0000,0.0000,0.0000 to 0.0000
+scifact,2-2,716,held-out,log rank (lower is better),6,1.3298,1.2652,0.0646,-0.0140 to 0.1321
+scifact,2-2,716,held-out,worst rank in the set,6,5.9097,6.6389,-0.7292,-1.7100 to 0.0861
+scifact,2-2,716,held-out,"nDCG@10, restricted to held-out labels",6,0.5836,0.6031,-0.0194,-0.0671 to 0.0290
+scifact,2-2,716,held-out,"reciprocal rank, construction positives skipped (secondary)",6,0.5207,0.4889,0.0318,-0.0038 to 0.0691
+scifact,2-2,819,held-out,reciprocal rank,6,0.3338,0.3761,-0.0423,-0.0656 to -0.0180
+scifact,2-2,819,held-out,in top 10,6,0.9688,0.8854,0.0833,0.0000 to 0.2000
+scifact,2-2,819,held-out,in top 100,6,1.0000,1.0000,0.0000,0.0000 to 0.0000
+scifact,2-2,819,held-out,log rank (lower is better),6,1.3030,1.2652,0.0378,-0.0273 to 0.0916
+scifact,2-2,819,held-out,worst rank in the set,6,5.7708,6.6389,-0.8681,-1.8448 to 0.0000
+scifact,2-2,819,held-out,"nDCG@10, restricted to held-out labels",6,0.5920,0.6031,-0.0110,-0.0494 to 0.0289
+scifact,2-2,819,held-out,"reciprocal rank, construction positives skipped (secondary)",6,0.5186,0.4889,0.0297,-0.0013 to 0.0592
+scifact,2-2,921,held-out,reciprocal rank,6,0.3404,0.3761,-0.0357,-0.0630 to -0.0084
+scifact,2-2,921,held-out,in top 10,6,0.9201,0.8854,0.0347,0.0000 to 0.0833
+scifact,2-2,921,held-out,in top 100,6,1.0000,1.0000,0.0000,0.0000 to 0.0000
+scifact,2-2,921,held-out,log rank (lower is better),6,1.2862,1.2652,0.0210,-0.0373 to 0.0627
+scifact,2-2,921,held-out,worst rank in the set,6,5.8889,6.6389,-0.7500,-1.5833 to -0.0235
+scifact,2-2,921,held-out,"nDCG@10, restricted to held-out labels",6,0.5822,0.6031,-0.0208,-0.0489 to 0.0048
+scifact,2-2,921,held-out,"reciprocal rank, construction positives skipped (secondary)",6,0.5199,0.4889,0.0310,0.0047 to 0.0559
+nfcorpus,prefix,102,all known positives,reciprocal rank,2162,0.0218,0.0285,-0.0067,-0.0074 to -0.0060
+nfcorpus,prefix,102,all known positives,in top 10,2162,0.0450,0.0603,-0.0153,-0.0172 to -0.0137
+nfcorpus,prefix,102,all known positives,in top 100,2162,0.1576,0.2023,-0.0447,-0.0488 to -0.0405
+nfcorpus,prefix,102,all known positives,log rank (lower is better),2162,6.3064,6.0734,0.2329,0.2149 to 0.2512
+nfcorpus,prefix,102,all known positives,worst rank in the set,2162,3363.0166,3317.4008,45.6158,34.7354 to 57.0948
+nfcorpus,prefix,204,all known positives,reciprocal rank,2162,0.0244,0.0285,-0.0041,-0.0046 to -0.0037
+nfcorpus,prefix,204,all known positives,in top 10,2162,0.0506,0.0603,-0.0097,-0.0110 to -0.0085
+nfcorpus,prefix,204,all known positives,in top 100,2162,0.1736,0.2023,-0.0287,-0.0317 to -0.0258
+nfcorpus,prefix,204,all known positives,log rank (lower is better),2162,6.2287,6.0734,0.1552,0.1436 to 0.1676
+nfcorpus,prefix,204,all known positives,worst rank in the set,2162,3348.1410,3317.4008,30.7402,21.2146 to 40.5153
+nfcorpus,prefix,307,all known positives,reciprocal rank,2162,0.0258,0.0285,-0.0027,-0.0031 to -0.0024
+nfcorpus,prefix,307,all known positives,in top 10,2162,0.0536,0.0603,-0.0067,-0.0077 to -0.0058
+nfcorpus,prefix,307,all known positives,in top 100,2162,0.1833,0.2023,-0.0190,-0.0213 to -0.0168
+nfcorpus,prefix,307,all known positives,log rank (lower is better),2162,6.1799,6.0734,0.1064,0.0977 to 0.1158
+nfcorpus,prefix,307,all known positives,worst rank in the set,2162,3343.0678,3317.4008,25.6670,17.8100 to 34.4445
+nfcorpus,prefix,409,all known positives,reciprocal rank,2162,0.0268,0.0285,-0.0017,-0.0020 to -0.0014
+nfcorpus,prefix,409,all known positives,in top 10,2162,0.0558,0.0603,-0.0045,-0.0054 to -0.0037
+nfcorpus,prefix,409,all known positives,in top 100,2162,0.1902,0.2023,-0.0121,-0.0138 to -0.0103
+nfcorpus,prefix,409,all known positives,log rank (lower is better),2162,6.1488,6.0734,0.0753,0.0689 to 0.0819
+nfcorpus,prefix,409,all known positives,worst rank in the set,2162,3343.4707,3317.4008,26.0699,18.6435 to 34.3292
+nfcorpus,prefix,512,all known positives,reciprocal rank,2162,0.0273,0.0285,-0.0011,-0.0014 to -0.0009
+nfcorpus,prefix,512,all known positives,in top 10,2162,0.0573,0.0603,-0.0030,-0.0037 to -0.0024
+nfcorpus,prefix,512,all known positives,in top 100,2162,0.1946,0.2023,-0.0077,-0.0091 to -0.0063
+nfcorpus,prefix,512,all known positives,log rank (lower is better),2162,6.1186,6.0734,0.0452,0.0404 to 0.0501
+nfcorpus,prefix,512,all known positives,worst rank in the set,2162,3329.4726,3317.4008,12.0718,5.7202 to 18.8323
+nfcorpus,prefix,614,all known positives,reciprocal rank,2162,0.0278,0.0285,-0.0007,-0.0009 to -0.0005
+nfcorpus,prefix,614,all known positives,in top 10,2162,0.0582,0.0603,-0.0021,-0.0027 to -0.0015
+nfcorpus,prefix,614,all known positives,in top 100,2162,0.1974,0.2023,-0.0049,-0.0060 to -0.0036
+nfcorpus,prefix,614,all known positives,log rank (lower is better),2162,6.1027,6.0734,0.0292,0.0253 to 0.0334
+nfcorpus,prefix,614,all known positives,worst rank in the set,2162,3323.9060,3317.4008,6.5052,0.6970 to 12.1659
+nfcorpus,prefix,716,all known positives,reciprocal rank,2162,0.0280,0.0285,-0.0004,-0.0006 to -0.0003
+nfcorpus,prefix,716,all known positives,in top 10,2162,0.0588,0.0603,-0.0015,-0.0021 to -0.0010
+nfcorpus,prefix,716,all known positives,in top 100,2162,0.1983,0.2023,-0.0040,-0.0051 to -0.0030
+nfcorpus,prefix,716,all known positives,log rank (lower is better),2162,6.0976,6.0734,0.0242,0.0209 to 0.0276
+nfcorpus,prefix,716,all known positives,worst rank in the set,2162,3324.4522,3317.4008,7.0514,2.2258 to 11.8404
+nfcorpus,prefix,819,all known positives,reciprocal rank,2162,0.0282,0.0285,-0.0003,-0.0004 to -0.0002
+nfcorpus,prefix,819,all known positives,in top 10,2162,0.0594,0.0603,-0.0009,-0.0013 to -0.0004
+nfcorpus,prefix,819,all known positives,in top 100,2162,0.2001,0.2023,-0.0022,-0.0031 to -0.0013
+nfcorpus,prefix,819,all known positives,log rank (lower is better),2162,6.0881,6.0734,0.0146,0.0120 to 0.0171
+nfcorpus,prefix,819,all known positives,worst rank in the set,2162,3323.0367,3317.4008,5.6359,1.5526 to 9.6895
+nfcorpus,prefix,921,all known positives,reciprocal rank,2162,0.0284,0.0285,-0.0001,-0.0002 to -0.0000
+nfcorpus,prefix,921,all known positives,in top 10,2162,0.0596,0.0603,-0.0007,-0.0011 to -0.0004
+nfcorpus,prefix,921,all known positives,in top 100,2162,0.2014,0.2023,-0.0009,-0.0016 to -0.0002
+nfcorpus,prefix,921,all known positives,log rank (lower is better),2162,6.0821,6.0734,0.0087,0.0068 to 0.0106
+nfcorpus,prefix,921,all known positives,worst rank in the set,2162,3323.3604,3317.4008,5.9596,2.9188 to 9.1619
+nfcorpus,shared,102,all known positives,reciprocal rank,2162,0.0403,0.0285,0.0118,0.0106 to 0.0132
+nfcorpus,shared,102,all known positives,in top 10,2162,0.0870,0.0603,0.0267,0.0238 to 0.0300
+nfcorpus,shared,102,all known positives,in top 100,2162,0.2693,0.2023,0.0670,0.0597 to 0.0751
+nfcorpus,shared,102,all known positives,log rank (lower is better),2162,5.6656,6.0734,-0.4078,-0.4516 to -0.3665
+nfcorpus,shared,102,all known positives,worst rank in the set,2162,3071.7906,3317.4008,-245.6102,-274.4568 to -218.9543
+nfcorpus,shared,204,all known positives,reciprocal rank,2162,0.0415,0.0285,0.0130,0.0117 to 0.0145
+nfcorpus,shared,204,all known positives,in top 10,2162,0.0905,0.0603,0.0302,0.0272 to 0.0338
+nfcorpus,shared,204,all known positives,in top 100,2162,0.2796,0.2023,0.0773,0.0694 to 0.0860
+nfcorpus,shared,204,all known positives,log rank (lower is better),2162,5.6153,6.0734,-0.4581,-0.5040 to -0.4149
+nfcorpus,shared,204,all known positives,worst rank in the set,2162,3043.9517,3317.4008,-273.4491,-304.2653 to -245.1040
+nfcorpus,shared,307,all known positives,reciprocal rank,2162,0.0412,0.0285,0.0127,0.0114 to 0.0141
+nfcorpus,shared,307,all known positives,in top 10,2162,0.0900,0.0603,0.0297,0.0266 to 0.0331
+nfcorpus,shared,307,all known positives,in top 100,2162,0.2796,0.2023,0.0773,0.0697 to 0.0857
+nfcorpus,shared,307,all known positives,log rank (lower is better),2162,5.6113,6.0734,-0.4621,-0.5065 to -0.4201
+nfcorpus,shared,307,all known positives,worst rank in the set,2162,3048.1566,3317.4008,-269.2442,-299.1964 to -241.2139
+nfcorpus,shared,409,all known positives,reciprocal rank,2162,0.0406,0.0285,0.0121,0.0109 to 0.0134
+nfcorpus,shared,409,all known positives,in top 10,2162,0.0883,0.0603,0.0280,0.0252 to 0.0312
+nfcorpus,shared,409,all known positives,in top 100,2162,0.2774,0.2023,0.0752,0.0676 to 0.0833
+nfcorpus,shared,409,all known positives,log rank (lower is better),2162,5.6221,6.0734,-0.4514,-0.4943 to -0.4106
+nfcorpus,shared,409,all known positives,worst rank in the set,2162,3050.7097,3317.4008,-266.6911,-295.9031 to -239.3765
+nfcorpus,shared,512,all known positives,reciprocal rank,2162,0.0399,0.0285,0.0114,0.0103 to 0.0127
+nfcorpus,shared,512,all known positives,in top 10,2162,0.0866,0.0603,0.0263,0.0236 to 0.0294
+nfcorpus,shared,512,all known positives,in top 100,2162,0.2740,0.2023,0.0717,0.0645 to 0.0797
+nfcorpus,shared,512,all known positives,log rank (lower is better),2162,5.6402,6.0734,-0.4332,-0.4743 to -0.3945
+nfcorpus,shared,512,all known positives,worst rank in the set,2162,3059.8317,3317.4008,-257.5691,-286.0957 to -230.5907
+nfcorpus,shared,614,all known positives,reciprocal rank,2162,0.0393,0.0285,0.0108,0.0097 to 0.0120
+nfcorpus,shared,614,all known positives,in top 10,2162,0.0849,0.0603,0.0246,0.0221 to 0.0275
+nfcorpus,shared,614,all known positives,in top 100,2162,0.2708,0.2023,0.0685,0.0615 to 0.0759
+nfcorpus,shared,614,all known positives,log rank (lower is better),2162,5.6596,6.0734,-0.4138,-0.4529 to -0.3767
+nfcorpus,shared,614,all known positives,worst rank in the set,2162,3068.6876,3317.4008,-248.7132,-276.4058 to -222.5673
+nfcorpus,shared,716,all known positives,reciprocal rank,2162,0.0386,0.0285,0.0101,0.0091 to 0.0112
+nfcorpus,shared,716,all known positives,in top 10,2162,0.0830,0.0603,0.0227,0.0203 to 0.0254
+nfcorpus,shared,716,all known positives,in top 100,2162,0.2671,0.2023,0.0648,0.0584 to 0.0719
+nfcorpus,shared,716,all known positives,log rank (lower is better),2162,5.6795,6.0734,-0.3940,-0.4312 to -0.3585
+nfcorpus,shared,716,all known positives,worst rank in the set,2162,3079.3422,3317.4008,-238.0586,-264.6044 to -213.1889
+nfcorpus,shared,819,all known positives,reciprocal rank,2162,0.0369,0.0285,0.0084,0.0076 to 0.0093
+nfcorpus,shared,819,all known positives,in top 10,2162,0.0789,0.0603,0.0186,0.0166 to 0.0209
+nfcorpus,shared,819,all known positives,in top 100,2162,0.2592,0.2023,0.0569,0.0512 to 0.0632
+nfcorpus,shared,819,all known positives,log rank (lower is better),2162,5.7245,6.0734,-0.3490,-0.3821 to -0.3181
+nfcorpus,shared,819,all known positives,worst rank in the set,2162,3102.6301,3317.4008,-214.7707,-238.6112 to -192.2563
+nfcorpus,shared,921,all known positives,reciprocal rank,2162,0.0338,0.0285,0.0053,0.0047 to 0.0059
+nfcorpus,shared,921,all known positives,in top 10,2162,0.0720,0.0603,0.0117,0.0104 to 0.0132
+nfcorpus,shared,921,all known positives,in top 100,2162,0.2404,0.2023,0.0381,0.0343 to 0.0425
+nfcorpus,shared,921,all known positives,log rank (lower is better),2162,5.8251,6.0734,-0.2484,-0.2720 to -0.2264
+nfcorpus,shared,921,all known positives,worst rank in the set,2162,3160.7865,3317.4008,-156.6143,-174.4626 to -139.9026
+nfcorpus,own,102,the mask's own positive,reciprocal rank,2162,0.9310,0.0717,0.8593,0.8533 to 0.8652
+nfcorpus,own,102,the mask's own positive,in top 10,2162,0.9994,0.1400,0.8595,0.8520 to 0.8671
+nfcorpus,own,102,the mask's own positive,in top 100,2162,1.0000,0.3104,0.6896,0.6789 to 0.7005
+nfcorpus,own,102,the mask's own positive,log rank (lower is better),2162,0.1082,5.4229,-5.3147,-5.3703 to -5.2598
+nfcorpus,own,102,the mask's own positive,worst rank in the set,2162,1.1999,902.8887,-901.6888,-924.4317 to -880.5645
+nfcorpus,own,204,the mask's own positive,reciprocal rank,2162,0.9148,0.0717,0.8431,0.8364 to 0.8499
+nfcorpus,own,204,the mask's own positive,in top 10,2162,0.9993,0.1400,0.8593,0.8519 to 0.8670
+nfcorpus,own,204,the mask's own positive,in top 100,2162,1.0000,0.3104,0.6896,0.6789 to 0.7005
+nfcorpus,own,204,the mask's own positive,log rank (lower is better),2162,0.1351,5.4229,-5.2878,-5.3452 to -5.2323
+nfcorpus,own,204,the mask's own positive,worst rank in the set,2162,1.2536,902.8887,-901.6351,-924.3833 to -880.5129
+nfcorpus,own,307,the mask's own positive,reciprocal rank,2162,0.8808,0.0717,0.8091,0.8014 to 0.8169
+nfcorpus,own,307,the mask's own positive,in top 10,2162,0.9978,0.1400,0.8578,0.8503 to 0.8654
+nfcorpus,own,307,the mask's own positive,in top 100,2162,1.0000,0.3104,0.6896,0.6789 to 0.7005
+nfcorpus,own,307,the mask's own positive,log rank (lower is better),2162,0.1951,5.4229,-5.2278,-5.2856 to -5.1720
+nfcorpus,own,307,the mask's own positive,worst rank in the set,2162,1.3933,902.8887,-901.4955,-924.2455 to -880.3795
+nfcorpus,own,409,the mask's own positive,reciprocal rank,2162,0.8386,0.0717,0.7669,0.7580 to 0.7757
+nfcorpus,own,409,the mask's own positive,in top 10,2162,0.9943,0.1400,0.8544,0.8469 to 0.8619
+nfcorpus,own,409,the mask's own positive,in top 100,2162,1.0000,0.3104,0.6896,0.6789 to 0.7005
+nfcorpus,own,409,the mask's own positive,log rank (lower is better),2162,0.2750,5.4229,-5.1479,-5.2067 to -5.0913
+nfcorpus,own,409,the mask's own positive,worst rank in the set,2162,1.6089,902.8887,-901.2799,-924.0270 to -880.1696
+nfcorpus,own,512,the mask's own positive,reciprocal rank,2162,0.7898,0.0717,0.7181,0.7083 to 0.7277
+nfcorpus,own,512,the mask's own positive,in top 10,2162,0.9872,0.1400,0.8473,0.8395 to 0.8550
+nfcorpus,own,512,the mask's own positive,in top 100,2162,1.0000,0.3104,0.6896,0.6789 to 0.7004
+nfcorpus,own,512,the mask's own positive,log rank (lower is better),2162,0.3740,5.4229,-5.0489,-5.1088 to -4.9916
+nfcorpus,own,512,the mask's own positive,worst rank in the set,2162,1.9154,902.8887,-900.9733,-923.7205 to -879.8652
+nfcorpus,own,614,the mask's own positive,reciprocal rank,2162,0.7461,0.0717,0.6744,0.6640 to 0.6847
+nfcorpus,own,614,the mask's own positive,in top 10,2162,0.9771,0.1400,0.8371,0.8291 to 0.8452
+nfcorpus,own,614,the mask's own positive,in top 100,2162,1.0000,0.3104,0.6896,0.6789 to 0.7004
+nfcorpus,own,614,the mask's own positive,log rank (lower is better),2162,0.4693,5.4229,-4.9536,-5.0138 to -4.8963
+nfcorpus,own,614,the mask's own positive,worst rank in the set,2162,2.2617,902.8887,-900.6270,-923.3780 to -879.5234
+nfcorpus,own,716,the mask's own positive,reciprocal rank,2162,0.6726,0.0717,0.6009,0.5903 to 0.6114
+nfcorpus,own,716,the mask's own positive,in top 10,2162,0.9472,0.1400,0.8073,0.7987 to 0.8160
+nfcorpus,own,716,the mask's own positive,in top 100,2162,0.9998,0.3104,0.6895,0.6787 to 0.7003
+nfcorpus,own,716,the mask's own positive,log rank (lower is better),2162,0.6513,5.4229,-4.7716,-4.8320 to -4.7137
+nfcorpus,own,716,the mask's own positive,worst rank in the set,2162,3.1552,902.8887,-899.7335,-922.4990 to -878.6409
+nfcorpus,own,819,the mask's own positive,reciprocal rank,2162,0.5192,0.0717,0.4475,0.4373 to 0.4578
+nfcorpus,own,819,the mask's own positive,in top 10,2162,0.8309,0.1400,0.6910,0.6810 to 0.7017
+nfcorpus,own,819,the mask's own positive,in top 100,2162,0.9935,0.3104,0.6831,0.6725 to 0.6939
+nfcorpus,own,819,the mask's own positive,log rank (lower is better),2162,1.1394,5.4229,-4.2835,-4.3424 to -4.2264
+nfcorpus,own,819,the mask's own positive,worst rank in the set,2162,7.6777,902.8887,-895.2110,-917.9554 to -874.2050
+nfcorpus,own,921,the mask's own positive,reciprocal rank,2162,0.2744,0.0717,0.2027,0.1963 to 0.2093
+nfcorpus,own,921,the mask's own positive,in top 10,2162,0.5164,0.1400,0.3765,0.3662 to 0.3871
+nfcorpus,own,921,the mask's own positive,in top 100,2162,0.8757,0.3104,0.5653,0.5543 to 0.5760
+nfcorpus,own,921,the mask's own positive,log rank (lower is better),2162,2.3990,5.4229,-3.0239,-3.0711 to -2.9787
+nfcorpus,own,921,the mask's own positive,worst rank in the set,2162,48.9378,902.8887,-853.9509,-875.7315 to -833.7007
+nfcorpus,1-1,102,held-out,reciprocal rank,2162,0.0664,0.0734,-0.0070,-0.0105 to -0.0037
+nfcorpus,1-1,102,held-out,in top 10,2162,0.1798,0.1440,0.0358,0.0289 to 0.0425
+nfcorpus,1-1,102,held-out,in top 100,2162,0.3998,0.3132,0.0866,0.0772 to 0.0955
+nfcorpus,1-1,102,held-out,log rank (lower is better),2162,4.9802,5.3993,-0.4191,-0.4582 to -0.3790
+nfcorpus,1-1,102,held-out,worst rank in the set,2162,701.8894,896.8044,-194.9150,-212.6802 to -176.8685
+nfcorpus,1-1,102,held-out,"nDCG@10, restricted to held-out labels",2162,0.0859,0.0843,0.0016,-0.0024 to 0.0053
+nfcorpus,1-1,102,held-out,"reciprocal rank, construction positives skipped (secondary)",2162,0.0988,0.0765,0.0222,0.0182 to 0.0263
+nfcorpus,1-1,204,held-out,reciprocal rank,2162,0.0687,0.0734,-0.0047,-0.0080 to -0.0017
+nfcorpus,1-1,204,held-out,in top 10,2162,0.1902,0.1440,0.0461,0.0396 to 0.0526
+nfcorpus,1-1,204,held-out,in top 100,2162,0.4161,0.3132,0.1029,0.0938 to 0.1117
+nfcorpus,1-1,204,held-out,log rank (lower is better),2162,4.9081,5.3993,-0.4912,-0.5283 to -0.4525
+nfcorpus,1-1,204,held-out,worst rank in the set,2162,675.5328,896.8044,-221.2717,-238.3804 to -204.2119
+nfcorpus,1-1,204,held-out,"nDCG@10, restricted to held-out labels",2162,0.0900,0.0843,0.0057,0.0020 to 0.0093
+nfcorpus,1-1,204,held-out,"reciprocal rank, construction positives skipped (secondary)",2162,0.1011,0.0765,0.0246,0.0210 to 0.0283
+nfcorpus,1-1,307,held-out,reciprocal rank,2162,0.0713,0.0734,-0.0021,-0.0053 to 0.0009
+nfcorpus,1-1,307,held-out,in top 10,2162,0.1910,0.1440,0.0469,0.0406 to 0.0533
+nfcorpus,1-1,307,held-out,in top 100,2162,0.4198,0.3132,0.1065,0.0975 to 0.1154
+nfcorpus,1-1,307,held-out,log rank (lower is better),2162,4.8886,5.3993,-0.5107,-0.5459 to -0.4738
+nfcorpus,1-1,307,held-out,worst rank in the set,2162,668.7993,896.8044,-228.0051,-244.3527 to -211.4747
+nfcorpus,1-1,307,held-out,"nDCG@10, restricted to held-out labels",2162,0.0922,0.0843,0.0079,0.0044 to 0.0112
+nfcorpus,1-1,307,held-out,"reciprocal rank, construction positives skipped (secondary)",2162,0.1030,0.0765,0.0264,0.0230 to 0.0301
+nfcorpus,1-1,409,held-out,reciprocal rank,2162,0.0737,0.0734,0.0003,-0.0028 to 0.0032
+nfcorpus,1-1,409,held-out,in top 10,2162,0.1901,0.1440,0.0461,0.0400 to 0.0518
+nfcorpus,1-1,409,held-out,in top 100,2162,0.4181,0.3132,0.1048,0.0960 to 0.1136
+nfcorpus,1-1,409,held-out,log rank (lower is better),2162,4.8845,5.3993,-0.5148,-0.5492 to -0.4790
+nfcorpus,1-1,409,held-out,worst rank in the set,2162,668.1379,896.8044,-228.6665,-244.9298 to -212.2639
+nfcorpus,1-1,409,held-out,"nDCG@10, restricted to held-out labels",2162,0.0938,0.0843,0.0094,0.0062 to 0.0126
+nfcorpus,1-1,409,held-out,"reciprocal rank, construction positives skipped (secondary)",2162,0.1037,0.0765,0.0272,0.0239 to 0.0307
+nfcorpus,1-1,512,held-out,reciprocal rank,2162,0.0754,0.0734,0.0021,-0.0008 to 0.0049
+nfcorpus,1-1,512,held-out,in top 10,2162,0.1877,0.1440,0.0437,0.0375 to 0.0496
+nfcorpus,1-1,512,held-out,in top 100,2162,0.4168,0.3132,0.1035,0.0947 to 0.1120
+nfcorpus,1-1,512,held-out,log rank (lower is better),2162,4.8886,5.3993,-0.5107,-0.5443 to -0.4758
+nfcorpus,1-1,512,held-out,worst rank in the set,2162,668.1020,896.8044,-228.7025,-244.5456 to -212.5868
+nfcorpus,1-1,512,held-out,"nDCG@10, restricted to held-out labels",2162,0.0945,0.0843,0.0102,0.0069 to 0.0133
+nfcorpus,1-1,512,held-out,"reciprocal rank, construction positives skipped (secondary)",2162,0.1029,0.0765,0.0264,0.0232 to 0.0297
+nfcorpus,1-1,614,held-out,reciprocal rank,2162,0.0768,0.0734,0.0035,0.0006 to 0.0060
+nfcorpus,1-1,614,held-out,in top 10,2162,0.1862,0.1440,0.0422,0.0364 to 0.0479
+nfcorpus,1-1,614,held-out,in top 100,2162,0.4147,0.3132,0.1014,0.0930 to 0.1098
+nfcorpus,1-1,614,held-out,log rank (lower is better),2162,4.8957,5.3993,-0.5036,-0.5365 to -0.4695
+nfcorpus,1-1,614,held-out,worst rank in the set,2162,669.3998,896.8044,-227.4046,-243.0426 to -211.6963
+nfcorpus,1-1,614,held-out,"nDCG@10, restricted to held-out labels",2162,0.0952,0.0843,0.0109,0.0078 to 0.0139
+nfcorpus,1-1,614,held-out,"reciprocal rank, construction positives skipped (secondary)",2162,0.1021,0.0765,0.0256,0.0224 to 0.0289
+nfcorpus,1-1,716,held-out,reciprocal rank,2162,0.0778,0.0734,0.0045,0.0019 to 0.0070
+nfcorpus,1-1,716,held-out,in top 10,2162,0.1835,0.1440,0.0395,0.0339 to 0.0448
+nfcorpus,1-1,716,held-out,in top 100,2162,0.4107,0.3132,0.0974,0.0889 to 0.1054
+nfcorpus,1-1,716,held-out,log rank (lower is better),2162,4.9141,5.3993,-0.4851,-0.5162 to -0.4530
+nfcorpus,1-1,716,held-out,worst rank in the set,2162,674.2873,896.8044,-222.5171,-237.4436 to -207.2567
+nfcorpus,1-1,716,held-out,"nDCG@10, restricted to held-out labels",2162,0.0954,0.0843,0.0111,0.0082 to 0.0140
+nfcorpus,1-1,716,held-out,"reciprocal rank, construction positives skipped (secondary)",2162,0.1001,0.0765,0.0236,0.0207 to 0.0267
+nfcorpus,1-1,819,held-out,reciprocal rank,2162,0.0790,0.0734,0.0057,0.0033 to 0.0080
+nfcorpus,1-1,819,held-out,in top 10,2162,0.1768,0.1440,0.0328,0.0279 to 0.0376
+nfcorpus,1-1,819,held-out,in top 100,2162,0.3989,0.3132,0.0857,0.0781 to 0.0930
+nfcorpus,1-1,819,held-out,log rank (lower is better),2162,4.9615,5.3993,-0.4377,-0.4656 to -0.4095
+nfcorpus,1-1,819,held-out,worst rank in the set,2162,688.3534,896.8044,-208.4511,-222.0334 to -194.8095
+nfcorpus,1-1,819,held-out,"nDCG@10, restricted to held-out labels",2162,0.0949,0.0843,0.0106,0.0081 to 0.0133
+nfcorpus,1-1,819,held-out,"reciprocal rank, construction positives skipped (secondary)",2162,0.0959,0.0765,0.0194,0.0167 to 0.0222
+nfcorpus,1-1,921,held-out,reciprocal rank,2162,0.0792,0.0734,0.0058,0.0041 to 0.0077
+nfcorpus,1-1,921,held-out,in top 10,2162,0.1630,0.1440,0.0190,0.0151 to 0.0227
+nfcorpus,1-1,921,held-out,in top 100,2162,0.3711,0.3132,0.0579,0.0516 to 0.0641
+nfcorpus,1-1,921,held-out,log rank (lower is better),2162,5.0824,5.3993,-0.3169,-0.3359 to -0.2981
+nfcorpus,1-1,921,held-out,worst rank in the set,2162,729.4013,896.8044,-167.4031,-178.2234 to -156.5633
+nfcorpus,1-1,921,held-out,"nDCG@10, restricted to held-out labels",2162,0.0922,0.0843,0.0079,0.0060 to 0.0099
+nfcorpus,1-1,921,held-out,"reciprocal rank, construction positives skipped (secondary)",2162,0.0890,0.0765,0.0125,0.0106 to 0.0145
+nfcorpus,2-2,102,held-out,reciprocal rank,1922,0.0588,0.0560,0.0027,0.0004 to 0.0050
+nfcorpus,2-2,102,held-out,in top 10,1922,0.1523,0.1154,0.0369,0.0313 to 0.0426
+nfcorpus,2-2,102,held-out,in top 100,1922,0.3955,0.2938,0.1017,0.0929 to 0.1099
+nfcorpus,2-2,102,held-out,log rank (lower is better),1922,5.0398,5.5554,-0.5157,-0.5521 to -0.4773
+nfcorpus,2-2,102,held-out,worst rank in the set,1922,1070.8496,1394.9434,-324.0938,-346.7292 to -300.0942
+nfcorpus,2-2,102,held-out,"nDCG@10, restricted to held-out labels",1922,0.0888,0.0786,0.0103,0.0068 to 0.0137
+nfcorpus,2-2,102,held-out,"reciprocal rank, construction positives skipped (secondary)",1922,0.0803,0.0590,0.0213,0.0185 to 0.0242
+nfcorpus,2-2,204,held-out,reciprocal rank,1922,0.0620,0.0560,0.0060,0.0038 to 0.0081
+nfcorpus,2-2,204,held-out,in top 10,1922,0.1609,0.1154,0.0455,0.0401 to 0.0510
+nfcorpus,2-2,204,held-out,in top 100,1922,0.4091,0.2938,0.1153,0.1070 to 0.1235
+nfcorpus,2-2,204,held-out,log rank (lower is better),1922,4.9699,5.5554,-0.5856,-0.6211 to -0.5483
+nfcorpus,2-2,204,held-out,worst rank in the set,1922,1038.0774,1394.9434,-356.8660,-378.8057 to -334.0155
+nfcorpus,2-2,204,held-out,"nDCG@10, restricted to held-out labels",1922,0.0942,0.0786,0.0156,0.0122 to 0.0189
+nfcorpus,2-2,204,held-out,"reciprocal rank, construction positives skipped (secondary)",1922,0.0839,0.0590,0.0249,0.0222 to 0.0276
+nfcorpus,2-2,307,held-out,reciprocal rank,1922,0.0637,0.0560,0.0076,0.0056 to 0.0097
+nfcorpus,2-2,307,held-out,in top 10,1922,0.1607,0.1154,0.0454,0.0400 to 0.0507
+nfcorpus,2-2,307,held-out,in top 100,1922,0.4108,0.2938,0.1170,0.1088 to 0.1249
+nfcorpus,2-2,307,held-out,log rank (lower is better),1922,4.9562,5.5554,-0.5992,-0.6333 to -0.5631
+nfcorpus,2-2,307,held-out,worst rank in the set,1922,1028.7894,1394.9434,-366.1540,-387.2588 to -344.2130
+nfcorpus,2-2,307,held-out,"nDCG@10, restricted to held-out labels",1922,0.0957,0.0786,0.0171,0.0140 to 0.0203
+nfcorpus,2-2,307,held-out,"reciprocal rank, construction positives skipped (secondary)",1922,0.0843,0.0590,0.0253,0.0227 to 0.0279
+nfcorpus,2-2,409,held-out,reciprocal rank,1922,0.0646,0.0560,0.0086,0.0066 to 0.0106
+nfcorpus,2-2,409,held-out,in top 10,1922,0.1617,0.1154,0.0463,0.0411 to 0.0514
+nfcorpus,2-2,409,held-out,in top 100,1922,0.4102,0.2938,0.1163,0.1084 to 0.1241
+nfcorpus,2-2,409,held-out,log rank (lower is better),1922,4.9601,5.5554,-0.5954,-0.6284 to -0.5608
+nfcorpus,2-2,409,held-out,worst rank in the set,1922,1031.2851,1394.9434,-363.6583,-385.1339 to -341.8709
+nfcorpus,2-2,409,held-out,"nDCG@10, restricted to held-out labels",1922,0.0970,0.0786,0.0185,0.0155 to 0.0215
+nfcorpus,2-2,409,held-out,"reciprocal rank, construction positives skipped (secondary)",1922,0.0838,0.0590,0.0248,0.0224 to 0.0274
+nfcorpus,2-2,512,held-out,reciprocal rank,1922,0.0654,0.0560,0.0093,0.0074 to 0.0113
+nfcorpus,2-2,512,held-out,in top 10,1922,0.1594,0.1154,0.0440,0.0390 to 0.0489
+nfcorpus,2-2,512,held-out,in top 100,1922,0.4070,0.2938,0.1131,0.1053 to 0.1209
+nfcorpus,2-2,512,held-out,log rank (lower is better),1922,4.9713,5.5554,-0.5842,-0.6154 to -0.5506
+nfcorpus,2-2,512,held-out,worst rank in the set,1922,1035.6610,1394.9434,-359.2824,-380.4060 to -337.8939
+nfcorpus,2-2,512,held-out,"nDCG@10, restricted to held-out labels",1922,0.0971,0.0786,0.0185,0.0156 to 0.0214
+nfcorpus,2-2,512,held-out,"reciprocal rank, construction positives skipped (secondary)",1922,0.0827,0.0590,0.0237,0.0213 to 0.0261
+nfcorpus,2-2,614,held-out,reciprocal rank,1922,0.0658,0.0560,0.0098,0.0080 to 0.0117
+nfcorpus,2-2,614,held-out,in top 10,1922,0.1574,0.1154,0.0420,0.0373 to 0.0466
+nfcorpus,2-2,614,held-out,in top 100,1922,0.4025,0.2938,0.1086,0.1009 to 0.1162
+nfcorpus,2-2,614,held-out,log rank (lower is better),1922,4.9858,5.5554,-0.5697,-0.6003 to -0.5372
+nfcorpus,2-2,614,held-out,worst rank in the set,1922,1041.7813,1394.9434,-353.1621,-373.8173 to -332.6064
+nfcorpus,2-2,614,held-out,"nDCG@10, restricted to held-out labels",1922,0.0970,0.0786,0.0184,0.0157 to 0.0212
+nfcorpus,2-2,614,held-out,"reciprocal rank, construction positives skipped (secondary)",1922,0.0816,0.0590,0.0226,0.0203 to 0.0251
+nfcorpus,2-2,716,held-out,reciprocal rank,1922,0.0658,0.0560,0.0097,0.0080 to 0.0115
+nfcorpus,2-2,716,held-out,in top 10,1922,0.1536,0.1154,0.0383,0.0339 to 0.0427
+nfcorpus,2-2,716,held-out,in top 100,1922,0.3964,0.2938,0.1026,0.0952 to 0.1098
+nfcorpus,2-2,716,held-out,log rank (lower is better),1922,5.0106,5.5554,-0.5448,-0.5736 to -0.5142
+nfcorpus,2-2,716,held-out,worst rank in the set,1922,1051.3907,1394.9434,-343.5527,-363.7278 to -323.5866
+nfcorpus,2-2,716,held-out,"nDCG@10, restricted to held-out labels",1922,0.0960,0.0786,0.0174,0.0148 to 0.0201
+nfcorpus,2-2,716,held-out,"reciprocal rank, construction positives skipped (secondary)",1922,0.0800,0.0590,0.0210,0.0189 to 0.0232
+nfcorpus,2-2,819,held-out,reciprocal rank,1922,0.0647,0.0560,0.0086,0.0071 to 0.0104
+nfcorpus,2-2,819,held-out,in top 10,1922,0.1464,0.1154,0.0311,0.0273 to 0.0350
+nfcorpus,2-2,819,held-out,in top 100,1922,0.3825,0.2938,0.0887,0.0822 to 0.0953
+nfcorpus,2-2,819,held-out,log rank (lower is better),1922,5.0733,5.5554,-0.4822,-0.5068 to -0.4553
+nfcorpus,2-2,819,held-out,worst rank in the set,1922,1077.1667,1394.9434,-317.7767,-336.3629 to -299.6646
+nfcorpus,2-2,819,held-out,"nDCG@10, restricted to held-out labels",1922,0.0932,0.0786,0.0147,0.0123 to 0.0171
+nfcorpus,2-2,819,held-out,"reciprocal rank, construction positives skipped (secondary)",1922,0.0759,0.0590,0.0168,0.0150 to 0.0188
+nfcorpus,2-2,921,held-out,reciprocal rank,1922,0.0628,0.0560,0.0067,0.0055 to 0.0080
+nfcorpus,2-2,921,held-out,in top 10,1922,0.1352,0.1154,0.0198,0.0169 to 0.0229
+nfcorpus,2-2,921,held-out,in top 100,1922,0.3539,0.2938,0.0601,0.0549 to 0.0655
+nfcorpus,2-2,921,held-out,log rank (lower is better),1922,5.2067,5.5554,-0.3488,-0.3662 to -0.3304
+nfcorpus,2-2,921,held-out,worst rank in the set,1922,1142.7696,1394.9434,-252.1738,-266.7550 to -237.6841
+nfcorpus,2-2,921,held-out,"nDCG@10, restricted to held-out labels",1922,0.0890,0.0786,0.0105,0.0087 to 0.0123
+nfcorpus,2-2,921,held-out,"reciprocal rank, construction positives skipped (secondary)",1922,0.0701,0.0590,0.0111,0.0098 to 0.0125
+nfcorpus,5-5,102,held-out,reciprocal rank,1517,0.0505,0.0458,0.0048,0.0032 to 0.0064
+nfcorpus,5-5,102,held-out,in top 10,1517,0.1229,0.1010,0.0219,0.0180 to 0.0261
+nfcorpus,5-5,102,held-out,in top 100,1517,0.3635,0.2762,0.0873,0.0802 to 0.0945
+nfcorpus,5-5,102,held-out,log rank (lower is better),1517,5.2090,5.6726,-0.4637,-0.4989 to -0.4309
+nfcorpus,5-5,102,held-out,worst rank in the set,1517,1732.0631,2119.1761,-387.1130,-413.2856 to -360.7543
+nfcorpus,5-5,102,held-out,"nDCG@10, restricted to held-out labels",1517,0.1007,0.0895,0.0111,0.0079 to 0.0145
+nfcorpus,5-5,102,held-out,"reciprocal rank, construction positives skipped (secondary)",1517,0.0632,0.0495,0.0137,0.0118 to 0.0157
+nfcorpus,5-5,204,held-out,reciprocal rank,1517,0.0529,0.0458,0.0071,0.0056 to 0.0086
+nfcorpus,5-5,204,held-out,in top 10,1517,0.1294,0.1010,0.0284,0.0244 to 0.0327
+nfcorpus,5-5,204,held-out,in top 100,1517,0.3781,0.2762,0.1019,0.0947 to 0.1095
+nfcorpus,5-5,204,held-out,log rank (lower is better),1517,5.1363,5.6726,-0.5363,-0.5707 to -0.5041
+nfcorpus,5-5,204,held-out,worst rank in the set,1517,1684.1957,2119.1761,-434.9804,-460.1005 to -409.6080
+nfcorpus,5-5,204,held-out,"nDCG@10, restricted to held-out labels",1517,0.1058,0.0895,0.0163,0.0130 to 0.0197
+nfcorpus,5-5,204,held-out,"reciprocal rank, construction positives skipped (secondary)",1517,0.0662,0.0495,0.0166,0.0147 to 0.0187
+nfcorpus,5-5,307,held-out,reciprocal rank,1517,0.0538,0.0458,0.0081,0.0067 to 0.0095
+nfcorpus,5-5,307,held-out,in top 10,1517,0.1306,0.1010,0.0296,0.0256 to 0.0337
+nfcorpus,5-5,307,held-out,in top 100,1517,0.3790,0.2762,0.1028,0.0958 to 0.1105
+nfcorpus,5-5,307,held-out,log rank (lower is better),1517,5.1261,5.6726,-0.5465,-0.5798 to -0.5147
+nfcorpus,5-5,307,held-out,worst rank in the set,1517,1674.1786,2119.1761,-444.9974,-469.7388 to -420.5814
+nfcorpus,5-5,307,held-out,"nDCG@10, restricted to held-out labels",1517,0.1076,0.0895,0.0181,0.0149 to 0.0214
+nfcorpus,5-5,307,held-out,"reciprocal rank, construction positives skipped (secondary)",1517,0.0666,0.0495,0.0171,0.0152 to 0.0191
+nfcorpus,5-5,409,held-out,reciprocal rank,1517,0.0539,0.0458,0.0081,0.0068 to 0.0096
+nfcorpus,5-5,409,held-out,in top 10,1517,0.1299,0.1010,0.0289,0.0250 to 0.0327
+nfcorpus,5-5,409,held-out,in top 100,1517,0.3779,0.2762,0.1016,0.0948 to 0.1092
+nfcorpus,5-5,409,held-out,log rank (lower is better),1517,5.1340,5.6726,-0.5386,-0.5711 to -0.5076
+nfcorpus,5-5,409,held-out,worst rank in the set,1517,1678.5127,2119.1761,-440.6634,-464.7442 to -416.7647
+nfcorpus,5-5,409,held-out,"nDCG@10, restricted to held-out labels",1517,0.1076,0.0895,0.0180,0.0150 to 0.0211
+nfcorpus,5-5,409,held-out,"reciprocal rank, construction positives skipped (secondary)",1517,0.0661,0.0495,0.0166,0.0148 to 0.0185
+nfcorpus,5-5,512,held-out,reciprocal rank,1517,0.0540,0.0458,0.0082,0.0069 to 0.0095
+nfcorpus,5-5,512,held-out,in top 10,1517,0.1292,0.1010,0.0282,0.0246 to 0.0320
+nfcorpus,5-5,512,held-out,in top 100,1517,0.3721,0.2762,0.0959,0.0893 to 0.1032
+nfcorpus,5-5,512,held-out,log rank (lower is better),1517,5.1488,5.6726,-0.5238,-0.5548 to -0.4946
+nfcorpus,5-5,512,held-out,worst rank in the set,1517,1687.6811,2119.1761,-431.4950,-455.3637 to -408.2626
+nfcorpus,5-5,512,held-out,"nDCG@10, restricted to held-out labels",1517,0.1076,0.0895,0.0181,0.0153 to 0.0211
+nfcorpus,5-5,512,held-out,"reciprocal rank, construction positives skipped (secondary)",1517,0.0653,0.0495,0.0158,0.0140 to 0.0176
+nfcorpus,5-5,614,held-out,reciprocal rank,1517,0.0540,0.0458,0.0082,0.0069 to 0.0095
+nfcorpus,5-5,614,held-out,in top 10,1517,0.1279,0.1010,0.0269,0.0232 to 0.0304
+nfcorpus,5-5,614,held-out,in top 100,1517,0.3688,0.2762,0.0925,0.0862 to 0.0998
+nfcorpus,5-5,614,held-out,log rank (lower is better),1517,5.1656,5.6726,-0.5070,-0.5374 to -0.4785
+nfcorpus,5-5,614,held-out,worst rank in the set,1517,1698.5177,2119.1761,-420.6584,-443.8769 to -398.3174
+nfcorpus,5-5,614,held-out,"nDCG@10, restricted to held-out labels",1517,0.1072,0.0895,0.0177,0.0149 to 0.0206
+nfcorpus,5-5,614,held-out,"reciprocal rank, construction positives skipped (secondary)",1517,0.0647,0.0495,0.0151,0.0135 to 0.0169
+nfcorpus,5-5,716,held-out,reciprocal rank,1517,0.0535,0.0458,0.0078,0.0066 to 0.0090
+nfcorpus,5-5,716,held-out,in top 10,1517,0.1261,0.1010,0.0251,0.0216 to 0.0285
+nfcorpus,5-5,716,held-out,in top 100,1517,0.3647,0.2762,0.0884,0.0823 to 0.0954
+nfcorpus,5-5,716,held-out,log rank (lower is better),1517,5.1889,5.6726,-0.4837,-0.5121 to -0.4568
+nfcorpus,5-5,716,held-out,worst rank in the set,1517,1714.4782,2119.1761,-404.6978,-426.9317 to -383.1534
+nfcorpus,5-5,716,held-out,"nDCG@10, restricted to held-out labels",1517,0.1062,0.0895,0.0167,0.0140 to 0.0194
+nfcorpus,5-5,716,held-out,"reciprocal rank, construction positives skipped (secondary)",1517,0.0635,0.0495,0.0140,0.0125 to 0.0157
+nfcorpus,5-5,819,held-out,reciprocal rank,1517,0.0525,0.0458,0.0068,0.0057 to 0.0078
+nfcorpus,5-5,819,held-out,in top 10,1517,0.1214,0.1010,0.0204,0.0175 to 0.0232
+nfcorpus,5-5,819,held-out,in top 100,1517,0.3525,0.2762,0.0762,0.0706 to 0.0824
+nfcorpus,5-5,819,held-out,log rank (lower is better),1517,5.2454,5.6726,-0.4273,-0.4514 to -0.4038
+nfcorpus,5-5,819,held-out,worst rank in the set,1517,1751.2251,2119.1761,-367.9510,-388.2186 to -348.9217
+nfcorpus,5-5,819,held-out,"nDCG@10, restricted to held-out labels",1517,0.1034,0.0895,0.0139,0.0117 to 0.0162
+nfcorpus,5-5,819,held-out,"reciprocal rank, construction positives skipped (secondary)",1517,0.0610,0.0495,0.0115,0.0101 to 0.0129
+nfcorpus,5-5,921,held-out,reciprocal rank,1517,0.0503,0.0458,0.0046,0.0038 to 0.0054
+nfcorpus,5-5,921,held-out,in top 10,1517,0.1145,0.1010,0.0135,0.0114 to 0.0157
+nfcorpus,5-5,921,held-out,in top 100,1517,0.3273,0.2762,0.0510,0.0467 to 0.0555
+nfcorpus,5-5,921,held-out,log rank (lower is better),1517,5.3678,5.6726,-0.3048,-0.3218 to -0.2886
+nfcorpus,5-5,921,held-out,worst rank in the set,1517,1838.9617,2119.1761,-280.2144,-295.6766 to -266.4304
+nfcorpus,5-5,921,held-out,"nDCG@10, restricted to held-out labels",1517,0.0989,0.0895,0.0094,0.0077 to 0.0111
+nfcorpus,5-5,921,held-out,"reciprocal rank, construction positives skipped (secondary)",1517,0.0568,0.0495,0.0072,0.0063 to 0.0082
+nfcorpus,10-10,102,held-out,reciprocal rank,1105,0.0387,0.0375,0.0012,0.0002 to 0.0023
+nfcorpus,10-10,102,held-out,in top 10,1105,0.0896,0.0844,0.0053,0.0028 to 0.0080
+nfcorpus,10-10,102,held-out,in top 100,1105,0.3108,0.2544,0.0564,0.0502 to 0.0627
+nfcorpus,10-10,102,held-out,log rank (lower is better),1105,5.4751,5.7993,-0.3242,-0.3526 to -0.2965
+nfcorpus,10-10,102,held-out,worst rank in the set,1105,2350.2149,2646.2550,-296.0400,-319.8164 to -272.2182
+nfcorpus,10-10,102,held-out,"nDCG@10, restricted to held-out labels",1105,0.0954,0.0940,0.0014,-0.0014 to 0.0043
+nfcorpus,10-10,102,held-out,"reciprocal rank, construction positives skipped (secondary)",1105,0.0476,0.0422,0.0055,0.0041 to 0.0069
+nfcorpus,10-10,204,held-out,reciprocal rank,1105,0.0402,0.0375,0.0027,0.0018 to 0.0037
+nfcorpus,10-10,204,held-out,in top 10,1105,0.0941,0.0844,0.0097,0.0072 to 0.0122
+nfcorpus,10-10,204,held-out,in top 100,1105,0.3243,0.2544,0.0699,0.0634 to 0.0764
+nfcorpus,10-10,204,held-out,log rank (lower is better),1105,5.4119,5.7993,-0.3874,-0.4157 to -0.3601
+nfcorpus,10-10,204,held-out,worst rank in the set,1105,2308.3803,2646.2550,-337.8747,-360.7227 to -314.6835
+nfcorpus,10-10,204,held-out,"nDCG@10, restricted to held-out labels",1105,0.0995,0.0940,0.0055,0.0030 to 0.0081
+nfcorpus,10-10,204,held-out,"reciprocal rank, construction positives skipped (secondary)",1105,0.0496,0.0422,0.0074,0.0061 to 0.0087
+nfcorpus,10-10,307,held-out,reciprocal rank,1105,0.0408,0.0375,0.0033,0.0024 to 0.0042
+nfcorpus,10-10,307,held-out,in top 10,1105,0.0955,0.0844,0.0112,0.0088 to 0.0136
+nfcorpus,10-10,307,held-out,in top 100,1105,0.3250,0.2544,0.0706,0.0641 to 0.0769
+nfcorpus,10-10,307,held-out,log rank (lower is better),1105,5.3999,5.7993,-0.3994,-0.4268 to -0.3735
+nfcorpus,10-10,307,held-out,worst rank in the set,1105,2304.0484,2646.2550,-342.2066,-364.5720 to -319.9498
+nfcorpus,10-10,307,held-out,"nDCG@10, restricted to held-out labels",1105,0.1012,0.0940,0.0072,0.0048 to 0.0097
+nfcorpus,10-10,307,held-out,"reciprocal rank, construction positives skipped (secondary)",1105,0.0500,0.0422,0.0079,0.0067 to 0.0090
+nfcorpus,10-10,409,held-out,reciprocal rank,1105,0.0407,0.0375,0.0032,0.0024 to 0.0041
+nfcorpus,10-10,409,held-out,in top 10,1105,0.0957,0.0844,0.0114,0.0092 to 0.0136
+nfcorpus,10-10,409,held-out,in top 100,1105,0.3234,0.2544,0.0690,0.0627 to 0.0752
+nfcorpus,10-10,409,held-out,log rank (lower is better),1105,5.4056,5.7993,-0.3937,-0.4202 to -0.3685
+nfcorpus,10-10,409,held-out,worst rank in the set,1105,2307.8843,2646.2550,-338.3707,-359.9289 to -317.7007
+nfcorpus,10-10,409,held-out,"nDCG@10, restricted to held-out labels",1105,0.1013,0.0940,0.0073,0.0051 to 0.0096
+nfcorpus,10-10,409,held-out,"reciprocal rank, construction positives skipped (secondary)",1105,0.0497,0.0422,0.0076,0.0065 to 0.0087
+nfcorpus,10-10,512,held-out,reciprocal rank,1105,0.0408,0.0375,0.0033,0.0025 to 0.0042
+nfcorpus,10-10,512,held-out,in top 10,1105,0.0952,0.0844,0.0108,0.0087 to 0.0131
+nfcorpus,10-10,512,held-out,in top 100,1105,0.3211,0.2544,0.0667,0.0606 to 0.0728
+nfcorpus,10-10,512,held-out,log rank (lower is better),1105,5.4186,5.7993,-0.3807,-0.4061 to -0.3565
+nfcorpus,10-10,512,held-out,worst rank in the set,1105,2316.9550,2646.2550,-329.3000,-349.7602 to -309.5462
+nfcorpus,10-10,512,held-out,"nDCG@10, restricted to held-out labels",1105,0.1013,0.0940,0.0073,0.0052 to 0.0095
+nfcorpus,10-10,512,held-out,"reciprocal rank, construction positives skipped (secondary)",1105,0.0494,0.0422,0.0073,0.0061 to 0.0084
+nfcorpus,10-10,614,held-out,reciprocal rank,1105,0.0407,0.0375,0.0033,0.0025 to 0.0041
+nfcorpus,10-10,614,held-out,in top 10,1105,0.0949,0.0844,0.0105,0.0085 to 0.0126
+nfcorpus,10-10,614,held-out,in top 100,1105,0.3181,0.2544,0.0637,0.0579 to 0.0696
+nfcorpus,10-10,614,held-out,log rank (lower is better),1105,5.4335,5.7993,-0.3658,-0.3900 to -0.3422
+nfcorpus,10-10,614,held-out,worst rank in the set,1105,2327.3859,2646.2550,-318.8691,-338.5646 to -299.3166
+nfcorpus,10-10,614,held-out,"nDCG@10, restricted to held-out labels",1105,0.1013,0.0940,0.0073,0.0053 to 0.0094
+nfcorpus,10-10,614,held-out,"reciprocal rank, construction positives skipped (secondary)",1105,0.0491,0.0422,0.0069,0.0059 to 0.0080
+nfcorpus,10-10,716,held-out,reciprocal rank,1105,0.0406,0.0375,0.0032,0.0024 to 0.0039
+nfcorpus,10-10,716,held-out,in top 10,1105,0.0945,0.0844,0.0102,0.0082 to 0.0122
+nfcorpus,10-10,716,held-out,in top 100,1105,0.3149,0.2544,0.0605,0.0550 to 0.0662
+nfcorpus,10-10,716,held-out,log rank (lower is better),1105,5.4500,5.7993,-0.3493,-0.3722 to -0.3269
+nfcorpus,10-10,716,held-out,worst rank in the set,1105,2339.7557,2646.2550,-306.4993,-325.3902 to -287.8695
+nfcorpus,10-10,716,held-out,"nDCG@10, restricted to held-out labels",1105,0.1012,0.0940,0.0072,0.0053 to 0.0092
+nfcorpus,10-10,716,held-out,"reciprocal rank, construction positives skipped (secondary)",1105,0.0487,0.0422,0.0065,0.0055 to 0.0075
+nfcorpus,10-10,819,held-out,reciprocal rank,1105,0.0404,0.0375,0.0029,0.0023 to 0.0036
+nfcorpus,10-10,819,held-out,in top 10,1105,0.0931,0.0844,0.0087,0.0069 to 0.0105
+nfcorpus,10-10,819,held-out,in top 100,1105,0.3072,0.2544,0.0528,0.0480 to 0.0579
+nfcorpus,10-10,819,held-out,log rank (lower is better),1105,5.4878,5.7993,-0.3115,-0.3315 to -0.2919
+nfcorpus,10-10,819,held-out,worst rank in the set,1105,2368.8078,2646.2550,-277.4472,-294.4460 to -260.6505
+nfcorpus,10-10,819,held-out,"nDCG@10, restricted to held-out labels",1105,0.1005,0.0940,0.0065,0.0047 to 0.0083
+nfcorpus,10-10,819,held-out,"reciprocal rank, construction positives skipped (secondary)",1105,0.0478,0.0422,0.0057,0.0048 to 0.0065
+nfcorpus,10-10,921,held-out,reciprocal rank,1105,0.0396,0.0375,0.0021,0.0016 to 0.0026
+nfcorpus,10-10,921,held-out,in top 10,1105,0.0905,0.0844,0.0061,0.0046 to 0.0075
+nfcorpus,10-10,921,held-out,in top 100,1105,0.2911,0.2544,0.0367,0.0329 to 0.0406
+nfcorpus,10-10,921,held-out,log rank (lower is better),1105,5.5733,5.7993,-0.2260,-0.2399 to -0.2118
+nfcorpus,10-10,921,held-out,worst rank in the set,1105,2438.4052,2646.2550,-207.8498,-220.9125 to -194.5683
+nfcorpus,10-10,921,held-out,"nDCG@10, restricted to held-out labels",1105,0.0987,0.0940,0.0046,0.0033 to 0.0061
+nfcorpus,10-10,921,held-out,"reciprocal rank, construction positives skipped (secondary)",1105,0.0460,0.0422,0.0039,0.0033 to 0.0045
+nfcorpus,20-20,102,held-out,reciprocal rank,611,0.0297,0.0292,0.0005,-0.0003 to 0.0012
+nfcorpus,20-20,102,held-out,in top 10,611,0.0655,0.0656,-0.0000,-0.0021 to 0.0020
+nfcorpus,20-20,102,held-out,in top 100,611,0.2595,0.2317,0.0278,0.0225 to 0.0333
+nfcorpus,20-20,102,held-out,log rank (lower is better),611,5.7292,5.9328,-0.2036,-0.2296 to -0.1793
+nfcorpus,20-20,102,held-out,worst rank in the set,611,2874.4106,3056.7717,-182.3611,-205.0844 to -159.5518
+nfcorpus,20-20,102,held-out,"nDCG@10, restricted to held-out labels",611,0.1401,0.1419,-0.0019,-0.0058 to 0.0023
+nfcorpus,20-20,102,held-out,"reciprocal rank, construction positives skipped (secondary)",611,0.0368,0.0345,0.0023,0.0014 to 0.0032
+nfcorpus,20-20,204,held-out,reciprocal rank,611,0.0309,0.0292,0.0017,0.0010 to 0.0023
+nfcorpus,20-20,204,held-out,in top 10,611,0.0689,0.0656,0.0033,0.0015 to 0.0052
+nfcorpus,20-20,204,held-out,in top 100,611,0.2725,0.2317,0.0408,0.0357 to 0.0461
+nfcorpus,20-20,204,held-out,log rank (lower is better),611,5.6702,5.9328,-0.2626,-0.2872 to -0.2391
+nfcorpus,20-20,204,held-out,worst rank in the set,611,2838.5681,3056.7717,-218.2036,-241.4368 to -196.3435
+nfcorpus,20-20,204,held-out,"nDCG@10, restricted to held-out labels",611,0.1462,0.1419,0.0043,0.0007 to 0.0081
+nfcorpus,20-20,204,held-out,"reciprocal rank, construction positives skipped (secondary)",611,0.0384,0.0345,0.0039,0.0031 to 0.0047
+nfcorpus,20-20,307,held-out,reciprocal rank,611,0.0312,0.0292,0.0020,0.0014 to 0.0027
+nfcorpus,20-20,307,held-out,in top 10,611,0.0691,0.0656,0.0035,0.0019 to 0.0053
+nfcorpus,20-20,307,held-out,in top 100,611,0.2738,0.2317,0.0421,0.0371 to 0.0471
+nfcorpus,20-20,307,held-out,log rank (lower is better),611,5.6610,5.9328,-0.2719,-0.2958 to -0.2490
+nfcorpus,20-20,307,held-out,worst rank in the set,611,2838.0908,3056.7717,-218.6809,-241.0726 to -197.8286
+nfcorpus,20-20,307,held-out,"nDCG@10, restricted to held-out labels",611,0.1474,0.1419,0.0054,0.0021 to 0.0089
+nfcorpus,20-20,307,held-out,"reciprocal rank, construction positives skipped (secondary)",611,0.0387,0.0345,0.0042,0.0034 to 0.0050
+nfcorpus,20-20,409,held-out,reciprocal rank,611,0.0313,0.0292,0.0020,0.0015 to 0.0027
+nfcorpus,20-20,409,held-out,in top 10,611,0.0692,0.0656,0.0036,0.0020 to 0.0053
+nfcorpus,20-20,409,held-out,in top 100,611,0.2730,0.2317,0.0413,0.0367 to 0.0462
+nfcorpus,20-20,409,held-out,log rank (lower is better),611,5.6621,5.9328,-0.2707,-0.2931 to -0.2491
+nfcorpus,20-20,409,held-out,worst rank in the set,611,2836.5260,3056.7717,-220.2457,-241.8675 to -200.0391
+nfcorpus,20-20,409,held-out,"nDCG@10, restricted to held-out labels",611,0.1477,0.1419,0.0057,0.0027 to 0.0090
+nfcorpus,20-20,409,held-out,"reciprocal rank, construction positives skipped (secondary)",611,0.0387,0.0345,0.0042,0.0035 to 0.0050
+nfcorpus,20-20,512,held-out,reciprocal rank,611,0.0313,0.0292,0.0021,0.0016 to 0.0027
+nfcorpus,20-20,512,held-out,in top 10,611,0.0692,0.0656,0.0036,0.0021 to 0.0051
+nfcorpus,20-20,512,held-out,in top 100,611,0.2706,0.2317,0.0389,0.0346 to 0.0434
+nfcorpus,20-20,512,held-out,log rank (lower is better),611,5.6707,5.9328,-0.2622,-0.2833 to -0.2418
+nfcorpus,20-20,512,held-out,worst rank in the set,611,2840.9239,3056.7717,-215.8478,-236.5524 to -195.9241
+nfcorpus,20-20,512,held-out,"nDCG@10, restricted to held-out labels",611,0.1481,0.1419,0.0061,0.0032 to 0.0092
+nfcorpus,20-20,512,held-out,"reciprocal rank, construction positives skipped (secondary)",611,0.0386,0.0345,0.0041,0.0035 to 0.0048
+nfcorpus,20-20,614,held-out,reciprocal rank,611,0.0312,0.0292,0.0020,0.0015 to 0.0025
+nfcorpus,20-20,614,held-out,in top 10,611,0.0689,0.0656,0.0033,0.0018 to 0.0047
+nfcorpus,20-20,614,held-out,in top 100,611,0.2686,0.2317,0.0369,0.0329 to 0.0412
+nfcorpus,20-20,614,held-out,log rank (lower is better),611,5.6818,5.9328,-0.2510,-0.2715 to -0.2318
+nfcorpus,20-20,614,held-out,worst rank in the set,611,2849.8343,3056.7717,-206.9374,-226.4124 to -188.3536
+nfcorpus,20-20,614,held-out,"nDCG@10, restricted to held-out labels",611,0.1476,0.1419,0.0057,0.0030 to 0.0086
+nfcorpus,20-20,614,held-out,"reciprocal rank, construction positives skipped (secondary)",611,0.0384,0.0345,0.0039,0.0033 to 0.0046
+nfcorpus,20-20,716,held-out,reciprocal rank,611,0.0312,0.0292,0.0020,0.0015 to 0.0025
+nfcorpus,20-20,716,held-out,in top 10,611,0.0690,0.0656,0.0034,0.0020 to 0.0048
+nfcorpus,20-20,716,held-out,in top 100,611,0.2668,0.2317,0.0351,0.0312 to 0.0392
+nfcorpus,20-20,716,held-out,log rank (lower is better),611,5.6938,5.9328,-0.2390,-0.2581 to -0.2209
+nfcorpus,20-20,716,held-out,worst rank in the set,611,2858.5818,3056.7717,-198.1899,-217.4809 to -180.3735
+nfcorpus,20-20,716,held-out,"nDCG@10, restricted to held-out labels",611,0.1479,0.1419,0.0060,0.0035 to 0.0088
+nfcorpus,20-20,716,held-out,"reciprocal rank, construction positives skipped (secondary)",611,0.0382,0.0345,0.0037,0.0031 to 0.0043
+nfcorpus,20-20,819,held-out,reciprocal rank,611,0.0310,0.0292,0.0017,0.0013 to 0.0022
+nfcorpus,20-20,819,held-out,in top 10,611,0.0684,0.0656,0.0028,0.0016 to 0.0040
+nfcorpus,20-20,819,held-out,in top 100,611,0.2618,0.2317,0.0301,0.0266 to 0.0337
+nfcorpus,20-20,819,held-out,log rank (lower is better),611,5.7199,5.9328,-0.2130,-0.2294 to -0.1973
+nfcorpus,20-20,819,held-out,worst rank in the set,611,2879.5910,3056.7717,-177.1806,-194.3353 to -160.7865
+nfcorpus,20-20,819,held-out,"nDCG@10, restricted to held-out labels",611,0.1470,0.1419,0.0051,0.0028 to 0.0076
+nfcorpus,20-20,819,held-out,"reciprocal rank, construction positives skipped (secondary)",611,0.0377,0.0345,0.0032,0.0027 to 0.0038
+nfcorpus,20-20,921,held-out,reciprocal rank,611,0.0305,0.0292,0.0013,0.0010 to 0.0016
+nfcorpus,20-20,921,held-out,in top 10,611,0.0680,0.0656,0.0024,0.0014 to 0.0035
+nfcorpus,20-20,921,held-out,in top 100,611,0.2525,0.2317,0.0208,0.0182 to 0.0236
+nfcorpus,20-20,921,held-out,log rank (lower is better),611,5.7781,5.9328,-0.1548,-0.1662 to -0.1438
+nfcorpus,20-20,921,held-out,worst rank in the set,611,2926.6964,3056.7717,-130.0753,-142.5747 to -118.3253
+nfcorpus,20-20,921,held-out,"nDCG@10, restricted to held-out labels",611,0.1462,0.1419,0.0043,0.0026 to 0.0063
+nfcorpus,20-20,921,held-out,"reciprocal rank, construction positives skipped (secondary)",611,0.0368,0.0345,0.0023,0.0020 to 0.0027
+msmarco,prefix,102,all known positives,reciprocal rank,2321,0.1213,0.1796,-0.0582,-0.0645 to -0.0523
+msmarco,prefix,102,all known positives,in top 10,2321,0.2546,0.3811,-0.1264,-0.1385 to -0.1143
+msmarco,prefix,102,all known positives,in top 100,2321,0.5744,0.7382,-0.1638,-0.1763 to -0.1514
+msmarco,prefix,102,all known positives,log rank (lower is better),2321,4.2745,3.2600,1.0146,0.9673 to 1.0637
+msmarco,prefix,102,all known positives,worst rank in the set,2321,9484.8112,2644.1045,6840.7068,3767.1288 to 10381.7955
+msmarco,prefix,204,all known positives,reciprocal rank,2321,0.1477,0.1796,-0.0319,-0.0372 to -0.0267
+msmarco,prefix,204,all known positives,in top 10,2321,0.3120,0.3811,-0.0691,-0.0797 to -0.0591
+msmarco,prefix,204,all known positives,in top 100,2321,0.6575,0.7382,-0.0807,-0.0903 to -0.0708
+msmarco,prefix,204,all known positives,log rank (lower is better),2321,3.7670,3.2600,0.5070,0.4746 to 0.5431
+msmarco,prefix,204,all known positives,worst rank in the set,2321,5358.9765,2644.1045,2714.8720,551.3653 to 4966.0507
+msmarco,prefix,307,all known positives,reciprocal rank,2321,0.1585,0.1796,-0.0211,-0.0254 to -0.0167
+msmarco,prefix,307,all known positives,in top 10,2321,0.3326,0.3811,-0.0485,-0.0578 to -0.0393
+msmarco,prefix,307,all known positives,in top 100,2321,0.6844,0.7382,-0.0538,-0.0627 to -0.0444
+msmarco,prefix,307,all known positives,log rank (lower is better),2321,3.5731,3.2600,0.3131,0.2872 to 0.3389
+msmarco,prefix,307,all known positives,worst rank in the set,2321,3442.1217,2644.1045,798.0172,-832.9048 to 2210.0476
+msmarco,prefix,409,all known positives,reciprocal rank,2321,0.1648,0.1796,-0.0147,-0.0188 to -0.0105
+msmarco,prefix,409,all known positives,in top 10,2321,0.3484,0.3811,-0.0326,-0.0407 to -0.0246
+msmarco,prefix,409,all known positives,in top 100,2321,0.7006,0.7382,-0.0376,-0.0459 to -0.0296
+msmarco,prefix,409,all known positives,log rank (lower is better),2321,3.4613,3.2600,0.2013,0.1800 to 0.2225
+msmarco,prefix,409,all known positives,worst rank in the set,2321,2891.1419,2644.1045,247.0374,-849.2418 to 1070.3096
+msmarco,prefix,512,all known positives,reciprocal rank,2321,0.1696,0.1796,-0.0099,-0.0138 to -0.0061
+msmarco,prefix,512,all known positives,in top 10,2321,0.3579,0.3811,-0.0231,-0.0307 to -0.0159
+msmarco,prefix,512,all known positives,in top 100,2321,0.7171,0.7382,-0.0212,-0.0284 to -0.0143
+msmarco,prefix,512,all known positives,log rank (lower is better),2321,3.3937,3.2600,0.1337,0.1164 to 0.1508
+msmarco,prefix,512,all known positives,worst rank in the set,2321,2436.9911,2644.1045,-207.1134,-1334.7807 to 634.7093
+msmarco,prefix,614,all known positives,reciprocal rank,2321,0.1730,0.1796,-0.0066,-0.0099 to -0.0032
+msmarco,prefix,614,all known positives,in top 10,2321,0.3660,0.3811,-0.0150,-0.0216 to -0.0085
+msmarco,prefix,614,all known positives,in top 100,2321,0.7238,0.7382,-0.0144,-0.0209 to -0.0079
+msmarco,prefix,614,all known positives,log rank (lower is better),2321,3.3472,3.2600,0.0872,0.0732 to 0.1015
+msmarco,prefix,614,all known positives,worst rank in the set,2321,2226.2491,2644.1045,-417.8554,-1443.9120 to 237.2262
+msmarco,prefix,716,all known positives,reciprocal rank,2321,0.1763,0.1796,-0.0033,-0.0060 to -0.0005
+msmarco,prefix,716,all known positives,in top 10,2321,0.3738,0.3811,-0.0073,-0.0131 to -0.0016
+msmarco,prefix,716,all known positives,in top 100,2321,0.7287,0.7382,-0.0095,-0.0149 to -0.0037
+msmarco,prefix,716,all known positives,log rank (lower is better),2321,3.3046,3.2600,0.0447,0.0338 to 0.0559
+msmarco,prefix,716,all known positives,worst rank in the set,2321,2246.2748,2644.1045,-397.8296,-1175.2422 to 179.9738
+msmarco,prefix,819,all known positives,reciprocal rank,2321,0.1784,0.1796,-0.0012,-0.0035 to 0.0011
+msmarco,prefix,819,all known positives,in top 10,2321,0.3769,0.3811,-0.0042,-0.0091 to 0.0010
+msmarco,prefix,819,all known positives,in top 100,2321,0.7341,0.7382,-0.0042,-0.0088 to 0.0002
+msmarco,prefix,819,all known positives,log rank (lower is better),2321,3.2821,3.2600,0.0221,0.0140 to 0.0305
+msmarco,prefix,819,all known positives,worst rank in the set,2321,2463.9098,2644.1045,-180.1947,-725.3450 to 174.1537
+msmarco,prefix,921,all known positives,reciprocal rank,2321,0.1785,0.1796,-0.0010,-0.0029 to 0.0007
+msmarco,prefix,921,all known positives,in top 10,2321,0.3797,0.3811,-0.0014,-0.0056 to 0.0028
+msmarco,prefix,921,all known positives,in top 100,2321,0.7357,0.7382,-0.0026,-0.0061 to 0.0012
+msmarco,prefix,921,all known positives,log rank (lower is better),2321,3.2680,3.2600,0.0080,0.0026 to 0.0137
+msmarco,prefix,921,all known positives,worst rank in the set,2321,2758.1812,2644.1045,114.0768,-92.1995 to 402.8312
+msmarco,shared,102,all known positives,reciprocal rank,2321,0.4007,0.1796,0.2211,0.2124 to 0.2289
+msmarco,shared,102,all known positives,in top 10,2321,0.7196,0.3811,0.3385,0.3248 to 0.3521
+msmarco,shared,102,all known positives,in top 100,2321,0.9486,0.7382,0.2103,0.1977 to 0.2226
+msmarco,shared,102,all known positives,log rank (lower is better),2321,1.6477,3.2600,-1.6123,-1.6603 to -1.5605
+msmarco,shared,102,all known positives,worst rank in the set,2321,89.4090,2644.1045,-2554.6955,-4529.3182 to -1104.8821
+msmarco,shared,204,all known positives,reciprocal rank,2321,0.3941,0.1796,0.2146,0.2064 to 0.2222
+msmarco,shared,204,all known positives,in top 10,2321,0.7131,0.3811,0.3320,0.3182 to 0.3455
+msmarco,shared,204,all known positives,in top 100,2321,0.9472,0.7382,0.2089,0.1963 to 0.2213
+msmarco,shared,204,all known positives,log rank (lower is better),2321,1.6656,3.2600,-1.5944,-1.6413 to -1.5466
+msmarco,shared,204,all known positives,worst rank in the set,2321,88.9769,2644.1045,-2555.1276,-4530.8181 to -1104.1013
+msmarco,shared,307,all known positives,reciprocal rank,2321,0.3766,0.1796,0.1970,0.1893 to 0.2038
+msmarco,shared,307,all known positives,in top 10,2321,0.6945,0.3811,0.3134,0.2999 to 0.3272
+msmarco,shared,307,all known positives,in top 100,2321,0.9424,0.7382,0.2042,0.1918 to 0.2162
+msmarco,shared,307,all known positives,log rank (lower is better),2321,1.7492,3.2600,-1.5108,-1.5548 to -1.4648
+msmarco,shared,307,all known positives,worst rank in the set,2321,113.3287,2644.1045,-2530.7758,-4507.1493 to -1093.7544
+msmarco,shared,409,all known positives,reciprocal rank,2321,0.3582,0.1796,0.1786,0.1715 to 0.1854
+msmarco,shared,409,all known positives,in top 10,2321,0.6694,0.3811,0.2883,0.2750 to 0.3011
+msmarco,shared,409,all known positives,in top 100,2321,0.9341,0.7382,0.1959,0.1834 to 0.2080
+msmarco,shared,409,all known positives,log rank (lower is better),2321,1.8485,3.2600,-1.4115,-1.4541 to -1.3689
+msmarco,shared,409,all known positives,worst rank in the set,2321,123.9800,2644.1045,-2520.1245,-4490.7922 to -1086.0754
+msmarco,shared,512,all known positives,reciprocal rank,2321,0.3390,0.1796,0.1594,0.1525 to 0.1657
+msmarco,shared,512,all known positives,in top 10,2321,0.6456,0.3811,0.2645,0.2512 to 0.2768
+msmarco,shared,512,all known positives,in top 100,2321,0.9244,0.7382,0.1862,0.1739 to 0.1982
+msmarco,shared,512,all known positives,log rank (lower is better),2321,1.9542,3.2600,-1.3058,-1.3453 to -1.2648
+msmarco,shared,512,all known positives,worst rank in the set,2321,148.4759,2644.1045,-2495.6286,-4450.0048 to -1070.6887
+msmarco,shared,614,all known positives,reciprocal rank,2321,0.3217,0.1796,0.1421,0.1357 to 0.1480
+msmarco,shared,614,all known positives,in top 10,2321,0.6195,0.3811,0.2384,0.2259 to 0.2506
+msmarco,shared,614,all known positives,in top 100,2321,0.9151,0.7382,0.1769,0.1647 to 0.1883
+msmarco,shared,614,all known positives,log rank (lower is better),2321,2.0550,3.2600,-1.2050,-1.2424 to -1.1671
+msmarco,shared,614,all known positives,worst rank in the set,2321,172.0441,2644.1045,-2472.0603,-4425.4196 to -1057.0073
+msmarco,shared,716,all known positives,reciprocal rank,2321,0.3050,0.1796,0.1255,0.1195 to 0.1312
+msmarco,shared,716,all known positives,in top 10,2321,0.5932,0.3811,0.2121,0.2008 to 0.2238
+msmarco,shared,716,all known positives,in top 100,2321,0.9052,0.7382,0.1670,0.1558 to 0.1783
+msmarco,shared,716,all known positives,log rank (lower is better),2321,2.1530,3.2600,-1.1070,-1.1427 to -1.0708
+msmarco,shared,716,all known positives,worst rank in the set,2321,206.3199,2644.1045,-2437.7845,-4382.5992 to -1037.3034
+msmarco,shared,819,all known positives,reciprocal rank,2321,0.2904,0.1796,0.1108,0.1053 to 0.1161
+msmarco,shared,819,all known positives,in top 10,2321,0.5696,0.3811,0.1886,0.1770 to 0.1997
+msmarco,shared,819,all known positives,in top 100,2321,0.8943,0.7382,0.1561,0.1450 to 0.1674
+msmarco,shared,819,all known positives,log rank (lower is better),2321,2.2478,3.2600,-1.0122,-1.0449 to -0.9789
+msmarco,shared,819,all known positives,worst rank in the set,2321,244.4422,2644.1045,-2399.6622,-4331.4981 to -1009.7510
+msmarco,shared,921,all known positives,reciprocal rank,2321,0.2598,0.1796,0.0802,0.0757 to 0.0846
+msmarco,shared,921,all known positives,in top 10,2321,0.5192,0.3811,0.1381,0.1283 to 0.1479
+msmarco,shared,921,all known positives,in top 100,2321,0.8611,0.7382,0.1229,0.1127 to 0.1324
+msmarco,shared,921,all known positives,log rank (lower is better),2321,2.4801,3.2600,-0.7799,-0.8050 to -0.7543
+msmarco,shared,921,all known positives,worst rank in the set,2321,374.0590,2644.1045,-2270.0455,-4159.5722 to -925.5079
+msmarco,own,102,the mask's own positive,reciprocal rank,2321,0.8479,0.1850,0.6629,0.6526 to 0.6731
+msmarco,own,102,the mask's own positive,in top 10,2321,0.9874,0.3916,0.5957,0.5794 to 0.6110
+msmarco,own,102,the mask's own positive,in top 100,2321,0.9999,0.7462,0.2536,0.2390 to 0.2672
+msmarco,own,102,the mask's own positive,log rank (lower is better),2321,0.2745,3.2084,-2.9339,-2.9986 to -2.8656
+msmarco,own,102,the mask's own positive,worst rank in the set,2321,1.7881,1250.4414,-1248.6533,-2279.9679 to -548.7145
+msmarco,own,204,the mask's own positive,reciprocal rank,2321,0.8321,0.1850,0.6471,0.6367 to 0.6578
+msmarco,own,204,the mask's own positive,in top 10,2321,0.9808,0.3916,0.5892,0.5727 to 0.6047
+msmarco,own,204,the mask's own positive,in top 100,2321,0.9999,0.7462,0.2536,0.2390 to 0.2672
+msmarco,own,204,the mask's own positive,log rank (lower is better),2321,0.3102,3.2084,-2.8982,-2.9615 to -2.8303
+msmarco,own,204,the mask's own positive,worst rank in the set,2321,1.9541,1250.4414,-1248.4873,-2279.7578 to -548.5159
+msmarco,own,307,the mask's own positive,reciprocal rank,2321,0.7949,0.1850,0.6099,0.5989 to 0.6207
+msmarco,own,307,the mask's own positive,in top 10,2321,0.9719,0.3916,0.5803,0.5641 to 0.5955
+msmarco,own,307,the mask's own positive,in top 100,2321,0.9997,0.7462,0.2535,0.2389 to 0.2670
+msmarco,own,307,the mask's own positive,log rank (lower is better),2321,0.3927,3.2084,-2.8157,-2.8775 to -2.7498
+msmarco,own,307,the mask's own positive,worst rank in the set,2321,2.3890,1250.4414,-1248.0524,-2279.3071 to -548.0854
+msmarco,own,409,the mask's own positive,reciprocal rank,2321,0.7495,0.1850,0.5644,0.5536 to 0.5756
+msmarco,own,409,the mask's own positive,in top 10,2321,0.9551,0.3916,0.5634,0.5478 to 0.5787
+msmarco,own,409,the mask's own positive,in top 100,2321,0.9992,0.7462,0.2530,0.2386 to 0.2665
+msmarco,own,409,the mask's own positive,log rank (lower is better),2321,0.5010,3.2084,-2.7074,-2.7680 to -2.6417
+msmarco,own,409,the mask's own positive,worst rank in the set,2321,3.0212,1250.4414,-1247.4202,-2278.6537 to -547.3989
+msmarco,own,512,the mask's own positive,reciprocal rank,2321,0.6929,0.1850,0.5078,0.4971 to 0.5186
+msmarco,own,512,the mask's own positive,in top 10,2321,0.9301,0.3916,0.5384,0.5227 to 0.5543
+msmarco,own,512,the mask's own positive,in top 100,2321,0.9977,0.7462,0.2515,0.2374 to 0.2650
+msmarco,own,512,the mask's own positive,log rank (lower is better),2321,0.6451,3.2084,-2.5633,-2.6204 to -2.5002
+msmarco,own,512,the mask's own positive,worst rank in the set,2321,4.0423,1250.4414,-1246.3990,-2277.5780 to -546.3539
+msmarco,own,614,the mask's own positive,reciprocal rank,2321,0.6388,0.1850,0.4538,0.4428 to 0.4646
+msmarco,own,614,the mask's own positive,in top 10,2321,0.9017,0.3916,0.5101,0.4945 to 0.5260
+msmarco,own,614,the mask's own positive,in top 100,2321,0.9958,0.7462,0.2496,0.2357 to 0.2630
+msmarco,own,614,the mask's own positive,log rank (lower is better),2321,0.7975,3.2084,-2.4109,-2.4670 to -2.3514
+msmarco,own,614,the mask's own positive,worst rank in the set,2321,5.3370,1250.4414,-1245.1044,-2276.2048 to -545.0872
+msmarco,own,716,the mask's own positive,reciprocal rank,2321,0.5891,0.1850,0.4040,0.3925 to 0.4148
+msmarco,own,716,the mask's own positive,in top 10,2321,0.8698,0.3916,0.4781,0.4631 to 0.4935
+msmarco,own,716,the mask's own positive,in top 100,2321,0.9927,0.7462,0.2465,0.2327 to 0.2599
+msmarco,own,716,the mask's own positive,log rank (lower is better),2321,0.9413,3.2084,-2.2671,-2.3219 to -2.2111
+msmarco,own,716,the mask's own positive,worst rank in the set,2321,6.8117,1250.4414,-1243.6297,-2274.6659 to -543.6340
+msmarco,own,819,the mask's own positive,reciprocal rank,2321,0.5283,0.1850,0.3433,0.3324 to 0.3533
+msmarco,own,819,the mask's own positive,in top 10,2321,0.8215,0.3916,0.4298,0.4152 to 0.4447
+msmarco,own,819,the mask's own positive,in top 100,2321,0.9837,0.7462,0.2375,0.2240 to 0.2506
+msmarco,own,819,the mask's own positive,log rank (lower is better),2321,1.1500,3.2084,-2.0584,-2.1063 to -2.0089
+msmarco,own,819,the mask's own positive,worst rank in the set,2321,10.4532,1250.4414,-1239.9882,-2270.7397 to -540.0581
+msmarco,own,921,the mask's own positive,reciprocal rank,2321,0.4082,0.1850,0.2231,0.2144 to 0.2311
+msmarco,own,921,the mask's own positive,in top 10,2321,0.7038,0.3916,0.3122,0.2987 to 0.3257
+msmarco,own,921,the mask's own positive,in top 100,2321,0.9493,0.7462,0.2031,0.1906 to 0.2150
+msmarco,own,921,the mask's own positive,log rank (lower is better),2321,1.6712,3.2084,-1.5372,-1.5750 to -1.5004
+msmarco,own,921,the mask's own positive,worst rank in the set,2321,32.2790,1250.4414,-1218.1624,-2244.5610 to -520.8552
+msmarco,1-1,102,held-out,reciprocal rank,2321,0.1271,0.1848,-0.0578,-0.0640 to -0.0517
+msmarco,1-1,102,held-out,in top 10,2321,0.3618,0.3913,-0.0295,-0.0411 to -0.0177
+msmarco,1-1,102,held-out,in top 100,2321,0.7278,0.7461,-0.0183,-0.0291 to -0.0076
+msmarco,1-1,102,held-out,log rank (lower is better),2321,3.4064,3.2094,0.1970,0.1557 to 0.2407
+msmarco,1-1,102,held-out,worst rank in the set,2321,1208.4141,1249.5958,-41.1817,-967.7516 to 621.0914
+msmarco,1-1,102,held-out,"nDCG@10, restricted to held-out labels",2321,0.1706,0.2225,-0.0519,-0.0586 to -0.0452
+msmarco,1-1,102,held-out,"reciprocal rank, construction positives skipped (secondary)",2321,0.1850,0.2002,-0.0153,-0.0226 to -0.0080
+msmarco,1-1,204,held-out,reciprocal rank,2321,0.1322,0.1848,-0.0527,-0.0588 to -0.0468
+msmarco,1-1,204,held-out,in top 10,2321,0.3807,0.3913,-0.0106,-0.0221 to 0.0003
+msmarco,1-1,204,held-out,in top 100,2321,0.7492,0.7461,0.0031,-0.0071 to 0.0127
+msmarco,1-1,204,held-out,log rank (lower is better),2321,3.3054,3.2094,0.0959,0.0576 to 0.1355
+msmarco,1-1,204,held-out,worst rank in the set,2321,696.0518,1249.5958,-553.5441,-1470.1167 to 29.7309
+msmarco,1-1,204,held-out,"nDCG@10, restricted to held-out labels",2321,0.1790,0.2225,-0.0435,-0.0498 to -0.0373
+msmarco,1-1,204,held-out,"reciprocal rank, construction positives skipped (secondary)",2321,0.1900,0.2002,-0.0102,-0.0171 to -0.0035
+msmarco,1-1,307,held-out,reciprocal rank,2321,0.1370,0.1848,-0.0479,-0.0537 to -0.0424
+msmarco,1-1,307,held-out,in top 10,2321,0.3853,0.3913,-0.0061,-0.0166 to 0.0047
+msmarco,1-1,307,held-out,in top 100,2321,0.7552,0.7461,0.0090,-0.0009 to 0.0186
+msmarco,1-1,307,held-out,log rank (lower is better),2321,3.2612,3.2094,0.0518,0.0169 to 0.0879
+msmarco,1-1,307,held-out,worst rank in the set,2321,658.4948,1249.5958,-591.1010,-1484.2426 to -20.4163
+msmarco,1-1,307,held-out,"nDCG@10, restricted to held-out labels",2321,0.1838,0.2225,-0.0387,-0.0444 to -0.0329
+msmarco,1-1,307,held-out,"reciprocal rank, construction positives skipped (secondary)",2321,0.1936,0.2002,-0.0066,-0.0132 to -0.0003
+msmarco,1-1,409,held-out,reciprocal rank,2321,0.1417,0.1848,-0.0431,-0.0488 to -0.0375
+msmarco,1-1,409,held-out,in top 10,2321,0.3917,0.3913,0.0003,-0.0095 to 0.0102
+msmarco,1-1,409,held-out,in top 100,2321,0.7604,0.7461,0.0143,0.0048 to 0.0232
+msmarco,1-1,409,held-out,log rank (lower is better),2321,3.2317,3.2094,0.0223,-0.0109 to 0.0567
+msmarco,1-1,409,held-out,worst rank in the set,2321,672.1563,1249.5958,-577.4395,-1440.6037 to -49.6912
+msmarco,1-1,409,held-out,"nDCG@10, restricted to held-out labels",2321,0.1889,0.2225,-0.0336,-0.0393 to -0.0280
+msmarco,1-1,409,held-out,"reciprocal rank, construction positives skipped (secondary)",2321,0.1974,0.2002,-0.0028,-0.0091 to 0.0031
+msmarco,1-1,512,held-out,reciprocal rank,2321,0.1460,0.1848,-0.0388,-0.0443 to -0.0336
+msmarco,1-1,512,held-out,in top 10,2321,0.3961,0.3913,0.0048,-0.0046 to 0.0141
+msmarco,1-1,512,held-out,in top 100,2321,0.7615,0.7461,0.0154,0.0064 to 0.0236
+msmarco,1-1,512,held-out,log rank (lower is better),2321,3.2125,3.2094,0.0031,-0.0283 to 0.0359
+msmarco,1-1,512,held-out,worst rank in the set,2321,698.4171,1249.5958,-551.1787,-1395.4973 to -54.7193
+msmarco,1-1,512,held-out,"nDCG@10, restricted to held-out labels",2321,0.1934,0.2225,-0.0291,-0.0344 to -0.0238
+msmarco,1-1,512,held-out,"reciprocal rank, construction positives skipped (secondary)",2321,0.1981,0.2002,-0.0021,-0.0081 to 0.0037
+msmarco,1-1,614,held-out,reciprocal rank,2321,0.1509,0.1848,-0.0340,-0.0393 to -0.0289
+msmarco,1-1,614,held-out,in top 10,2321,0.3942,0.3913,0.0029,-0.0064 to 0.0119
+msmarco,1-1,614,held-out,in top 100,2321,0.7663,0.7461,0.0201,0.0118 to 0.0282
+msmarco,1-1,614,held-out,log rank (lower is better),2321,3.1972,3.2094,-0.0123,-0.0425 to 0.0186
+msmarco,1-1,614,held-out,worst rank in the set,2321,657.2932,1249.5958,-592.3026,-1439.9340 to -78.5581
+msmarco,1-1,614,held-out,"nDCG@10, restricted to held-out labels",2321,0.1965,0.2225,-0.0260,-0.0313 to -0.0207
+msmarco,1-1,614,held-out,"reciprocal rank, construction positives skipped (secondary)",2321,0.1989,0.2002,-0.0014,-0.0069 to 0.0040
+msmarco,1-1,716,held-out,reciprocal rank,2321,0.1550,0.1848,-0.0298,-0.0350 to -0.0251
+msmarco,1-1,716,held-out,in top 10,2321,0.3967,0.3913,0.0054,-0.0035 to 0.0140
+msmarco,1-1,716,held-out,in top 100,2321,0.7671,0.7461,0.0210,0.0130 to 0.0286
+msmarco,1-1,716,held-out,log rank (lower is better),2321,3.1874,3.2094,-0.0221,-0.0503 to 0.0066
+msmarco,1-1,716,held-out,worst rank in the set,2321,653.9015,1249.5958,-595.6943,-1433.8428 to -90.5098
+msmarco,1-1,716,held-out,"nDCG@10, restricted to held-out labels",2321,0.2004,0.2225,-0.0221,-0.0272 to -0.0173
+msmarco,1-1,716,held-out,"reciprocal rank, construction positives skipped (secondary)",2321,0.1997,0.2002,-0.0005,-0.0057 to 0.0046
+msmarco,1-1,819,held-out,reciprocal rank,2321,0.1576,0.1848,-0.0272,-0.0320 to -0.0229
+msmarco,1-1,819,held-out,in top 10,2321,0.3959,0.3913,0.0046,-0.0039 to 0.0132
+msmarco,1-1,819,held-out,in top 100,2321,0.7681,0.7461,0.0220,0.0145 to 0.0296
+msmarco,1-1,819,held-out,log rank (lower is better),2321,3.1793,3.2094,-0.0301,-0.0563 to -0.0040
+msmarco,1-1,819,held-out,worst rank in the set,2321,670.3369,1249.5958,-579.2589,-1396.5575 to -99.3513
+msmarco,1-1,819,held-out,"nDCG@10, restricted to held-out labels",2321,0.2021,0.2225,-0.0204,-0.0251 to -0.0158
+msmarco,1-1,819,held-out,"reciprocal rank, construction positives skipped (secondary)",2321,0.1990,0.2002,-0.0012,-0.0061 to 0.0035
+msmarco,1-1,921,held-out,reciprocal rank,2321,0.1674,0.1848,-0.0174,-0.0217 to -0.0135
+msmarco,1-1,921,held-out,in top 10,2321,0.3981,0.3913,0.0067,-0.0004 to 0.0140
+msmarco,1-1,921,held-out,in top 100,2321,0.7685,0.7461,0.0224,0.0158 to 0.0288
+msmarco,1-1,921,held-out,log rank (lower is better),2321,3.1629,3.2094,-0.0465,-0.0667 to -0.0267
+msmarco,1-1,921,held-out,worst rank in the set,2321,711.3463,1249.5958,-538.2496,-1253.9266 to -111.8249
+msmarco,1-1,921,held-out,"nDCG@10, restricted to held-out labels",2321,0.2102,0.2225,-0.0123,-0.0164 to -0.0084
+msmarco,1-1,921,held-out,"reciprocal rank, construction positives skipped (secondary)",2321,0.2000,0.2002,-0.0003,-0.0043 to 0.0038
+msmarco,2-2,102,held-out,reciprocal rank,81,0.0833,0.1012,-0.0179,-0.0332 to -0.0028
+msmarco,2-2,102,held-out,in top 10,81,0.2001,0.2215,-0.0213,-0.0479 to 0.0035
+msmarco,2-2,102,held-out,in top 100,81,0.6402,0.5934,0.0468,-0.0022 to 0.0996
+msmarco,2-2,102,held-out,log rank (lower is better),81,3.9734,4.0342,-0.0608,-0.2206 to 0.0798
+msmarco,2-2,102,held-out,worst rank in the set,81,1450.7356,1595.1883,-144.4527,-911.6489 to 504.9452
+msmarco,2-2,102,held-out,"nDCG@10, restricted to held-out labels",81,0.1183,0.1441,-0.0258,-0.0440 to -0.0080
+msmarco,2-2,102,held-out,"reciprocal rank, construction positives skipped (secondary)",81,0.1159,0.1095,0.0064,-0.0099 to 0.0233
+msmarco,2-2,204,held-out,reciprocal rank,81,0.0887,0.1012,-0.0125,-0.0277 to 0.0023
+msmarco,2-2,204,held-out,in top 10,81,0.2173,0.2215,-0.0041,-0.0307 to 0.0205
+msmarco,2-2,204,held-out,in top 100,81,0.6602,0.5934,0.0669,0.0211 to 0.1174
+msmarco,2-2,204,held-out,log rank (lower is better),81,3.8795,4.0342,-0.1547,-0.3101 to -0.0248
+msmarco,2-2,204,held-out,worst rank in the set,81,1143.8601,1595.1883,-451.3282,-1431.4914 to 132.1880
+msmarco,2-2,204,held-out,"nDCG@10, restricted to held-out labels",81,0.1283,0.1441,-0.0158,-0.0331 to 0.0019
+msmarco,2-2,204,held-out,"reciprocal rank, construction positives skipped (secondary)",81,0.1198,0.1095,0.0103,-0.0045 to 0.0252
+msmarco,2-2,307,held-out,reciprocal rank,81,0.0892,0.1012,-0.0119,-0.0258 to 0.0017
+msmarco,2-2,307,held-out,in top 10,81,0.2225,0.2215,0.0010,-0.0248 to 0.0254
+msmarco,2-2,307,held-out,in top 100,81,0.6597,0.5934,0.0664,0.0239 to 0.1141
+msmarco,2-2,307,held-out,log rank (lower is better),81,3.8557,4.0342,-0.1785,-0.3224 to -0.0568
+msmarco,2-2,307,held-out,worst rank in the set,81,1056.6543,1595.1883,-538.5339,-1639.3839 to 92.5523
+msmarco,2-2,307,held-out,"nDCG@10, restricted to held-out labels",81,0.1305,0.1441,-0.0136,-0.0294 to 0.0028
+msmarco,2-2,307,held-out,"reciprocal rank, construction positives skipped (secondary)",81,0.1199,0.1095,0.0104,-0.0026 to 0.0240
+msmarco,2-2,409,held-out,reciprocal rank,81,0.0930,0.1012,-0.0082,-0.0209 to 0.0047
+msmarco,2-2,409,held-out,in top 10,81,0.2281,0.2215,0.0067,-0.0184 to 0.0304
+msmarco,2-2,409,held-out,in top 100,81,0.6590,0.5934,0.0656,0.0256 to 0.1092
+msmarco,2-2,409,held-out,log rank (lower is better),81,3.8583,4.0342,-0.1759,-0.3088 to -0.0615
+msmarco,2-2,409,held-out,worst rank in the set,81,1102.4218,1595.1883,-492.7665,-1508.5731 to 102.1527
+msmarco,2-2,409,held-out,"nDCG@10, restricted to held-out labels",81,0.1360,0.1441,-0.0081,-0.0234 to 0.0078
+msmarco,2-2,409,held-out,"reciprocal rank, construction positives skipped (secondary)",81,0.1203,0.1095,0.0108,-0.0022 to 0.0243
+msmarco,2-2,512,held-out,reciprocal rank,81,0.0938,0.1012,-0.0074,-0.0188 to 0.0049
+msmarco,2-2,512,held-out,in top 10,81,0.2258,0.2215,0.0044,-0.0206 to 0.0275
+msmarco,2-2,512,held-out,in top 100,81,0.6590,0.5934,0.0656,0.0266 to 0.1072
+msmarco,2-2,512,held-out,log rank (lower is better),81,3.8712,4.0342,-0.1630,-0.2889 to -0.0542
+msmarco,2-2,512,held-out,worst rank in the set,81,1146.7454,1595.1883,-448.4429,-1400.6514 to 122.4809
+msmarco,2-2,512,held-out,"nDCG@10, restricted to held-out labels",81,0.1364,0.1441,-0.0077,-0.0216 to 0.0070
+msmarco,2-2,512,held-out,"reciprocal rank, construction positives skipped (secondary)",81,0.1199,0.1095,0.0104,-0.0012 to 0.0225
+msmarco,2-2,614,held-out,reciprocal rank,81,0.0946,0.1012,-0.0066,-0.0178 to 0.0048
+msmarco,2-2,614,held-out,in top 10,81,0.2261,0.2215,0.0046,-0.0197 to 0.0276
+msmarco,2-2,614,held-out,in top 100,81,0.6515,0.5934,0.0581,0.0211 to 0.0976
+msmarco,2-2,614,held-out,log rank (lower is better),81,3.8744,4.0342,-0.1598,-0.2793 to -0.0578
+msmarco,2-2,614,held-out,worst rank in the set,81,1156.5288,1595.1883,-438.6595,-1369.5680 to 122.2087
+msmarco,2-2,614,held-out,"nDCG@10, restricted to held-out labels",81,0.1374,0.1441,-0.0067,-0.0207 to 0.0074
+msmarco,2-2,614,held-out,"reciprocal rank, construction positives skipped (secondary)",81,0.1189,0.1095,0.0094,-0.0015 to 0.0208
+msmarco,2-2,716,held-out,reciprocal rank,81,0.0946,0.1012,-0.0066,-0.0174 to 0.0041
+msmarco,2-2,716,held-out,in top 10,81,0.2225,0.2215,0.0010,-0.0211 to 0.0216
+msmarco,2-2,716,held-out,in top 100,81,0.6438,0.5934,0.0504,0.0171 to 0.0872
+msmarco,2-2,716,held-out,log rank (lower is better),81,3.8796,4.0342,-0.1546,-0.2698 to -0.0571
+msmarco,2-2,716,held-out,worst rank in the set,81,1131.4485,1595.1883,-463.7397,-1422.3527 to 95.8645
+msmarco,2-2,716,held-out,"nDCG@10, restricted to held-out labels",81,0.1363,0.1441,-0.0078,-0.0212 to 0.0057
+msmarco,2-2,716,held-out,"reciprocal rank, construction positives skipped (secondary)",81,0.1174,0.1095,0.0079,-0.0027 to 0.0192
+msmarco,2-2,819,held-out,reciprocal rank,81,0.0975,0.1012,-0.0036,-0.0139 to 0.0067
+msmarco,2-2,819,held-out,in top 10,81,0.2209,0.2215,-0.0005,-0.0222 to 0.0189
+msmarco,2-2,819,held-out,in top 100,81,0.6394,0.5934,0.0460,0.0130 to 0.0833
+msmarco,2-2,819,held-out,log rank (lower is better),81,3.8863,4.0342,-0.1479,-0.2512 to -0.0585
+msmarco,2-2,819,held-out,worst rank in the set,81,1151.1919,1595.1883,-443.9964,-1370.1628 to 102.2465
+msmarco,2-2,819,held-out,"nDCG@10, restricted to held-out labels",81,0.1387,0.1441,-0.0054,-0.0185 to 0.0073
+msmarco,2-2,819,held-out,"reciprocal rank, construction positives skipped (secondary)",81,0.1178,0.1095,0.0083,-0.0018 to 0.0190
+msmarco,2-2,921,held-out,reciprocal rank,81,0.0983,0.1012,-0.0029,-0.0115 to 0.0055
+msmarco,2-2,921,held-out,in top 10,81,0.2209,0.2215,-0.0005,-0.0234 to 0.0199
+msmarco,2-2,921,held-out,in top 100,81,0.6381,0.5934,0.0448,0.0141 to 0.0791
+msmarco,2-2,921,held-out,log rank (lower is better),81,3.9156,4.0342,-0.1186,-0.1989 to -0.0471
+msmarco,2-2,921,held-out,worst rank in the set,81,1174.1800,1595.1883,-421.0082,-1258.6538 to 55.7784
+msmarco,2-2,921,held-out,"nDCG@10, restricted to held-out labels",81,0.1400,0.1441,-0.0041,-0.0163 to 0.0075
+msmarco,2-2,921,held-out,"reciprocal rank, construction positives skipped (secondary)",81,0.1146,0.1095,0.0051,-0.0031 to 0.0140

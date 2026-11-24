@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" width="760" height="420" role="img" aria-label="Does the frequency profile repeat across query halves?">
+<style>.bg{fill:#fcfcfb}.t{fill:#0b0b0b}.m{fill:#52514e}.g{stroke:#e4e3de;stroke-width:1}text{font:12px system-ui,sans-serif}.h{font-size:15px;font-weight:600}.s0{stroke:#2a78d6;fill:#2a78d6}.s1{stroke:#eb6834;fill:#eb6834}.s2{stroke:#1baf7a;fill:#1baf7a}.n{stroke:#8a8983;fill:#8a8983}.l{fill:none!important;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}.b{stroke:none!important;fill-opacity:.1}.r{stroke:#fcfcfb!important;stroke-width:2}@media (prefers-color-scheme:dark){.bg{fill:#1a1a19}.t{fill:#f0efec}.m{fill:#c3c2b7}.g{stroke:#3a3a37}.s0{stroke:#3987e5;fill:#3987e5}.s1{stroke:#d95926;fill:#d95926}.s2{stroke:#199e70;fill:#199e70}.r{stroke:#1a1a19!important}}</style>
+<rect class="bg" width="760" height="420"/>
+<text class="t h" x="16" y="26">Does the frequency profile repeat across query halves?</text>
+<text class="m" x="16" y="46">Split-half Spearman of query-balanced frequency, mean with min-to-max band. Stability within these</text>
+<text class="m" x="16" y="62">training data only.</text>
+<text class="m" x="404.0" y="408" text-anchor="middle">Retained dimensions k</text>
+<text class="m" transform="translate(16 238.0) rotate(-90)" text-anchor="middle">Spearman</text>
+<line class="g" x1="72" x2="736" y1="364.0" y2="364.0"/>
+<text class="m" x="64" y="368.0" text-anchor="end">0</text>
+<line class="g" x1="72" x2="736" y1="313.6" y2="313.6"/>
+<text class="m" x="64" y="317.6" text-anchor="end">0.2</text>
+<line class="g" x1="72" x2="736" y1="263.2" y2="263.2"/>
+<text class="m" x="64" y="267.2" text-anchor="end">0.4</text>
+<line class="g" x1="72" x2="736" y1="212.8" y2="212.8"/>
+<text class="m" x="64" y="216.8" text-anchor="end">0.6</text>
+<line class="g" x1="72" x2="736" y1="162.4" y2="162.4"/>
+<text class="m" x="64" y="166.4" text-anchor="end">0.8</text>
+<line class="g" x1="72" x2="736" y1="112.0" y2="112.0"/>
+<text class="m" x="64" y="116.0" text-anchor="end">1</text>
+<text class="m" x="151.45" y="382" text-anchor="middle">200</text>
+<text class="m" x="313.6" y="382" text-anchor="middle">400</text>
+<text class="m" x="475.75" y="382" text-anchor="middle">600</text>
+<text class="m" x="637.9" y="382" text-anchor="middle">800</text>
+<polygon class="s0 b" points="72.0,125.85 154.7,123.46 238.2,124.62 320.9,126.3 404.41,129.5 487.1,136.37 569.8,154.13 653.3,166.35 736.0,167.4 736.0,182.62 653.3,179.43 569.8,165.2 487.1,144.35 404.41,136.44 320.9,130.86 238.2,128.31 154.7,127.02 72.0,130.45"/>
+<polyline class="s0 l" points="72.0,127.74 154.7,125.38 238.2,126.26 320.9,128.72 404.41,133.02 487.1,140.74 569.8,159.67 653.3,171.13 736.0,172.78"/>
+<circle class="s0" cx="72.0" cy="127.74" r="4"><title>scifact: 102, 0.938</title></circle>
+<circle class="s0" cx="154.7" cy="125.38" r="4"><title>scifact: 204, 0.947</title></circle>
+<circle class="s0" cx="238.2" cy="126.26" r="4"><title>scifact: 307, 0.943</title></circle>
+<circle class="s0" cx="320.9" cy="128.72" r="4"><title>scifact: 409, 0.934</title></circle>
+<circle class="s0" cx="404.41" cy="133.02" r="4"><title>scifact: 512, 0.917</title></circle>
+<circle class="s0" cx="487.1" cy="140.74" r="4"><title>scifact: 614, 0.886</title></circle>
+<circle class="s0" cx="569.8" cy="159.67" r="4"><title>scifact: 716, 0.811</title></circle>
+<circle class="s0" cx="653.3" cy="171.13" r="4"><title>scifact: 819, 0.765</title></circle>
+<circle class="s0" cx="736.0" cy="172.78" r="4"><title>scifact: 921, 0.759</title></circle>
+<polygon class="s1 b" points="72.0,114.16 154.7,113.95 238.2,114.24 320.9,114.69 404.41,115.75 487.1,118.96 569.8,119.09 653.3,118.32 736.0,118.38 736.0,119.35 653.3,119.66 569.8,120.75 487.1,120.74 404.41,116.65 320.9,115.49 238.2,114.82 154.7,114.44 72.0,114.63"/>
+<polyline class="s1 l" points="72.0,114.35 154.7,114.21 238.2,114.48 320.9,114.96 404.41,116.06 487.1,119.63 569.8,120.13 653.3,119.23 736.0,118.74"/>
+<circle class="s1" cx="72.0" cy="114.35" r="4"><title>nfcorpus: 102, 0.991</title></circle>
+<circle class="s1" cx="154.7" cy="114.21" r="4"><title>nfcorpus: 204, 0.991</title></circle>
+<circle class="s1" cx="238.2" cy="114.48" r="4"><title>nfcorpus: 307, 0.990</title></circle>
+<circle class="s1" cx="320.9" cy="114.96" r="4"><title>nfcorpus: 409, 0.988</title></circle>
+<circle class="s1" cx="404.41" cy="116.06" r="4"><title>nfcorpus: 512, 0.984</title></circle>
+<circle class="s1" cx="487.1" cy="119.63" r="4"><title>nfcorpus: 614, 0.970</title></circle>
+<circle class="s1" cx="569.8" cy="120.13" r="4"><title>nfcorpus: 716, 0.968</title></circle>
+<circle class="s1" cx="653.3" cy="119.23" r="4"><title>nfcorpus: 819, 0.971</title></circle>
+<circle class="s1" cx="736.0" cy="118.74" r="4"><title>nfcorpus: 921, 0.973</title></circle>
+<rect class="s0" x="72" y="84" width="14" height="4" rx="2"/>
+<text class="m" x="92" y="90">scifact</text>
+<rect class="s1" x="155" y="84" width="14" height="4" rx="2"/>
+<text class="m" x="175" y="90">nfcorpus</text>
+</svg>

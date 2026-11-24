@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "run_id": "20261114T044625Z-cd3555c1",
+  "command": "p3-target score",
+  "git_commit": "unknown",
+  "git_dirty": null,
+  "config_hash": "ab02f6c3ad3376e2e7d1afaa2f8763c4e1636e48ba6886d6c5d70c6e46f4eccf",
+  "config": {
+    "corpus": "nfcorpus",
+    "checkpoints": {
+      "E0@42": "20261114T030758Z-633f01a2",
+      "E0@0": "20261114T030825Z-4e024630",
+      "E0@1": "20261114T030853Z-487d805d",
+      "E1@42": "20261114T030919Z-99777768",
+      "E1@0": "20261114T030946Z-ee33dac2",
+      "E1@1": "20261114T031014Z-cf78a8a2",
+      "E2@42": "20261114T031040Z-20a09909",
+      "E2@0": "20261114T031113Z-78fd1db2",
+      "E2@1": "20261114T044155Z-52f1fafe",
+      "E3@42": "20261114T044217Z-74f1824d",
+      "E3@0": "20261114T044240Z-d4017075",
+      "E3@1": "20261114T044303Z-7b53ee41",
+      "E3c@42": "20261114T044326Z-71bc0b2a",
+      "E3c@0": "20261114T044349Z-8ac1352a",
+      "E3c@1": "20261114T044412Z-92a9278f",
+      "E4[0.1]@42": "20261114T044435Z-e1ba9b37",
+      "E4[0.1]@0": "20261114T044538Z-20ec74a3",
+      "E4[0.1]@1": "20261114T044557Z-1244fb24"
+    },
+    "tune_ids_sha256": "5752f754df9cb6ed5c8ed99c43aa3d8036f3181557ac2528b6f41b0cd247054f"
+  },
+  "dataset_hash": "e4b1fa65c7f04a480d8cd9845e63e055ac6777c4c0ff95f1227e8f6551ff4896",
+  "model_revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+  "seed": 20261114,
+  "determinism": {
+    "PYTHONHASHSEED": "0"
+  },
+  "device": "cpu",
+  "dtype": "float32",
+  "versions": {
+    "python": "3.12.15",
+    "torch": "2.11.0+cu128",
+    "numpy": "2.5.4",
+    "hyperdime": "0.0.1"
+  },
+  "started_at": "2026-11-14T04:46:25.419949Z",
+  "finished_at": "2026-11-14T04:46:25.480856Z",
+  "artifacts": [
+    {
+      "name": "per_query.csv",
+      "sha256": "4a31897461dd532353b8c5fe6c72eb235a311adc71c4b9cbe8d6a231dbe2cc72"
+    },
+    {
+      "name": "summary.json",
+      "sha256": "56e895f58e2447a161780ea96422957069e90d36f418e8cfccb24969755e281d"
+    }
+  ]
+}

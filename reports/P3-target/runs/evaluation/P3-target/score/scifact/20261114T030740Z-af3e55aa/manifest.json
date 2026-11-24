@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "run_id": "20261114T030740Z-af3e55aa",
+  "command": "p3-target score",
+  "git_commit": "unknown",
+  "git_dirty": null,
+  "config_hash": "9259b25626f00bbeed085437215bb8972fe1eccfe05a55a54860b6b9469ccede",
+  "config": {
+    "corpus": "scifact",
+    "checkpoints": {
+      "E0@42": "20261114T025752Z-de1b6b28",
+      "E0@0": "20261114T025812Z-b9dbd0f5",
+      "E0@1": "20261114T025831Z-75b8e1cf",
+      "E1@42": "20261114T025850Z-5ea9ef7b",
+      "E1@0": "20261114T025912Z-70300b46",
+      "E1@1": "20261114T025932Z-eaf69e72",
+      "E2@42": "20261114T025957Z-864d2cee",
+      "E2@0": "20261114T030031Z-102e908c",
+      "E2@1": "20261114T030108Z-7f0a3875",
+      "E3@42": "20261114T030142Z-a0c4a013",
+      "E3@0": "20261114T030206Z-8a5fa61d",
+      "E3@1": "20261114T030247Z-92ddc6d5",
+      "E3c@42": "20261114T030325Z-f4c990af",
+      "E3c@0": "20261114T030405Z-a76def1d",
+      "E3c@1": "20261114T030443Z-4cef0455",
+      "E4[0.1]@42": "20261114T030520Z-de62932c",
+      "E4[0.1]@0": "20261114T030649Z-0b94a257",
+      "E4[0.1]@1": "20261114T030716Z-93b22329"
+    },
+    "tune_ids_sha256": "7997975896395645257d42048e8d0be4269330eb5389aea993171fdd6db18e85"
+  },
+  "dataset_hash": "e4b1fa65c7f04a480d8cd9845e63e055ac6777c4c0ff95f1227e8f6551ff4896",
+  "model_revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+  "seed": 20261114,
+  "determinism": {
+    "PYTHONHASHSEED": "0"
+  },
+  "device": "cpu",
+  "dtype": "float32",
+  "versions": {
+    "python": "3.12.15",
+    "torch": "2.11.0+cu128",
+    "numpy": "2.5.4",
+    "hyperdime": "0.0.1"
+  },
+  "started_at": "2026-11-14T03:07:40.641586Z",
+  "finished_at": "2026-11-14T03:07:40.661566Z",
+  "artifacts": [
+    {
+      "name": "per_query.csv",
+      "sha256": "6bdf2dc4419438e55653336f957fb2bd608586881467bb9e69d60c6cdbb05333"
+    },
+    {
+      "name": "summary.json",
+      "sha256": "b1acd4cf6a629031f290628d9a624b19bd93d110bccfed6056372430e89c159f"
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+environment,device,seconds,seconds per query-repeat,read,transfer,compute,match,write,peak device MiB,peak RSS MiB (process so far),artifact KiB,"matching alone, all eligible queries, 3 repeats, seconds"
+scifact,NVIDIA GeForce RTX 4090,0.3,0.0014,0.0,0.0,0.1,0.1,0.0,54,1042,11,0
+nfcorpus,NVIDIA GeForce RTX 4090,1.7,0.0011,0.0,0.0,0.3,1.3,0.1,99,1166,955,7
+msmarco,NVIDIA GeForce RTX 4090,28.1,0.0187,1.7,0.7,1.3,23.8,0.0,1988,21342,64,130

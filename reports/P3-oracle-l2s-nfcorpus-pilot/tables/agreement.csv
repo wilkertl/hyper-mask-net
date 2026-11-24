@@ -1,0 +1,51 @@
+environment,cohort,k,arm,Jaccard with oracle mask,score regret to ceiling / mass
+nfcorpus,single-positive,102,prefix-k,0.0812 (0.0773 to 0.0853),0.3307 (0.3257 to 0.3359)
+nfcorpus,single-positive,102,L2S (in-sample),0.3678 (0.3544 to 0.3813),0.1193 (0.1138 to 0.1255)
+nfcorpus,single-positive,204,prefix-k,0.1155 (0.1128 to 0.1181),0.4538 (0.4485 to 0.4594)
+nfcorpus,single-positive,204,L2S (in-sample),0.3952 (0.3830 to 0.4073),0.1762 (0.1683 to 0.1844)
+nfcorpus,single-positive,307,prefix-k,0.1713 (0.1682 to 0.1745),0.5042 (0.4983 to 0.5103)
+nfcorpus,single-positive,307,L2S (in-sample),0.4216 (0.4112 to 0.4322),0.2030 (0.1950 to 0.2113)
+nfcorpus,single-positive,409,prefix-k,0.2512 (0.2479 to 0.2543),0.4932 (0.4869 to 0.4996)
+nfcorpus,single-positive,409,L2S (in-sample),0.4555 (0.4482 to 0.4629),0.2072 (0.1999 to 0.2151)
+nfcorpus,single-positive,512,prefix-k,0.3347 (0.3313 to 0.3380),0.4602 (0.4548 to 0.4657)
+nfcorpus,single-positive,512,L2S (in-sample),0.5043 (0.4981 to 0.5099),0.1975 (0.1906 to 0.2051)
+nfcorpus,single-positive,614,prefix-k,0.4322 (0.4287 to 0.4359),0.4132 (0.4058 to 0.4211)
+nfcorpus,single-positive,614,L2S (in-sample),0.5718 (0.5659 to 0.5775),0.1813 (0.1750 to 0.1886)
+nfcorpus,single-positive,716,prefix-k,0.5399 (0.5372 to 0.5427),0.3640 (0.3546 to 0.3739)
+nfcorpus,single-positive,716,L2S (in-sample),0.6590 (0.6520 to 0.6657),0.1626 (0.1561 to 0.1698)
+nfcorpus,single-positive,819,prefix-k,0.6687 (0.6668 to 0.6708),0.2910 (0.2803 to 0.3018)
+nfcorpus,single-positive,819,L2S (in-sample),0.7618 (0.7550 to 0.7684),0.1384 (0.1328 to 0.1443)
+nfcorpus,single-positive,921,prefix-k,0.8188 (0.8175 to 0.8202),0.1915 (0.1819 to 0.2013)
+nfcorpus,single-positive,921,L2S (in-sample),0.8736 (0.8694 to 0.8778),0.0991 (0.0945 to 0.1040)
+nfcorpus,single-positive,1024,prefix-k,1.0000 (1.0000 to 1.0000),0.0000 (0.0000 to 0.0000)
+nfcorpus,single-positive,1024,L2S (in-sample),1.0000 (1.0000 to 1.0000),0.0000 (0.0000 to 0.0000)
+nfcorpus,multi-positive,102,prefix-k,0.0866 (0.0832 to 0.0903),0.2484 (0.2426 to 0.2543)
+nfcorpus,multi-positive,102,L2S (in-sample),0.1988 (0.1808 to 0.2187),0.1776 (0.1679 to 0.1868)
+nfcorpus,multi-positive,102,held-out transfer (1-1),0.4734 (0.4614 to 0.4860),n/a
+nfcorpus,multi-positive,204,prefix-k,0.1221 (0.1196 to 0.1246),0.3360 (0.3284 to 0.3433)
+nfcorpus,multi-positive,204,L2S (in-sample),0.2380 (0.2218 to 0.2559),0.2413 (0.2297 to 0.2522)
+nfcorpus,multi-positive,204,held-out transfer (1-1),0.5227 (0.5123 to 0.5333),n/a
+nfcorpus,multi-positive,307,prefix-k,0.1759 (0.1727 to 0.1793),0.3699 (0.3615 to 0.3776)
+nfcorpus,multi-positive,307,L2S (in-sample),0.2836 (0.2711 to 0.2973),0.2674 (0.2562 to 0.2780)
+nfcorpus,multi-positive,307,held-out transfer (1-1),0.5607 (0.5512 to 0.5701),n/a
+nfcorpus,multi-positive,409,prefix-k,0.2529 (0.2499 to 0.2559),0.3550 (0.3466 to 0.3626)
+nfcorpus,multi-positive,409,L2S (in-sample),0.3370 (0.3266 to 0.3486),0.2692 (0.2590 to 0.2789)
+nfcorpus,multi-positive,409,held-out transfer (1-1),0.5914 (0.5824 to 0.6005),n/a
+nfcorpus,multi-positive,512,prefix-k,0.3377 (0.3350 to 0.3407),0.3263 (0.3186 to 0.3332)
+nfcorpus,multi-positive,512,L2S (in-sample),0.3999 (0.3912 to 0.4089),0.2570 (0.2467 to 0.2673)
+nfcorpus,multi-positive,512,held-out transfer (1-1),0.6212 (0.6122 to 0.6300),n/a
+nfcorpus,multi-positive,614,prefix-k,0.4319 (0.4286 to 0.4353),0.2869 (0.2796 to 0.2937)
+nfcorpus,multi-positive,614,L2S (in-sample),0.4815 (0.4752 to 0.4884),0.2359 (0.2262 to 0.2452)
+nfcorpus,multi-positive,614,held-out transfer (1-1),0.6471 (0.6387 to 0.6553),n/a
+nfcorpus,multi-positive,716,prefix-k,0.5405 (0.5378 to 0.5433),0.2483 (0.2418 to 0.2544)
+nfcorpus,multi-positive,716,L2S (in-sample),0.5800 (0.5745 to 0.5856),0.2099 (0.2010 to 0.2189)
+nfcorpus,multi-positive,716,held-out transfer (1-1),0.7055 (0.6988 to 0.7124),n/a
+nfcorpus,multi-positive,819,prefix-k,0.6710 (0.6685 to 0.6734),0.1920 (0.1862 to 0.1978)
+nfcorpus,multi-positive,819,L2S (in-sample),0.7009 (0.6964 to 0.7057),0.1751 (0.1674 to 0.1832)
+nfcorpus,multi-positive,819,held-out transfer (1-1),0.7927 (0.7878 to 0.7979),n/a
+nfcorpus,multi-positive,921,prefix-k,0.8185 (0.8173 to 0.8198),0.1210 (0.1163 to 0.1257)
+nfcorpus,multi-positive,921,L2S (in-sample),0.8379 (0.8350 to 0.8410),0.1247 (0.1185 to 0.1315)
+nfcorpus,multi-positive,921,held-out transfer (1-1),0.8856 (0.8826 to 0.8887),n/a
+nfcorpus,multi-positive,1024,prefix-k,1.0000 (1.0000 to 1.0000),0.0000 (0.0000 to 0.0000)
+nfcorpus,multi-positive,1024,L2S (in-sample),1.0000 (1.0000 to 1.0000),0.0000 (0.0000 to 0.0000)
+nfcorpus,multi-positive,1024,held-out transfer (1-1),1.0000 (1.0000 to 1.0000),n/a

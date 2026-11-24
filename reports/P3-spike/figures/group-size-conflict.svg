@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" width="760" height="420" role="img" aria-label="Sign conflict at a fixed number of documents">
+<style>.bg{fill:#fcfcfb}.t{fill:#0b0b0b}.m{fill:#52514e}.g{stroke:#e4e3de;stroke-width:1}text{font:12px system-ui,sans-serif}.h{font-size:15px;font-weight:600}.s0{stroke:#2a78d6;fill:#2a78d6}.s1{stroke:#eb6834;fill:#eb6834}.s2{stroke:#1baf7a;fill:#1baf7a}.n{stroke:#8a8983;fill:#8a8983}.l{fill:none!important;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}.b{stroke:none!important;fill-opacity:.1}.r{stroke:#fcfcfb!important;stroke-width:2}@media (prefers-color-scheme:dark){.bg{fill:#1a1a19}.t{fill:#f0efec}.m{fill:#c3c2b7}.g{stroke:#3a3a37}.s0{stroke:#3987e5;fill:#3987e5}.s1{stroke:#d95926;fill:#d95926}.s2{stroke:#199e70;fill:#199e70}.r{stroke:#1a1a19!important}}</style>
+<rect class="bg" width="760" height="420"/>
+<text class="t h" x="16" y="26">Sign conflict at a fixed number of documents</text>
+<text class="m" x="16" y="46">Same number of documents in each bar, per environment; relevant and matched reference documents of</text>
+<text class="m" x="16" y="62">the same queries.</text>
+<text class="m" x="404.0" y="408" text-anchor="middle">Environment, documents in the group (n = queries)</text>
+<text class="m" transform="translate(16 238.0) rotate(-90)" text-anchor="middle">Share of dimensions</text>
+<line class="g" x1="72" x2="736" y1="364.0" y2="364.0"/>
+<text class="m" x="64" y="368.0" text-anchor="end">0</text>
+<line class="g" x1="72" x2="736" y1="313.6" y2="313.6"/>
+<text class="m" x="64" y="317.6" text-anchor="end">0.2</text>
+<line class="g" x1="72" x2="736" y1="263.2" y2="263.2"/>
+<text class="m" x="64" y="267.2" text-anchor="end">0.4</text>
+<line class="g" x1="72" x2="736" y1="212.8" y2="212.8"/>
+<text class="m" x="64" y="216.8" text-anchor="end">0.6</text>
+<line class="g" x1="72" x2="736" y1="162.4" y2="162.4"/>
+<text class="m" x="64" y="166.4" text-anchor="end">0.8</text>
+<line class="g" x1="72" x2="736" y1="112.0" y2="112.0"/>
+<text class="m" x="64" y="116.0" text-anchor="end">1</text>
+<text class="m" x="138.4" y="382" text-anchor="middle">scifact, 2 (n=69)</text>
+<path class="s0" d="M113.4 364.0V306.74Q113.4 302.74 117.4 302.74H133.4Q137.4 302.74 137.4 306.74V364.0Z"><title>Relevant, scifact, 2 (n=69): 0.243</title></path>
+<path class="s1" d="M139.4 364.0V265.69Q139.4 261.69 143.4 261.69H159.4Q163.4 261.69 163.4 265.69V364.0Z"><title>Reference, scifact, 2 (n=69): 0.406</title></path>
+<text class="m" x="271.2" y="382" text-anchor="middle">scifact, 5 (n=1)</text>
+<path class="s0" d="M246.2 364.0V230.93Q246.2 226.93 250.2 226.93H266.2Q270.2 226.93 270.2 230.93V364.0Z"><title>Relevant, scifact, 5 (n=1): 0.544</title></path>
+<path class="s1" d="M272.2 364.0V163.84Q272.2 159.84 276.2 159.84H292.2Q296.2 159.84 296.2 163.84V364.0Z"><title>Reference, scifact, 5 (n=1): 0.810</title></path>
+<text class="m" x="404.0" y="382" text-anchor="middle">nfcorpus, 2 (n=2162)</text>
+<path class="s0" d="M379.0 364.0V279.17Q379.0 275.17 383.0 275.17H399.0Q403.0 275.17 403.0 279.17V364.0Z"><title>Relevant, nfcorpus, 2 (n=2162): 0.352</title></path>
+<path class="s1" d="M405.0 364.0V267.13Q405.0 263.13 409.0 263.13H425.0Q429.0 263.13 429.0 267.13V364.0Z"><title>Reference, nfcorpus, 2 (n=2162): 0.400</title></path>
+<text class="m" x="536.8" y="382" text-anchor="middle">nfcorpus, 5 (n=1833)</text>
+<path class="s0" d="M511.8 364.0V188.59Q511.8 184.59 515.8 184.59H531.8Q535.8 184.59 535.8 188.59V364.0Z"><title>Relevant, nfcorpus, 5 (n=1833): 0.712</title></path>
+<path class="s1" d="M537.8 364.0V169.87Q537.8 165.87 541.8 165.87H557.8Q561.8 165.87 561.8 169.87V364.0Z"><title>Reference, nfcorpus, 5 (n=1833): 0.786</title></path>
+<text class="m" x="669.6" y="382" text-anchor="middle">nfcorpus, 20 (n=1105)</text>
+<path class="s0" d="M644.6 364.0V129.49Q644.6 125.49 648.6 125.49H664.6Q668.6 125.49 668.6 129.49V364.0Z"><title>Relevant, nfcorpus, 20 (n=1105): 0.946</title></path>
+<path class="s1" d="M670.6 364.0V123.33Q670.6 119.33 674.6 119.33H690.6Q694.6 119.33 694.6 123.33V364.0Z"><title>Reference, nfcorpus, 20 (n=1105): 0.971</title></path>
+<rect class="s0" x="72" y="84" width="14" height="4" rx="2"/>
+<text class="m" x="92" y="90">Relevant</text>
+<rect class="s1" x="162" y="84" width="14" height="4" rx="2"/>
+<text class="m" x="182" y="90">Reference</text>
+</svg>

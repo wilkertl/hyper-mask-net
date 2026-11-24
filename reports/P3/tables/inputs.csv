@@ -1,0 +1,4 @@
+environment,inputs,dataset run,dataset fingerprint,train judgments sha256,embeddings run,documents sha256,queries sha256,split seed,validation fraction,model revision,stored dtype,pooling
+scifact,published F2 artifacts,20261012T034117Z-05f1e2b6,59eac26c95e2,ac709ec68585,20261012T034158Z-c104845c,f5a5f1cf6a92,24683eb63bbf,0,0.1,97b0c614be4d,float16,last_token
+nfcorpus,published F2 artifacts,20261012T034240Z-f6be20fc,713bf04e7e7d,1a66c1391eca,20261012T034249Z-757da0cd,fb122f1fe564,a52cfea38cbc,0,0.1,97b0c614be4d,float16,last_token
+msmarco,published F2 artifacts,20261012T034348Z-0403ce06,b1ba471f97a4,28e7e64c0c69,20261012T034554Z-a504c38d,d76394a3adc6,6709aaa7f223,0,0.1,97b0c614be4d,float16,last_token

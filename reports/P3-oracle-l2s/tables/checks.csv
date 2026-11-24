@@ -1,0 +1,15 @@
+environment,check,value
+scifact,boundary_note,"""L2S ties at a mask boundary go to the lower dimension"""
+scifact,float32_evaluation_gap,"{""largest_ndcg10_gap"": 0.0, ""query_budget_pairs_above_1e-6"": 0}"
+scifact,ids_colliding_with_a_document,0
+scifact,k1024_rank_mismatches,0
+scifact,l2s_boundary_ties,18
+scifact,masks,26418
+scifact,oracle_ceiling_violations,0
+scifact,ranks_out_of_bounds,0
+scifact,single_positive_masks_identical_to_oracle,659
+scifact,single_positive_queries,659
+scifact,stored_run_parity,"{""compared"": 3309, ""mismatched"": 0, ""run"": ""20261109T163931Z-9e9f5a0a""}"
+scifact,tied_tracked_documents,0
+scifact,total seconds,4.6
+scifact,device,cpu

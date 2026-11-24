@@ -1,0 +1,3 @@
+environment,training queries,analyzed,relevant pairs,mean positives,max positives,single-positive queries,multi-positive queries,judged nonrelevant pairs,mean unjudged documents per query,grades
+scifact,728,728,822,1.13,5,659,69,0,5181.9,1: 822
+nfcorpus,2331,2331,100833,43.26,1363,169,2162,0,3589.7,1: 100833

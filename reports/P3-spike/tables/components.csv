@@ -1,0 +1,19 @@
+environment,k,explained by the first component,explained by the first ten
+scifact,102,0.030,0.138
+scifact,204,0.026,0.129
+scifact,307,0.022,0.118
+scifact,409,0.019,0.106
+scifact,512,0.015,0.092
+scifact,614,0.012,0.080
+scifact,716,0.009,0.069
+scifact,819,0.008,0.063
+scifact,921,0.007,0.062
+nfcorpus,102,0.026,0.158
+nfcorpus,204,0.022,0.139
+nfcorpus,307,0.019,0.123
+nfcorpus,409,0.017,0.107
+nfcorpus,512,0.015,0.093
+nfcorpus,614,0.013,0.079
+nfcorpus,716,0.010,0.061
+nfcorpus,819,0.009,0.053
+nfcorpus,921,0.010,0.056

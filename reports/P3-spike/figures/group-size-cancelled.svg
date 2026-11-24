@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" width="760" height="420" role="img" aria-label="Mass cancelled at a fixed number of documents">
+<style>.bg{fill:#fcfcfb}.t{fill:#0b0b0b}.m{fill:#52514e}.g{stroke:#e4e3de;stroke-width:1}text{font:12px system-ui,sans-serif}.h{font-size:15px;font-weight:600}.s0{stroke:#2a78d6;fill:#2a78d6}.s1{stroke:#eb6834;fill:#eb6834}.s2{stroke:#1baf7a;fill:#1baf7a}.n{stroke:#8a8983;fill:#8a8983}.l{fill:none!important;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}.b{stroke:none!important;fill-opacity:.1}.r{stroke:#fcfcfb!important;stroke-width:2}@media (prefers-color-scheme:dark){.bg{fill:#1a1a19}.t{fill:#f0efec}.m{fill:#c3c2b7}.g{stroke:#3a3a37}.s0{stroke:#3987e5;fill:#3987e5}.s1{stroke:#d95926;fill:#d95926}.s2{stroke:#199e70;fill:#199e70}.r{stroke:#1a1a19!important}}</style>
+<rect class="bg" width="760" height="420"/>
+<text class="t h" x="16" y="26">Mass cancelled at a fixed number of documents</text>
+<text class="m" x="16" y="46">Same number of documents in each bar, per environment; relevant and matched reference documents of</text>
+<text class="m" x="16" y="62">the same queries.</text>
+<text class="m" x="404.0" y="408" text-anchor="middle">Environment, documents in the group (n = queries)</text>
+<text class="m" transform="translate(16 238.0) rotate(-90)" text-anchor="middle">Share of mass</text>
+<line class="g" x1="72" x2="736" y1="364.0" y2="364.0"/>
+<text class="m" x="64" y="368.0" text-anchor="end">0</text>
+<line class="g" x1="72" x2="736" y1="301.0" y2="301.0"/>
+<text class="m" x="64" y="305.0" text-anchor="end">0.1</text>
+<line class="g" x1="72" x2="736" y1="238.0" y2="238.0"/>
+<text class="m" x="64" y="242.0" text-anchor="end">0.2</text>
+<line class="g" x1="72" x2="736" y1="175.0" y2="175.0"/>
+<text class="m" x="64" y="179.0" text-anchor="end">0.3</text>
+<line class="g" x1="72" x2="736" y1="112.0" y2="112.0"/>
+<text class="m" x="64" y="116.0" text-anchor="end">0.4</text>
+<text class="m" x="138.4" y="382" text-anchor="middle">scifact, 2 (n=69)</text>
+<path class="s0" d="M113.4 364.0V338.98Q113.4 334.98 117.4 334.98H133.4Q137.4 334.98 137.4 338.98V364.0Z"><title>Relevant, scifact, 2 (n=69): 0.046</title></path>
+<path class="s1" d="M139.4 364.0V253.35Q139.4 249.35 143.4 249.35H159.4Q163.4 249.35 163.4 253.35V364.0Z"><title>Reference, scifact, 2 (n=69): 0.182</title></path>
+<text class="m" x="271.2" y="382" text-anchor="middle">scifact, 5 (n=1)</text>
+<path class="s0" d="M246.2 364.0V316.57Q246.2 312.57 250.2 312.57H266.2Q270.2 312.57 270.2 316.57V364.0Z"><title>Relevant, scifact, 5 (n=1): 0.082</title></path>
+<path class="s1" d="M272.2 364.0V158.91Q272.2 154.91 276.2 154.91H292.2Q296.2 154.91 296.2 158.91V364.0Z"><title>Reference, scifact, 5 (n=1): 0.332</title></path>
+<text class="m" x="404.0" y="382" text-anchor="middle">nfcorpus, 2 (n=2162)</text>
+<path class="s0" d="M379.0 364.0V282.98Q379.0 278.98 383.0 278.98H399.0Q403.0 278.98 403.0 282.98V364.0Z"><title>Relevant, nfcorpus, 2 (n=2162): 0.135</title></path>
+<path class="s1" d="M405.0 364.0V255.62Q405.0 251.62 409.0 251.62H425.0Q429.0 251.62 429.0 255.62V364.0Z"><title>Reference, nfcorpus, 2 (n=2162): 0.178</title></path>
+<text class="m" x="536.8" y="382" text-anchor="middle">nfcorpus, 5 (n=1833)</text>
+<path class="s0" d="M511.8 364.0V221.21Q511.8 217.21 515.8 217.21H531.8Q535.8 217.21 535.8 221.21V364.0Z"><title>Relevant, nfcorpus, 5 (n=1833): 0.233</title></path>
+<path class="s1" d="M537.8 364.0V174.65Q537.8 170.65 541.8 170.65H557.8Q561.8 170.65 561.8 174.65V364.0Z"><title>Reference, nfcorpus, 5 (n=1833): 0.307</title></path>
+<text class="m" x="669.6" y="382" text-anchor="middle">nfcorpus, 20 (n=1105)</text>
+<path class="s0" d="M644.6 364.0V175.88Q644.6 171.88 648.6 171.88H664.6Q668.6 171.88 668.6 175.88V364.0Z"><title>Relevant, nfcorpus, 20 (n=1105): 0.305</title></path>
+<path class="s1" d="M670.6 364.0V128.32Q670.6 124.32 674.6 124.32H690.6Q694.6 124.32 694.6 128.32V364.0Z"><title>Reference, nfcorpus, 20 (n=1105): 0.380</title></path>
+<rect class="s0" x="72" y="84" width="14" height="4" rx="2"/>
+<text class="m" x="92" y="90">Relevant</text>
+<rect class="s1" x="162" y="84" width="14" height="4" rx="2"/>
+<text class="m" x="182" y="90">Reference</text>
+</svg>

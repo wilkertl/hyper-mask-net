@@ -1,0 +1,13 @@
+environment,positives per query,queries,pairs
+scifact,1,659,659
+scifact,2-5,69,163
+scifact,6-20,0,0
+scifact,21+,0,0
+nfcorpus,1,169,169
+nfcorpus,2-5,399,1296
+nfcorpus,6-20,688,8275
+nfcorpus,21+,1075,91093
+msmarco,1,42679,42679
+msmarco,2-5,2317,5029
+msmarco,6-20,4,25
+msmarco,21+,0,0

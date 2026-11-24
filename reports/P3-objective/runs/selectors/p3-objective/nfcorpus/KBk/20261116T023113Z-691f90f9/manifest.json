@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "run_id": "20261116T023113Z-691f90f9",
+  "command": "p3-objective train",
+  "git_commit": "unknown",
+  "git_dirty": null,
+  "config_hash": "7982db9fe0d2ab39a40baa795271ec9c5bdf33c7e6c8693ae97e1b9c11e23570",
+  "config": {
+    "corpus": "nfcorpus",
+    "arm": "KBk",
+    "lr": 0.01,
+    "grid": "post-hoc A1",
+    "seed": 1,
+    "epochs": 75,
+    "runs": {
+      "official": "20261114T022621Z-669b02f6",
+      "teachers": "20261114T022810Z-24f79ec6"
+    },
+    "init": "seeded",
+    "targets_sha256": "e74f38515699c5328cc025253d7fdcd89bcb01a2a6851b6a2dccb071dd657eca",
+    "masks_sha256": "90a8a5cbf6e0e38e9a081156aa5ffc0991b2ba442c9e2cc2edffaa0a1364f9e5",
+    "negatives_sha256": "8fa3d15e3d4921163bc7631a44e44df3469117df47a7e7cd0178ef3d36a27231",
+    "fit_ids_sha256": "d35ed33c39ce39328a916603933fbfd7839a63d53d57eae6809f6751b4e03bc2",
+    "compute": {
+      "host": "ceia40902",
+      "device": "cuda:0",
+      "gpu": "NVIDIA GeForce RTX 4090",
+      "gpu_uuid": "GPU-7ba81dde-05d0-306c-2880-e259c0add8b2"
+    }
+  },
+  "dataset_hash": "e4b1fa65c7f04a480d8cd9845e63e055ac6777c4c0ff95f1227e8f6551ff4896",
+  "model_revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+  "seed": 1,
+  "determinism": {
+    "PYTHONHASHSEED": null
+  },
+  "device": "cuda:0",
+  "dtype": "float32",
+  "versions": {
+    "python": "3.14.6",
+    "torch": "2.11.0+cu128",
+    "numpy": "2.5.4",
+    "hyperdime": "0.0.1"
+  },
+  "started_at": "2026-11-16T02:31:13.838996Z",
+  "finished_at": "2026-11-16T02:31:21.989108Z",
+  "artifacts": [
+    {
+      "name": "state_dict.pt",
+      "sha256": "f6bd66a33a3f1557486f152e88a795b6de00a69c7d05c1211439bb9a2bcd9e0a"
+    },
+    {
+      "name": "summary.json",
+      "sha256": "eabe491e0655213eb9b63264c6255790c1c712985654cdd35a2c2417bfa0fc5f"
+    }
+  ]
+}

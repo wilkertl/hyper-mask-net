@@ -1,0 +1,3 @@
+environment,inputs,dataset run,dataset fingerprint,train judgments sha256,embeddings run,documents sha256,queries sha256,split seed,validation fraction,model revision,stored dtype,pooling
+scifact,converted from the F0 spike caches by scripts/checks/p3_spike_inputs.py (pilot),20261105T221651Z-387f9345,ca52c14d6f18,ac709ec68585,20261105T221651Z-072c2218,9043cc845645,ad7c14aa295d,0,0.1,97b0c614be4d,float16,last_token
+nfcorpus,converted from the F0 spike caches by scripts/checks/p3_spike_inputs.py (pilot),20261105T221651Z-7b153cb0,1af5f1c2e9d9,1a66c1391eca,20261105T221653Z-7cf57b55,51378a9788e6,7d0bba947ea5,0,0.1,97b0c614be4d,float16,last_token

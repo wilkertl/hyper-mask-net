@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" width="760" height="420" role="img" aria-label="Mass cancelled at a fixed number of documents">
+<style>.bg{fill:#fcfcfb}.t{fill:#0b0b0b}.m{fill:#52514e}.g{stroke:#e4e3de;stroke-width:1}text{font:12px system-ui,sans-serif}.h{font-size:15px;font-weight:600}.s0{stroke:#2a78d6;fill:#2a78d6}.s1{stroke:#eb6834;fill:#eb6834}.s2{stroke:#1baf7a;fill:#1baf7a}.n{stroke:#8a8983;fill:#8a8983}.l{fill:none!important;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}.b{stroke:none!important;fill-opacity:.1}.r{stroke:#fcfcfb!important;stroke-width:2}@media (prefers-color-scheme:dark){.bg{fill:#1a1a19}.t{fill:#f0efec}.m{fill:#c3c2b7}.g{stroke:#3a3a37}.s0{stroke:#3987e5;fill:#3987e5}.s1{stroke:#d95926;fill:#d95926}.s2{stroke:#199e70;fill:#199e70}.r{stroke:#1a1a19!important}}</style>
+<rect class="bg" width="760" height="420"/>
+<text class="t h" x="16" y="26">Mass cancelled at a fixed number of documents</text>
+<text class="m" x="16" y="46">Same number of documents in each bar, per environment; relevant and matched reference documents of</text>
+<text class="m" x="16" y="62">the same queries.</text>
+<text class="m" x="404.0" y="408" text-anchor="middle">Environment, documents in the group (n = queries)</text>
+<text class="m" transform="translate(16 238.0) rotate(-90)" text-anchor="middle">Share of mass</text>
+<line class="g" x1="72" x2="736" y1="364.0" y2="364.0"/>
+<text class="m" x="64" y="368.0" text-anchor="end">0</text>
+<line class="g" x1="72" x2="736" y1="313.6" y2="313.6"/>
+<text class="m" x="64" y="317.6" text-anchor="end">0.1</text>
+<line class="g" x1="72" x2="736" y1="263.2" y2="263.2"/>
+<text class="m" x="64" y="267.2" text-anchor="end">0.2</text>
+<line class="g" x1="72" x2="736" y1="212.8" y2="212.8"/>
+<text class="m" x="64" y="216.8" text-anchor="end">0.3</text>
+<line class="g" x1="72" x2="736" y1="162.4" y2="162.4"/>
+<text class="m" x="64" y="166.4" text-anchor="end">0.4</text>
+<line class="g" x1="72" x2="736" y1="112.0" y2="112.0"/>
+<text class="m" x="64" y="116.0" text-anchor="end">0.5</text>
+<text class="m" x="119.43" y="382" text-anchor="middle">scifact, 2 (n=69)</text>
+<path class="s0" d="M94.43 364.0V345.0Q94.43 341.0 98.43 341.0H114.43Q118.43 341.0 118.43 345.0V364.0Z"><title>Relevant, scifact, 2 (n=69): 0.046</title></path>
+<path class="s1" d="M120.43 364.0V274.63Q120.43 270.63 124.43 270.63H140.43Q144.43 270.63 144.43 274.63V364.0Z"><title>Reference, scifact, 2 (n=69): 0.185</title></path>
+<text class="m" x="214.29" y="382" text-anchor="middle">scifact, 5 (n=1)</text>
+<path class="s0" d="M189.29 364.0V326.95Q189.29 322.95 193.29 322.95H209.29Q213.29 322.95 213.29 326.95V364.0Z"><title>Relevant, scifact, 5 (n=1): 0.081</title></path>
+<path class="s1" d="M215.29 364.0V215.89Q215.29 211.89 219.29 211.89H235.29Q239.29 211.89 239.29 215.89V364.0Z"><title>Reference, scifact, 5 (n=1): 0.302</title></path>
+<text class="m" x="309.14" y="382" text-anchor="middle">nfcorpus, 2 (n=2162)</text>
+<path class="s0" d="M284.14 364.0V299.71Q284.14 295.71 288.14 295.71H304.14Q308.14 295.71 308.14 299.71V364.0Z"><title>Relevant, nfcorpus, 2 (n=2162): 0.136</title></path>
+<path class="s1" d="M310.14 364.0V278.15Q310.14 274.15 314.14 274.15H330.14Q334.14 274.15 334.14 278.15V364.0Z"><title>Reference, nfcorpus, 2 (n=2162): 0.178</title></path>
+<text class="m" x="404.0" y="382" text-anchor="middle">nfcorpus, 5 (n=1833)</text>
+<path class="s0" d="M379.0 364.0V250.28Q379.0 246.28 383.0 246.28H399.0Q403.0 246.28 403.0 250.28V364.0Z"><title>Relevant, nfcorpus, 5 (n=1833): 0.234</title></path>
+<path class="s1" d="M405.0 364.0V213.26Q405.0 209.26 409.0 209.26H425.0Q429.0 209.26 429.0 213.26V364.0Z"><title>Reference, nfcorpus, 5 (n=1833): 0.307</title></path>
+<text class="m" x="498.86" y="382" text-anchor="middle">nfcorpus, 20 (n=1105)</text>
+<path class="s0" d="M473.86 364.0V214.13Q473.86 210.13 477.86 210.13H493.86Q497.86 210.13 497.86 214.13V364.0Z"><title>Relevant, nfcorpus, 20 (n=1105): 0.305</title></path>
+<path class="s1" d="M499.86 364.0V176.24Q499.86 172.24 503.86 172.24H519.86Q523.86 172.24 523.86 176.24V364.0Z"><title>Reference, nfcorpus, 20 (n=1105): 0.380</title></path>
+<text class="m" x="593.71" y="382" text-anchor="middle">msmarco, 2 (n=2321)</text>
+<path class="s0" d="M568.71 364.0V340.65Q568.71 336.65 572.71 336.65H588.71Q592.71 336.65 592.71 340.65V364.0Z"><title>Relevant, msmarco, 2 (n=2321): 0.054</title></path>
+<path class="s1" d="M594.71 364.0V249.48Q594.71 245.48 598.71 245.48H614.71Q618.71 245.48 618.71 249.48V364.0Z"><title>Reference, msmarco, 2 (n=2321): 0.235</title></path>
+<text class="m" x="688.57" y="382" text-anchor="middle">msmarco, 5 (n=18)</text>
+<path class="s0" d="M663.57 364.0V313.13Q663.57 309.13 667.57 309.13H683.57Q687.57 309.13 687.57 313.13V364.0Z"><title>Relevant, msmarco, 5 (n=18): 0.109</title></path>
+<path class="s1" d="M689.57 364.0V155.95Q689.57 151.95 693.57 151.95H709.57Q713.57 151.95 713.57 155.95V364.0Z"><title>Reference, msmarco, 5 (n=18): 0.421</title></path>
+<rect class="s0" x="72" y="84" width="14" height="4" rx="2"/>
+<text class="m" x="92" y="90">Relevant</text>
+<rect class="s1" x="162" y="84" width="14" height="4" rx="2"/>
+<text class="m" x="182" y="90">Reference</text>
+</svg>

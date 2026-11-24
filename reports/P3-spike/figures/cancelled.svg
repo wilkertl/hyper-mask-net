@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" width="760" height="420" role="img" aria-label="How much contribution mass does averaging cancel?">
+<style>.bg{fill:#fcfcfb}.t{fill:#0b0b0b}.m{fill:#52514e}.g{stroke:#e4e3de;stroke-width:1}text{font:12px system-ui,sans-serif}.h{font-size:15px;font-weight:600}.s0{stroke:#2a78d6;fill:#2a78d6}.s1{stroke:#eb6834;fill:#eb6834}.s2{stroke:#1baf7a;fill:#1baf7a}.n{stroke:#8a8983;fill:#8a8983}.l{fill:none!important;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}.b{stroke:none!important;fill-opacity:.1}.r{stroke:#fcfcfb!important;stroke-width:2}@media (prefers-color-scheme:dark){.bg{fill:#1a1a19}.t{fill:#f0efec}.m{fill:#c3c2b7}.g{stroke:#3a3a37}.s0{stroke:#3987e5;fill:#3987e5}.s1{stroke:#d95926;fill:#d95926}.s2{stroke:#199e70;fill:#199e70}.r{stroke:#1a1a19!important}}</style>
+<rect class="bg" width="760" height="420"/>
+<text class="t h" x="16" y="26">How much contribution mass does averaging cancel?</text>
+<text class="m" x="16" y="46">Mean share of absolute contribution mass lost when a query&#x27;s positives are averaged.</text>
+<text class="m" x="404.0" y="408" text-anchor="middle">Positives per query</text>
+<text class="m" transform="translate(16 238.0) rotate(-90)" text-anchor="middle">Share of mass cancelled</text>
+<line class="g" x1="72" x2="736" y1="364.0" y2="364.0"/>
+<text class="m" x="64" y="368.0" text-anchor="end">0</text>
+<line class="g" x1="72" x2="736" y1="301.0" y2="301.0"/>
+<text class="m" x="64" y="305.0" text-anchor="end">0.1</text>
+<line class="g" x1="72" x2="736" y1="238.0" y2="238.0"/>
+<text class="m" x="64" y="242.0" text-anchor="end">0.2</text>
+<line class="g" x1="72" x2="736" y1="175.0" y2="175.0"/>
+<text class="m" x="64" y="179.0" text-anchor="end">0.3</text>
+<line class="g" x1="72" x2="736" y1="112.0" y2="112.0"/>
+<text class="m" x="64" y="116.0" text-anchor="end">0.4</text>
+<text class="m" x="182.67" y="382" text-anchor="middle">2-5</text>
+<path class="s0" d="M157.67 364.0V336.73Q157.67 332.73 161.67 332.73H177.67Q181.67 332.73 181.67 336.73V364.0Z"><title>scifact, 2-5: 0.050</title></path>
+<path class="s1" d="M183.67 364.0V271.44Q183.67 267.44 187.67 267.44H203.67Q207.67 267.44 207.67 271.44V364.0Z"><title>nfcorpus, 2-5: 0.153</title></path>
+<text class="m" x="404.0" y="382" text-anchor="middle">6-20</text>
+<path class="s1" d="M405.0 364.0V214.79Q405.0 210.79 409.0 210.79H425.0Q429.0 210.79 429.0 214.79V364.0Z"><title>nfcorpus, 6-20: 0.243</title></path>
+<text class="m" x="625.33" y="382" text-anchor="middle">21+</text>
+<path class="s1" d="M626.33 364.0V168.25Q626.33 164.25 630.33 164.25H646.33Q650.33 164.25 650.33 168.25V364.0Z"><title>nfcorpus, 21+: 0.317</title></path>
+<rect class="s0" x="72" y="84" width="14" height="4" rx="2"/>
+<text class="m" x="92" y="90">scifact</text>
+<rect class="s1" x="155" y="84" width="14" height="4" rx="2"/>
+<text class="m" x="175" y="90">nfcorpus</text>
+</svg>

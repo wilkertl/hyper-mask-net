@@ -1,0 +1,79 @@
+statistic,environment,"all queries, mean (p10 to p90)","single positive, mean (p10 to p90)","multiple positives, mean (p10 to p90)",pair-weighted mean
+full-vector score,scifact,0.656 (0.498 to 0.800),0.655 (0.487 to 0.804),0.663 (0.574 to 0.778),0.658
+full-vector score,nfcorpus,0.347 (0.218 to 0.477),0.409 (0.201 to 0.663),0.342 (0.220 to 0.463),0.319
+full-vector score,msmarco,0.695 (0.568 to 0.808),0.696 (0.569 to 0.810),0.668 (0.556 to 0.773),0.693
+query norm,scifact,1.000 (1.000 to 1.000),1.000 (1.000 to 1.000),1.000 (1.000 to 1.000),1.000
+query norm,nfcorpus,1.000 (1.000 to 1.000),1.000 (1.000 to 1.000),1.000 (1.000 to 1.000),1.000
+query norm,msmarco,1.000 (1.000 to 1.000),1.000 (1.000 to 1.000),1.000 (1.000 to 1.000),1.000
+document norm,scifact,1.000 (1.000 to 1.000),1.000 (1.000 to 1.000),1.000 (1.000 to 1.000),1.000
+document norm,nfcorpus,1.000 (1.000 to 1.000),1.000 (1.000 to 1.000),1.000 (1.000 to 1.000),1.000
+document norm,msmarco,1.000 (1.000 to 1.000),1.000 (1.000 to 1.000),1.000 (1.000 to 1.000),1.000
+positive mass P,scifact,0.721 (0.609 to 0.826),0.720 (0.603 to 0.831),0.725 (0.664 to 0.808),0.722
+positive mass P,nfcorpus,0.516 (0.438 to 0.596),0.556 (0.423 to 0.724),0.513 (0.439 to 0.589),0.498
+positive mass P,msmarco,0.748 (0.655 to 0.834),0.749 (0.656 to 0.835),0.729 (0.649 to 0.807),0.747
+negative mass N,scifact,0.065 (0.028 to 0.111),0.066 (0.027 to 0.115),0.062 (0.032 to 0.090),0.065
+negative mass N,nfcorpus,0.169 (0.119 to 0.219),0.147 (0.059 to 0.222),0.171 (0.125 to 0.218),0.179
+negative mass N,msmarco,0.054 (0.025 to 0.088),0.053 (0.025 to 0.088),0.061 (0.033 to 0.093),0.054
+N / (P + N),scifact,0.086 (0.033 to 0.155),0.087 (0.031 to 0.159),0.081 (0.037 to 0.122),0.085
+N / (P + N),nfcorpus,0.251 (0.170 to 0.335),0.216 (0.077 to 0.344),0.254 (0.178 to 0.333),0.268
+N / (P + N),msmarco,0.069 (0.029 to 0.118),0.068 (0.029 to 0.118),0.079 (0.039 to 0.126),0.069
+dimensions with c > 0,scifact,745.095 (674.000 to 810.000),744.895 (671.000 to 811.200),747.007 (709.000 to 792.917),745.900
+dimensions with c > 0,nfcorpus,626.982 (583.727 to 674.000),650.822 (574.000 to 747.000),625.118 (584.000 to 669.466),616.405
+dimensions with c > 0,msmarco,762.483 (704.000 to 819.000),763.130 (704.000 to 819.000),750.581 (700.500 to 799.500),761.708
+dimensions with c < 0,scifact,276.893 (212.000 to 349.000),277.103 (211.000 to 350.000),274.891 (229.050 to 313.600),276.084
+dimensions with c < 0,nfcorpus,394.804 (348.600 to 438.500),371.071 (275.000 to 446.200),396.659 (352.813 to 438.000),405.283
+dimensions with c < 0,msmarco,259.144 (203.000 to 318.000),258.496 (202.000 to 317.000),271.051 (222.333 to 321.000),259.919
+dimensions with c = 0,scifact,2.011 (0.000 to 4.000),2.002 (0.000 to 4.000),2.102 (0.633 to 3.600),2.016
+dimensions with c = 0,nfcorpus,2.214 (0.909 to 3.917),2.107 (1.000 to 4.000),2.223 (0.905 to 3.896),2.312
+dimensions with c = 0,msmarco,2.374 (1.000 to 4.000),2.374 (1.000 to 4.000),2.368 (0.667 to 4.000),2.373
+"sign agreement, by count",scifact,0.729 (0.659 to 0.792),0.729 (0.658 to 0.793),0.731 (0.693 to 0.776),0.730
+"sign agreement, by count",nfcorpus,0.614 (0.571 to 0.659),0.637 (0.563 to 0.731),0.612 (0.571 to 0.655),0.603
+"sign agreement, by count",msmarco,0.746 (0.689 to 0.801),0.747 (0.689 to 0.802),0.735 (0.686 to 0.783),0.746
+effective positive dimensions,scifact,258.935 (225.762 to 291.956),258.899 (224.376 to 292.286),259.277 (234.002 to 285.521),258.981
+effective positive dimensions,nfcorpus,217.649 (193.716 to 240.309),226.119 (190.272 to 263.678),216.987 (194.305 to 238.720),213.704
+effective positive dimensions,msmarco,268.449 (238.074 to 298.181),268.713 (238.243 to 298.520),263.598 (235.854 to 290.449),268.124
+effective negative dimensions,scifact,111.096 (84.164 to 140.041),111.184 (82.909 to 140.659),110.259 (88.631 to 130.115),110.705
+effective negative dimensions,nfcorpus,152.928 (135.117 to 170.313),144.659 (106.754 to 178.006),153.575 (136.586 to 169.830),157.088
+effective negative dimensions,msmarco,103.638 (79.163 to 128.974),103.404 (78.835 to 128.976),107.945 (86.498 to 128.827),103.921
+share of P in the largest c,scifact,0.018 (0.012 to 0.024),0.018 (0.012 to 0.025),0.017 (0.013 to 0.022),0.018
+share of P in the largest c,nfcorpus,0.022 (0.016 to 0.029),0.021 (0.014 to 0.030),0.022 (0.017 to 0.029),0.023
+share of P in the largest c,msmarco,0.016 (0.012 to 0.022),0.016 (0.012 to 0.022),0.017 (0.012 to 0.021),0.016
+share of P in the top 10,scifact,0.108 (0.093 to 0.125),0.108 (0.093 to 0.125),0.108 (0.094 to 0.120),0.108
+share of P in the top 10,nfcorpus,0.124 (0.112 to 0.138),0.121 (0.103 to 0.139),0.125 (0.112 to 0.138),0.126
+share of P in the top 10,msmarco,0.104 (0.090 to 0.119),0.104 (0.090 to 0.119),0.106 (0.093 to 0.120),0.104
+share of P in the top 100,scifact,0.502 (0.474 to 0.532),0.502 (0.473 to 0.533),0.503 (0.481 to 0.527),0.502
+share of P in the top 100,nfcorpus,0.547 (0.524 to 0.570),0.537 (0.499 to 0.577),0.548 (0.526 to 0.570),0.551
+share of P in the top 100,msmarco,0.495 (0.468 to 0.523),0.495 (0.468 to 0.523),0.499 (0.476 to 0.525),0.495
+dimensions for 50% of P,scifact,100.122 (90.000 to 110.000),100.187 (90.000 to 110.000),99.509 (91.200 to 107.500),100.019
+dimensions for 50% of P,nfcorpus,85.804 (79.141 to 92.810),88.947 (77.000 to 101.000),85.558 (79.277 to 92.122),84.719
+dimensions for 50% of P,msmarco,102.534 (93.000 to 112.000),102.621 (93.000 to 112.000),100.941 (92.000 to 109.500),102.430
+dimensions for 80% of P,scifact,259.425 (237.000 to 282.000),259.401 (235.800 to 283.000),259.654 (246.800 to 273.667),259.465
+dimensions for 80% of P,nfcorpus,223.127 (207.889 to 239.875),230.675 (204.000 to 259.000),222.538 (208.000 to 238.206),220.210
+dimensions for 80% of P,msmarco,265.455 (245.000 to 286.000),265.654 (245.000 to 286.000),261.789 (243.500 to 279.333),265.215
+dimensions for 90% of P,scifact,365.330 (334.000 to 395.000),365.252 (333.000 to 397.000),366.079 (348.800 to 383.867),365.509
+dimensions for 90% of P,nfcorpus,313.563 (292.917 to 336.842),324.343 (288.800 to 367.200),312.720 (293.000 to 334.498),309.218
+dimensions for 90% of P,msmarco,373.704 (346.000 to 400.000),373.987 (346.000 to 401.000),368.508 (344.000 to 392.000),373.365
+dimensions for 95% of P,scifact,453.213 (414.000 to 489.000),453.080 (411.800 to 490.000),454.481 (433.800 to 477.200),453.526
+dimensions for 95% of P,nfcorpus,387.803 (362.406 to 415.972),401.456 (359.800 to 455.000),386.736 (362.654 to 413.078),382.163
+dimensions for 95% of P,msmarco,463.255 (429.000 to 496.000),463.611 (430.000 to 496.000),456.713 (426.500 to 485.000),462.828
+dimensions for 99% of P,scifact,593.370 (541.700 to 640.000),593.168 (539.000 to 641.000),595.293 (565.700 to 630.733),593.938
+dimensions for 99% of P,nfcorpus,504.900 (471.612 to 541.333),523.207 (465.800 to 595.000),503.469 (471.945 to 537.973),497.075
+dimensions for 99% of P,msmarco,606.192 (562.000 to 649.000),606.672 (562.000 to 649.000),597.375 (559.000 to 634.000),605.616
+smallest k whose maximum reaches the full score,scifact,393.412 (254.100 to 532.300),392.914 (246.800 to 537.000),398.175 (312.250 to 499.700),395.055
+smallest k whose maximum reaches the full score,nfcorpus,161.251 (83.194 to 245.750),206.343 (73.800 to 398.800),157.727 (84.003 to 237.226),142.195
+smallest k whose maximum reaches the full score,msmarco,431.028 (309.000 to 550.000),432.436 (309.000 to 552.000),405.130 (301.500 to 508.500),429.360
+var log|c|: query share,scifact,0.404 (0.356 to 0.452),0.404 (0.355 to 0.454),0.405 (0.370 to 0.436),0.404
+var log|c|: query share,nfcorpus,0.462 (0.433 to 0.490),0.449 (0.393 to 0.495),0.463 (0.435 to 0.490),0.466
+var log|c|: query share,msmarco,0.395 (0.354 to 0.438),0.395 (0.354 to 0.438),0.402 (0.367 to 0.440),0.396
+var log|c|: document share,scifact,0.406 (0.361 to 0.454),0.407 (0.361 to 0.455),0.403 (0.367 to 0.432),0.406
+var log|c|: document share,nfcorpus,0.465 (0.435 to 0.494),0.457 (0.409 to 0.504),0.465 (0.438 to 0.493),0.470
+var log|c|: document share,msmarco,0.394 (0.353 to 0.437),0.394 (0.353 to 0.437),0.401 (0.366 to 0.438),0.395
+var log|c|: covariance share,scifact,0.189 (0.111 to 0.270),0.189 (0.106 to 0.273),0.192 (0.140 to 0.251),0.190
+var log|c|: covariance share,nfcorpus,0.073 (0.038 to 0.112),0.093 (0.019 to 0.196),0.072 (0.038 to 0.109),0.064
+var log|c|: covariance share,msmarco,0.210 (0.140 to 0.278),0.211 (0.140 to 0.279),0.196 (0.138 to 0.255),0.209
+|q| percentile of the top 50 c,scifact,0.949 (0.933 to 0.963),0.949 (0.932 to 0.963),0.951 (0.937 to 0.961),0.949
+|q| percentile of the top 50 c,nfcorpus,0.914 (0.895 to 0.932),0.920 (0.888 to 0.950),0.914 (0.896 to 0.931),0.911
+|q| percentile of the top 50 c,msmarco,0.953 (0.939 to 0.964),0.953 (0.939 to 0.964),0.950 (0.938 to 0.961),0.952
+|d| percentile of the top 50 c,scifact,0.949 (0.933 to 0.963),0.949 (0.933 to 0.964),0.951 (0.940 to 0.961),0.949
+|d| percentile of the top 50 c,nfcorpus,0.914 (0.896 to 0.931),0.921 (0.891 to 0.951),0.914 (0.896 to 0.930),0.911
+|d| percentile of the top 50 c,msmarco,0.953 (0.939 to 0.964),0.953 (0.939 to 0.964),0.950 (0.939 to 0.961),0.953

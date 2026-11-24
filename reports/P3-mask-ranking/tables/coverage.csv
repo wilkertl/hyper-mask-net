@@ -1,0 +1,4 @@
+environment,training queries,with a positive,eligible (2+ positives),ranked,capped,documents ranked,positives,orderings,masks,queries sharing an id with a document,positives out of the competition,ties met by tracked positives
+scifact,728,728,69,69,False,5183,163,630,5118,0,0,0
+nfcorpus,2331,2331,2162,2162,False,3633,100664,164508,1463276,0,0,953742
+msmarco,45000,45000,2321,2321,False,8841823,5054,18575,148607,2321,0,0

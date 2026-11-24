@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "run_id": "20261109T235856Z-5d598106",
+  "command": "analyze-oracle-l2s",
+  "git_commit": "cf2d71a2828bbd5ccc93aac02588277608182d90",
+  "git_dirty": false,
+  "config_hash": "256961b5fbde798ab9474791b2bd7fd0326c192ee43152d945dfe03d2fdba1d6",
+  "config": {
+    "model": {
+      "name": "Qwen/Qwen3-Embedding-0.6B",
+      "revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+      "embedding_dim": 1024,
+      "frozen": true,
+      "normalize": true,
+      "max_length": 512,
+      "dtype": "bfloat16"
+    },
+    "data": {
+      "environment": "scifact",
+      "source": "BeIR/scifact",
+      "instruction": "Given a scientific claim, retrieve documents that support or refute the claim",
+      "validation_fraction": 0.1,
+      "sample": null
+    },
+    "run": {
+      "seed": 0,
+      "device": "cpu",
+      "dtype": "float32",
+      "output_dir": "artifacts"
+    },
+    "config_version": 1
+  },
+  "dataset_hash": "none",
+  "model_revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+  "seed": 0,
+  "determinism": {
+    "seed": "0",
+    "deterministic": true,
+    "cudnn_benchmark": false,
+    "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+    "PYTHONHASHSEED": null
+  },
+  "device": "cpu",
+  "dtype": "float32",
+  "versions": {
+    "python": "3.12.15",
+    "torch": "2.11.0+cu128",
+    "numpy": "2.5.4",
+    "hyperdime": "0.0.1"
+  },
+  "started_at": "2026-11-09T23:58:56.482733Z",
+  "finished_at": "2026-11-09T23:59:01.035449Z",
+  "artifacts": [
+    {
+      "name": "inputs.json",
+      "sha256": "45ff24673758804e55d6fd39fad6f6c94b0ee10c22ca6db3bdb0226b078f42c2"
+    },
+    {
+      "name": "scifact/masks.npz",
+      "sha256": "5ea0697fbd58b623e01ea1e07a8673b3cf82680e353107bc3b61025c9d88a246"
+    },
+    {
+      "name": "scifact/per-query.npz",
+      "sha256": "bed1fab31170b34aa554afd4576b35acd88aa4e64d48255a60f9047736afdfc0"
+    },
+    {
+      "name": "scifact/relationship.npz",
+      "sha256": "c78cc186283c19641e24e4572a8a4947bd1d5b6d79581f5b08164936a488b991"
+    },
+    {
+      "name": "scifact/selected-queries.json",
+      "sha256": "ee701a51111c5f3b436de5eb5be41c51da8a36956492270ee883207aa4c80427"
+    },
+    {
+      "name": "scifact/selection.npz",
+      "sha256": "853a79136f9b82ed282876fa97438f6953c11ebd246823b732cb4cff67d7c337"
+    },
+    {
+      "name": "scifact/summary.json",
+      "sha256": "2c7d075284530b5c3441d1eb1ea8fce8a6388a14d2de89594489c9ed41324641"
+    },
+    {
+      "name": "scifact/tracked.npz",
+      "sha256": "7a09d01ec7795355741f2b33506f931ab6d68e7805f2375690de3cbbfedfe78e"
+    }
+  ]
+}

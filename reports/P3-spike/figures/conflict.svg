@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" width="760" height="420" role="img" aria-label="How many dimensions change sign across a query&#x27;s positives?">
+<style>.bg{fill:#fcfcfb}.t{fill:#0b0b0b}.m{fill:#52514e}.g{stroke:#e4e3de;stroke-width:1}text{font:12px system-ui,sans-serif}.h{font-size:15px;font-weight:600}.s0{stroke:#2a78d6;fill:#2a78d6}.s1{stroke:#eb6834;fill:#eb6834}.s2{stroke:#1baf7a;fill:#1baf7a}.n{stroke:#8a8983;fill:#8a8983}.l{fill:none!important;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}.b{stroke:none!important;fill-opacity:.1}.r{stroke:#fcfcfb!important;stroke-width:2}@media (prefers-color-scheme:dark){.bg{fill:#1a1a19}.t{fill:#f0efec}.m{fill:#c3c2b7}.g{stroke:#3a3a37}.s0{stroke:#3987e5;fill:#3987e5}.s1{stroke:#d95926;fill:#d95926}.s2{stroke:#199e70;fill:#199e70}.r{stroke:#1a1a19!important}}</style>
+<rect class="bg" width="760" height="420"/>
+<text class="t h" x="16" y="26">How many dimensions change sign across a query&#x27;s positives?</text>
+<text class="m" x="16" y="46">Mean share of the 1024 dimensions with both a positive and a negative contribution.</text>
+<text class="m" x="404.0" y="408" text-anchor="middle">Positives per query</text>
+<text class="m" transform="translate(16 238.0) rotate(-90)" text-anchor="middle">Share of dimensions</text>
+<line class="g" x1="72" x2="736" y1="364.0" y2="364.0"/>
+<text class="m" x="64" y="368.0" text-anchor="end">0</text>
+<line class="g" x1="72" x2="736" y1="313.6" y2="313.6"/>
+<text class="m" x="64" y="317.6" text-anchor="end">0.2</text>
+<line class="g" x1="72" x2="736" y1="263.2" y2="263.2"/>
+<text class="m" x="64" y="267.2" text-anchor="end">0.4</text>
+<line class="g" x1="72" x2="736" y1="212.8" y2="212.8"/>
+<text class="m" x="64" y="216.8" text-anchor="end">0.6</text>
+<line class="g" x1="72" x2="736" y1="162.4" y2="162.4"/>
+<text class="m" x="64" y="166.4" text-anchor="end">0.8</text>
+<line class="g" x1="72" x2="736" y1="112.0" y2="112.0"/>
+<text class="m" x="64" y="116.0" text-anchor="end">1</text>
+<text class="m" x="182.67" y="382" text-anchor="middle">2-5</text>
+<path class="s0" d="M157.67 364.0V297.5Q157.67 293.5 161.67 293.5H177.67Q181.67 293.5 181.67 297.5V364.0Z"><title>scifact, 2-5: 0.280</title></path>
+<path class="s1" d="M183.67 364.0V246.09Q183.67 242.09 187.67 242.09H203.67Q207.67 242.09 207.67 246.09V364.0Z"><title>nfcorpus, 2-5: 0.484</title></path>
+<text class="m" x="404.0" y="382" text-anchor="middle">6-20</text>
+<path class="s1" d="M405.0 364.0V156.7Q405.0 152.7 409.0 152.7H425.0Q429.0 152.7 429.0 156.7V364.0Z"><title>nfcorpus, 6-20: 0.838</title></path>
+<text class="m" x="625.33" y="382" text-anchor="middle">21+</text>
+<path class="s1" d="M626.33 364.0V122.67Q626.33 118.67 630.33 118.67H646.33Q650.33 118.67 650.33 122.67V364.0Z"><title>nfcorpus, 21+: 0.974</title></path>
+<rect class="s0" x="72" y="84" width="14" height="4" rx="2"/>
+<text class="m" x="92" y="90">scifact</text>
+<rect class="s1" x="155" y="84" width="14" height="4" rx="2"/>
+<text class="m" x="175" y="90">nfcorpus</text>
+</svg>

@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "run_id": "20261114T025438Z-b36954fd",
+  "command": "p3-target diagnose",
+  "git_commit": "unknown",
+  "git_dirty": null,
+  "config_hash": "534e47766d2ab7f80211c093fe250c43034879949f415787ea90e4decff6bf9a",
+  "config": {
+    "corpus": "scifact",
+    "runs": {
+      "official": "20261112T214624Z-7ec05061",
+      "teachers": "20261112T223656Z-07608c76",
+      "arm:positive@42": "20261112T230338Z-4f7bb1be",
+      "arm:positive@0": "20261112T230350Z-19a566cf",
+      "arm:positive@1": "20261112T230403Z-d4b7dbfd",
+      "arm:positive@2": "20261112T230415Z-5b212a87",
+      "arm:contrastive@42": "20261112T230427Z-36ef7bf9",
+      "arm:contrastive@0": "20261112T230439Z-25b9493d",
+      "arm:contrastive@1": "20261112T230451Z-0e8e46b6",
+      "arm:contrastive@2": "20261112T230503Z-17b5a379",
+      "arm:rank-guided@42": "20261112T230515Z-89493bde",
+      "arm:rank-guided@0": "20261112T230527Z-60c14b2c",
+      "arm:rank-guided@1": "20261112T230539Z-d678b62e",
+      "arm:rank-guided@2": "20261112T230551Z-5d4246fa",
+      "s1:scratch": "20261112T230604Z-220da458",
+      "s1:official-init": "20261112T231423Z-833ccb08"
+    },
+    "teachers": [
+      "positive",
+      "contrastive",
+      "rank-guided"
+    ],
+    "tune_ids_sha256": "7997975896395645257d42048e8d0be4269330eb5389aea993171fdd6db18e85"
+  },
+  "dataset_hash": "e4b1fa65c7f04a480d8cd9845e63e055ac6777c4c0ff95f1227e8f6551ff4896",
+  "model_revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+  "seed": 20261114,
+  "determinism": {
+    "PYTHONHASHSEED": "0"
+  },
+  "device": "cpu",
+  "dtype": "float32",
+  "versions": {
+    "python": "3.12.15",
+    "torch": "2.11.0+cu128",
+    "numpy": "2.5.4",
+    "hyperdime": "0.0.1"
+  },
+  "started_at": "2026-11-14T02:54:38.630786Z",
+  "finished_at": "2026-11-14T02:54:39.083704Z",
+  "artifacts": [
+    {
+      "name": "per_query.csv",
+      "sha256": "e0310c998f10a6621caa720aeaf06d394e4476ae45db1a8feccd45e296843c99"
+    },
+    {
+      "name": "summary.csv",
+      "sha256": "6f81f2a1a05294f7f27eccd7ba495b9733483f91f06b99f920e2e19f341a1d1f"
+    },
+    {
+      "name": "summary.json",
+      "sha256": "edb02d9a0c8df2f39fd228af9415ed07c8994fc276d45c20f0c04044090b51cc"
+    }
+  ]
+}

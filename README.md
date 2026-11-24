@@ -149,6 +149,21 @@ uv run hyperdime probe-geometry                  # corpus moments, covariance sp
 uv run hyperdime report P1                       # reports/P1, paired with the latest S1 run
 ```
 
+## Representation analysis, experiment P3 (ADR-0014)
+
+Descriptive, on training queries and training judgments only; not a benchmark.
+
+```bash
+uv run hyperdime analyze-representations --max-queries 100   # bounded pilot: check size and runtime
+uv run hyperdime analyze-representations                     # every training query, per environment
+uv run hyperdime report P3                                   # reports/P3, tables and figures included
+```
+
+Every run covers every `k` from 1 to 1024, with matched corpus-reference documents as a control.
+Without the published artifacts, `scripts/checks/p3_spike_inputs.py` converts local F0 spike caches;
+using them takes `--allow-spike-inputs`, and their report goes to `reports/P3-spike`, marked as
+validation only.
+
 ## A selector started from the geometric prior, experiment S2 (F7)
 
 ```bash

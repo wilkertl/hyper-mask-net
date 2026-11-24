@@ -33,6 +33,15 @@
     .source { border-top:1px solid var(--line); padding-top:.55rem; font-size:.82rem; color:var(--muted); }
     a { color:var(--accent); text-underline-offset:2px; }
     .foot { color:var(--muted); margin-top:1.4rem; font-size:.87rem; }
+    .models { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:1.3rem 1.5rem; margin-top:1.6rem; }
+    .models h3 { font-size:1.02rem; margin:1.3rem 0 .4rem; color:var(--accent); }
+    .models dl { margin:0; }
+    .models dt { font:700 .86rem ui-monospace,SFMono-Regular,monospace; margin-top:.8rem; }
+    .models dd { margin:.2rem 0 0 1.1rem; max-width:100ch; }
+    .models dd p { margin:.2rem 0 .45rem; }
+    .models dd ul { margin:.25rem 0 .45rem; padding-left:1.2rem; }
+    .models ul.intro { padding-left:1.2rem; }
+    .models code { font-size:.86em; background:#eef3f2; padding:0 .2em; border-radius:3px; }
     @media(max-width:900px) { .grid { grid-template-columns:1fr; } .sub { min-height:0; } }
     @media print { body { background:#fff; } header { background:#fff; color:var(--text); padding:1rem 0; } header p,.eyebrow { color:var(--muted); } main { padding:0; } .card { break-inside:avoid; box-shadow:none; } }
   </style>
@@ -41,12 +50,70 @@
   <header>
     <div class="eyebrow">HyperDIME · generated experiment charts</div>
     <h1>Metric by retained dimensions</h1>
-    <p>Exact full-corpus retrieval across the reported E0, E1, P1, and S1–S4 experiments. The horizontal axis keeps 10%, 20%, …, 100% of the 1,024 query dimensions.</p>
+    <p>Exact full-corpus retrieval across the reported E0, E1, P1, S1–S4, and P3 ranking experiments. The horizontal axis keeps 10%, 20%, …, 100% of the 1,024 query dimensions. <a href="#models" style="color:#b9d8d5">How each model is built and trained</a>.</p>
   </header>
   <main>
-    <p class="intro">Choose a query set inside each chart and use its legend to focus on methods. At 100%, every method uses the full query. E0 provides full curves for TREC DL sets only; its SciFact, NFCorpus, and MS MARCO test report has selected-budget results, so no test-set curve is inferred.</p>
+    <p class="intro">Choose a query set inside each chart and use its legend to focus on methods. At 100%, every method uses the full query. E0 provides full curves for TREC DL sets only; its SciFact, NFCorpus, and MS MARCO test report has selected-budget results, so no test-set curve is inferred. The two P3 cards use training queries and privileged masks, so they are diagnostics: do not compare them with the test-set curves of the other cards. Hover a legend entry for a short description of the method.</p>
     <div id="charts" class="grid"></div>
-    <p class="foot">Values come directly from the generated CSV tables linked in each chart. Percentages map to the repository's floored budgets: 102, 204, 307, 409, 512, 614, 716, 819, 921, and 1,024 dimensions. The E0 table's extra k=256 point is omitted to keep the requested 10% intervals. AP is available for E0 TREC DL; the other progression tables report nDCG@10.</p>
+    <p class="foot">Values come directly from the generated CSV tables linked in each chart. Percentages map to the repository's floored budgets: 102, 204, 307, 409, 512, 614, 716, 819, 921, and 1,024 dimensions. The E0 table's extra k=256 point is omitted to keep the requested 10% intervals. AP is available for E0 TREC DL; the other progression tables report nDCG@10, and the P3 tables add MRR@10, MRR@100, and Recall@100. P3 curves show point estimates only; their intervals are in the linked tables. In P3, the full query is measured once at 1,024 dimensions, which is every arm's 100% point.</p>
+    <section class="models" id="models">
+      <h2>Models and training</h2>
+      <p class="intro">Every method below keeps the frozen Qwen3-Embedding-0.6B encoder and its 1,024-dimensional embeddings. A method only chooses which query coordinates to keep. Per query it scores the 1,024 dimensions, keeps the top k as a hard 0/1 mask, and ranks the whole corpus by the inner product of the masked query with each unchanged document embedding. The masked query is not re-normalized, and documents and the index are never touched. Training, tuning, negative mining, and normalization use training and validation judgments only. Test judgments are used only to score the curves in E0–E1 and S1–S4. The P3 experiments read training judgments only.</p>
+      <p class="intro"><strong>Shared data.</strong> Each environment (SciFact, NFCorpus, MS MARCO) has fixed train, validation, and test query splits. For every training and validation query, 64 hard negatives are sampled with replacement, using a fixed seed, from the top 1,000 non-positive documents of the unmasked ranking. Positives are weighted by the exponential gain 2<sup>grade</sup> − 1. Each card's run, commit, selected grid cell, and seeds are listed in its linked experiment report.</p>
+
+      <h3>Reference masks (no training)</h3>
+      <dl>
+        <dt id="m-full">full · full query</dt><dd>All 1,024 dimensions. Every curve meets it at 100%.</dd>
+        <dt id="m-prefix">prefix · prefix-k</dt><dd>The first k dimensions, as in Matryoshka truncation. The same mask for every query.</dd>
+        <dt id="m-random">random</dt><dd>Seeded uniform scores per query (seed 0), then top k.</dd>
+        <dt id="m-global-importance">global-importance</dt><dd>One ranking for all queries: the mean Learning-to-Select training target of the environment (below), at the environment's tuned temperature.</dd>
+        <dt id="m-oracle">oracle (E0)</dt><dd>The importance <code>e_q ⊙ (p − n)</code> computed from the judged positives (p) and mined negatives (n) of the query being scored. It reads evaluation labels, so it cannot be deployed and serves only as an upper reference.</dd>
+        <dt id="m-variance">variance (P1)</dt><dd>Keeps the k dimensions with the largest <code>q_d² · Var(x_d)</code>, where <code>Var(x_d)</code> is the variance of dimension d over the corpus's document embeddings. It uses no judgments and no training: the corpus geometry alone.</dd>
+      </dl>
+
+      <h3>Selectors trained toward the oracle distribution (Learning-to-Select)</h3>
+      <dl>
+        <dt id="m-l2s">l2s · l2s:&lt;env&gt;</dt><dd>
+          <p><strong>Model.</strong> A linear selector <code>s = W q + b</code>, with W a full 1,024 × 1,024 matrix and a bias, mapping the query embedding to one score per dimension.</p>
+          <p><strong>Target.</strong> For each training or validation query, <code>softmax(e_q ⊙ (p̄ − n̄) / τ)</code>, where p̄ is the gain-weighted mean of the positive embeddings and n̄ is the mean of the 64 hard negatives.</p>
+          <p><strong>Training (ADR-0002, the official recipe).</strong> The loss is the KL divergence from the target to <code>softmax(s)</code>. The optimizer is AdamW with lr 1e-4, weight decay 1e-4, and batch 32, using cosine decay over a fixed number of epochs. The state with the lowest validation KL is kept, with no early stopping. Temperature τ ∈ {0.005, 0.01, 0.02, 0.05, 0.1, 0.2} and epochs ∈ {10, 50, 200} are chosen per environment on validation nDCG@10 at k = 307, using seed 0.</p>
+          <p><strong>Where each version appears.</strong> E0's <code>l2s</code> is this official checkpoint. In E1 and S1–S4, <code>l2s:&lt;env&gt;</code> is the best cell of the wider grid (τ from 0.001 to 1.0 × epochs ∈ {3, 10, 50, 200, 500}), retrained with seeds 0, 1, 2, with scores averaged per query.</p></dd>
+        <dt id="m-selected">selected (E0)</dt><dd>The best validation cell over four Learning-to-Select families. Ties go to the official recipe. The families are:
+          <ul>
+            <li><em>official</em>: the recipe above.</li>
+            <li><em>wide-grid</em>: the wider grid described above.</li>
+            <li><em>val-stopped</em>: a constant learning rate for up to 500 epochs, stopping after 5 epochs without a validation-KL improvement.</li>
+            <li><em>global-regularized</em>: an L2 pull toward the global selector, with weight ∈ {1e-4, 1e-3, 1e-2, 1e-1}.</li>
+          </ul></dd>
+        <dt id="m-global-selector">global-selector (E1)</dt><dd>One linear selector trained on the union of the three environments' training targets, each at its own official τ, and validated on the union of their validation sets. It is never trained on a test label.</dd>
+        <dt id="m-selector">selector:&lt;env&gt; (E1)</dt><dd>The wide-grid Learning-to-Select selector of the named training environment, with seeds 0, 1, 2. It is scored in-domain and transferred unchanged to the other environments' test queries. That transfer is the selector-shift test.</dd>
+      </dl>
+
+      <h3>Selectors trained on masked retrieval (S1–S4)</h3>
+      <p class="intro"><strong>The S1 objective, which S2–S4 reuse.</strong></p>
+      <ul class="intro">
+        <li><strong>Soft mask.</strong> Selector scores are standardized per query to z. A relaxed top-k mask <code>m = sigmoid((z − t) / β)</code> uses a threshold t halfway between the k-th and (k+1)-th score, with no gradient through t. β anneals geometrically from 1 to β<sub>end</sub>.</li>
+        <li><strong>Loss.</strong> The masked query <code>q ⊙ m</code> scores the query's positives, its 64 hard negatives, and the batch's other distinct positives. The loss is a gain-weighted, multi-positive softmax cross-entropy at temperature τ<sub>s</sub>.</li>
+        <li><strong>Optimization.</strong> AdamW with weight decay 1e-4, batch 32, and cosine decay over 20,000 steps.</li>
+        <li><strong>Budgets.</strong> <em>fixed-307</em> trains at k = 307 only. <em>multi-budget</em> draws one of the nine 10%–90% budgets per batch.</li>
+        <li><strong>Checkpoint and selection.</strong> In S1–S3, each run keeps the checkpoint with the best validation nDCG@10, reranking each validation query's candidate pool and averaging over the nine budgets. Grid cells are chosen with seed 0 by full-corpus validation nDCG@10 averaged over the nine budgets. A cell whose soft mask keeps less than 90% of its mass on the hard top k is rejected. Evaluation always uses the hard top-k mask, and the selected cell is retrained with seeds 0, 1, 2.</li>
+      </ul>
+      <dl>
+        <dt id="m-retrieval">retrieval:&lt;env&gt; (S1)</dt><dd>The same linear selector as Learning-to-Select, trained with the objective above instead of KL to the oracle. Grid (32 cells): budget mode {fixed-307, multi-budget} × init {scratch, the L2S checkpoint} × lr {1e-4, 1e-3} × τ<sub>s</sub> {0.02, 0.05} × β<sub>end</sub> {0.1, 0.02}. On NFCorpus every seed kept its starting checkpoint, so <code>retrieval:nfcorpus</code> is the L2S selector itself.</dd>
+        <dt id="m-geometric">geometric:&lt;env&gt; (S2)</dt><dd>Scores <code>log(q_d² · Var(x_d) + ε) + (W q + b)_d</code>, where the first term is the fixed corpus-variance prior and W, b start at zero. At step 0 it is exactly <code>variance</code>, and training learns a per-query correction with the S1 objective and grid rules.</dd>
+        <dt id="m-weighted">weighted:&lt;env&gt; (S3)</dt><dd>S2's selector with one learned scalar <code>a</code> on the prior, starting at 1: <code>a · log(q_d² · Var(x_d) + ε) + (W q + b)_d</code>. Trained like S2.</dd>
+        <dt id="m-budget">budget:&lt;env&gt; (S4)</dt><dd>One non-negative prior weight <code>a_k</code> per 10%–90% budget, with the linear map shared by every budget. At step 0 it is <code>variance</code> at every budget. It is trained in multi-budget mode on an 8-cell grid. Every evaluated state, step 0 included, is a candidate, scored by exact full-corpus validation nDCG@10 on a fixed, hashed subset of at most 1,000 validation queries.</dd>
+        <dt id="m-weighted-aligned">weighted-aligned:&lt;env&gt; (S4 control)</dt><dd>S3's single-weight selector retrained on S4's 8 cells with S4's checkpoint rule. It differs from <code>budget</code> only in having one weight instead of one per budget.</dd>
+      </dl>
+
+      <h3>P3 masks: privileged diagnostics, nothing trained</h3>
+      <p class="intro">P3 measures how far a per-query mask could move rankings when it is built from that query's own training positives. Scoring is exact float64 over every corpus document, with ties going to the lower corpus row. These masks need judgments, so none is a retrieval method and none is a ranking upper bound: they maximize the positives' mean similarity, not nDCG.</p>
+      <dl>
+        <dt id="m-shared">shared (P3 ranking) · all-positive oracle (privileged) (P3 oracle vs L2S)</dt><dd>The top k of the gain-weighted mean of <code>q ⊙ d</code> over all of the query's positives. It saw the documents it is scored on.</dd>
+        <dt id="m-transfer">1-1 · held-out transfer (1-1)</dt><dd>A mask built from one construction positive (<code>q ⊙ d</code>, top k). In the curves here it is scored on all labels, so the construction positive still counts and can inflate the gain. Its effect on the held-out positives of the same query is the primary measure in the P3 ranking report. The 2-2 to 20-20 constructions need more positives, so they cover smaller cohorts and are left off this chart.</dd>
+        <dt id="m-l2s-in-sample">L2S (in-sample) (P3 oracle vs L2S)</dt><dd>The official-recipe Learning-to-Select checkpoint for the environment: one seed, with its provenance verified against the inputs read here. It was trained on these very training queries, so its curve shows in-sample fit, not performance on unseen queries.</dd>
+      </dl>
+    </section>
   </main>
   <script id="chart-data" type="application/json">{{CHART_DATA}}</script>
   <script>
@@ -60,13 +127,42 @@
       S1: ['S1 · retrieval objective','Masked retrieval training against L2S'],
       S2: ['S2 · fixed geometric prior','Retrieval selector initialized from variance'],
       S3: ['S3 · learned prior weight','Learned scalar on the geometric prior'],
-      S4: ['S4 · prior weight per budget','One learned prior weight for each budget']
+      S4: ['S4 · prior weight per budget','One learned prior weight for each budget'],
+      P3R: ['P3 · mask ranking','Positive-built masks on training queries (privileged, all labels)'],
+      P3O: ['P3 · oracle vs L2S','All-positive oracle against in-sample L2S, by positive count']
     };
+    const NOTES = {
+      'full':'All 1,024 dimensions.', 'full query':'All 1,024 dimensions.',
+      'prefix':'First k dimensions (Matryoshka-style).', 'prefix-k':'First k dimensions (Matryoshka-style).',
+      'random':'Seeded random k dimensions per query.',
+      'global-importance':'One ranking for all queries: mean L2S training target.',
+      'oracle':'Built from the scored query\'s own evaluation labels; non-deployable reference.',
+      'l2s':'Learning-to-Select linear selector, official recipe (KL to oracle distribution).',
+      'selected':'Validation-best of the four L2S training families.',
+      'global-selector':'One L2S selector trained on all three environments.',
+      'variance':'Top k of q_d² · Var(x_d); corpus geometry, no labels or training.',
+      'shared':'Top k of mean q⊙d over all the query\'s positives (privileged).',
+      'all-positive oracle (privileged)':'Top k of mean q⊙d over all the query\'s positives (privileged).',
+      '1-1':'Mask from one construction positive; scored on all labels.',
+      'held-out transfer (1-1)':'Mask from one construction positive; scored on all labels.',
+      'L2S (in-sample)':'Official L2S checkpoint, scored on queries it was trained on.'
+    };
+    const PREFIX_NOTES = {
+      'l2s:':'Learning-to-Select (wide grid, seeds 0–2) for this environment.',
+      'selector:':'L2S selector trained on this environment, possibly transferred.',
+      'retrieval:':'S1: linear selector trained on masked retrieval.',
+      'geometric:':'S2: variance prior plus learned linear correction.',
+      'weighted:':'S3: learned scalar weight on the variance prior.',
+      'weighted-aligned:':'S4 control: S3 selector on S4\'s cells and checkpoint rule.',
+      'budget:':'S4: one learned prior weight per budget.'
+    };
+    const note = m => NOTES[m] || Object.entries(PREFIX_NOTES).find(([p]) => m.startsWith(p))?.[1] || '';
     const host = document.getElementById('charts');
     const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const nice = s => s.replace('trec-dl-','TREC DL ').replace('trec-dl-hard','TREC DL HARD').replace('msmarco','MS MARCO').replace('nfcorpus','NFCorpus').replace('scifact','SciFact');
     function relevant(exp, group, name) {
       const env = group.split('|')[0];
+      if (exp === 'P3R' || exp === 'P3O') return true;
       if (exp === 'E0') return ['full','prefix','l2s','selected','oracle'].includes(name);
       if (exp === 'E1') return ['full','prefix','global-selector'].includes(name) || name.startsWith('selector:');
       const base = ['full','prefix',`l2s:${env}`];
@@ -106,15 +202,15 @@
       });
       svg += '</svg>';
       card.querySelector('.plot').innerHTML=svg;
-      card.querySelector('.legend').innerHTML=lines.map((r,i)=>`<label><input type="checkbox" data-method="${esc(r.method)}" ${hidden.has(r.method)?'':'checked'}><span class="swatch" style="background:${COLORS[i%COLORS.length]}"></span>${esc(r.method)}</label>`).join('');
+      card.querySelector('.legend').innerHTML=lines.map((r,i)=>`<label title="${esc(note(r.method))}"><input type="checkbox" data-method="${esc(r.method)}" ${hidden.has(r.method)?'':'checked'}><span class="swatch" style="background:${COLORS[i%COLORS.length]}"></span>${esc(r.method)}</label>`).join('');
       card.querySelector('.source-table').href=DATA[exp].groups[group]._source[metric];
     }
-    for (const exp of ['E0','E1','P1','S1','S2','S3','S4']) {
+    for (const exp of ['E0','E1','P1','S1','S2','S3','S4','P3R','P3O']) {
       const item=DATA[exp], groups=Object.keys(item.groups);
       const card=document.createElement('section'); card.className='card'; card.id=exp;
       const options=groups.map(g=>`<option value="${esc(g)}">${esc(nice(g.replace('|',' / ')))}</option>`).join('');
       const metrics=item.metrics.map(m=>`<option value="${esc(m)}">${esc(m)}</option>`).join('');
-      card.innerHTML=`<div class="head"><span class="id">${exp}</span><h2>${esc(TYPES[exp][0].split(' · ')[1])}</h2></div><p class="sub">${esc(TYPES[exp][1])}</p><div class="controls"><label>Query set<select class="query">${options}</select></label><label>Metric<select class="metric">${metrics}</select></label></div><div class="plot"></div><div class="legend" aria-label="Toggle methods"></div><p class="source">Source: <a class="source-table" href="${esc(item.source)}">generated curve table</a> · <a href="${esc(item.report)}">experiment report</a></p>`;
+      card.innerHTML=`<div class="head"><span class="id">${exp.startsWith('P3') ? 'P3' : exp}</span><h2>${esc(TYPES[exp][0].split(' · ')[1])}</h2></div><p class="sub">${esc(TYPES[exp][1])}</p><div class="controls"><label>Query set<select class="query">${options}</select></label><label>Metric<select class="metric">${metrics}</select></label></div><div class="plot"></div><div class="legend" aria-label="Toggle methods"></div><p class="source">Source: <a class="source-table" href="${esc(item.source)}">generated curve table</a> · <a href="${esc(item.report)}">experiment report</a></p>`;
       host.append(card);
       card.querySelector('.query').addEventListener('change',()=>{card.hiddenMethods=new Set(); chart(exp,card);});
       card.querySelector('.metric').addEventListener('change',()=>{card.hiddenMethods=new Set(); chart(exp,card);});
